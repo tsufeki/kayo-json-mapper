@@ -19,5 +19,10 @@
         "psr-4": {
             "Tsufeki\\KayoJsonMapper\\": "src/Tsufeki/KayoJsonMapper/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\Tsufeki\\KayoJsonMapper\\": "tests/Tsufeki/KayoJsonMapper/"
+        }
     }
 }
