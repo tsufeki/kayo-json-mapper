@@ -1,0 +1,14 @@
+* Infinite recursion check
+* Max depth in dump
+* Getters/setters in object dump/load
+* Throw on unknown property in json
+* Throw on required property missing in json
+* (?) Non-strict nulls
+* (?) Non-strict scalars
+* (?) Load objects from assoc arrays
+* Configurable object factory
+* Property name mangling: underscores and dashes
+* (?) Logger
+* (?) Array keys
+* (?) Getter/setter without property
+* (?) Case insensitive properties
