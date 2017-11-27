@@ -4,6 +4,7 @@ namespace Tests\Tsufeki\KayoJsonMapper;
 
 use PHPUnit\Framework\TestCase;
 use Tests\Tsufeki\KayoJsonMapper\Fixtures\TestClass;
+use Tests\Tsufeki\KayoJsonMapper\Fixtures\TestCompoundClass;
 use Tsufeki\KayoJsonMapper\Mapper;
 
 /**
@@ -36,6 +37,37 @@ class MapperTest extends TestCase
                 new TestClass(
                     42,
                     'baz'
+                ),
+            ],
+
+            [
+                new TestCompoundClass(),
+
+                Helpers::makeStdClass([
+                    'intArray' => [1, 2],
+                    'testClass' => Helpers::makeStdClass([
+                        'foo' => 1,
+                        'bar' => 'b1',
+                    ]),
+                    'testClassArray' => [
+                        Helpers::makeStdClass([
+                            'foo' => 2,
+                            'bar' => 'b2',
+                        ]),
+                        Helpers::makeStdClass([
+                            'foo' => 3,
+                            'bar' => 'b3',
+                        ]),
+                    ],
+                ]),
+
+                new TestCompoundClass(
+                    [1, 2],
+                    new TestClass(1, 'b1'),
+                    [
+                        new TestClass(2, 'b2'),
+                        new TestClass(3, 'b3'),
+                    ]
                 ),
             ],
         ];
