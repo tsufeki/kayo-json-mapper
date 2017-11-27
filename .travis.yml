@@ -15,7 +15,7 @@ cache:
 script:
     - mkdir -p build/logs
     - ./vendor/bin/phpstan analyze --level=max --no-interaction --no-progress src/
-    - ./vendor/phpunit --coverage-clover build/logs/clover.xml
+    - ./vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 
 after_success:
     - travis_retry php vendor/bin/coveralls -v
