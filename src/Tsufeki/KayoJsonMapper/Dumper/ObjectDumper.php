@@ -39,7 +39,7 @@ class ObjectDumper implements Dumper
         $result = new \stdClass();
 
         foreach ($metadata->properties as $property) {
-            $result->{$property->name} = $property->get($value);
+            $result->{$property->name} = $this->dispatchingDumper->dump($property->get($value));
         }
 
         return $result;

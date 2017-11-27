@@ -3,28 +3,31 @@
 namespace Tests\Tsufeki\KayoJsonMapper\Dumper;
 
 use PHPUnit\Framework\TestCase;
-use Tsufeki\KayoJsonMapper\Dumper\DateTimeDumper;
+use Tsufeki\KayoJsonMapper\Dumper\ScalarDumper;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 
 /**
- * @covers \Tsufeki\KayoJsonMapper\Dumper\DateTimeDumper
+ * @covers \Tsufeki\KayoJsonMapper\Dumper\ScalarDumper
  */
-class DateTimeDumperTest extends TestCase
+class ScalarDumperTest extends TestCase
 {
     /**
      * @dataProvider dump_data
      */
-    public function test_dumps_datetime_to_string(\DateTime $datetime, string $result)
+    public function test_dumps_scalar($value)
     {
-        $dumper = new DateTimeDumper();
-        $this->assertSame($result, $dumper->dump($datetime));
+        $dumper = new ScalarDumper();
+        $this->assertSame($value, $dumper->dump($value));
     }
 
     public function dump_data(): array
     {
         return [
-            [new \DateTime('2017-11-26 23:57:00'), '2017-11-26T23:57:00+00:00'],
-            [new \DateTime('2017-11-26 23:57:00+07:00'), '2017-11-26T23:57:00+07:00'],
+            [1],
+            [1.5],
+            [true],
+            [null],
+            ['foo'],
         ];
     }
 
@@ -33,7 +36,7 @@ class DateTimeDumperTest extends TestCase
      */
     public function test_throws_on_bad_value($value)
     {
-        $dumper = new DateTimeDumper();
+        $dumper = new ScalarDumper();
         $this->expectException(UnsupportedTypeException::class);
         $dumper->dump($value);
     }
@@ -41,8 +44,7 @@ class DateTimeDumperTest extends TestCase
     public function bad_dump_data(): array
     {
         return [
-            ['foobar'],
-            [null],
+            [[]],
             [new \stdClass()],
         ];
     }
