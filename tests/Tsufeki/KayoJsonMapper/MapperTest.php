@@ -30,12 +30,12 @@ class MapperTest extends TestCase
             [
                 new TestClass(),
                 Helpers::makeStdClass([
-                    'string' => 'foo',
-                    'int' => 42,
+                    'foo' => 42,
+                    'bar' => 'baz',
                 ]),
                 new TestClass(
-                    'foo',
-                    42
+                    42,
+                    'baz'
                 ),
             ],
         ];

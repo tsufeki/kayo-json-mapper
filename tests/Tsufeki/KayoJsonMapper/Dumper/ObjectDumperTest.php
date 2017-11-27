@@ -4,6 +4,7 @@ namespace Tests\Tsufeki\KayoJsonMapper\Dumper;
 
 use PHPUnit\Framework\TestCase;
 use Tests\Tsufeki\KayoJsonMapper\Helpers;
+use Tests\Tsufeki\KayoJsonMapper\Fixtures\TestClass;
 use Tsufeki\KayoJsonMapper\Dumper;
 use Tsufeki\KayoJsonMapper\Dumper\ObjectDumper;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
@@ -18,10 +19,7 @@ class ObjectDumperTest extends TestCase
 {
     public function test_dumps_object()
     {
-        $object = new class() {
-            public $foo = 42;
-            public $bar = 'baz';
-        };
+        $object = new TestClass(42, 'baz');
 
         $innerDumper = $this->createMock(Dumper::class);
         $innerDumper
@@ -30,19 +28,12 @@ class ObjectDumperTest extends TestCase
             ->withConsecutive([$this->identicalTo(42)], [$this->identicalTo('baz')])
             ->willReturnOnConsecutiveCalls(7, 'BAZ');
 
-        $fooProperty = new PropertyMetadata();
-        $fooProperty->name = 'foo';
-        $barProperty = new PropertyMetadata();
-        $barProperty->name = 'bar';
-        $classMetadata = new ClassMetadata();
-        $classMetadata->properties = [$fooProperty, $barProperty];
-
         $metadataProvider = $this->createMock(MetadataProvider::class);
         $metadataProvider
             ->expects($this->once())
             ->method('getClassMetadata')
-            ->with($this->identicalTo(get_class($object)))
-            ->willReturn($classMetadata);
+            ->with($this->identicalTo(TestClass::class))
+            ->willReturn(TestClass::metadata());
 
         $objectDumper = new ObjectDumper($innerDumper, $metadataProvider);
         $result = $objectDumper->dump($object);
