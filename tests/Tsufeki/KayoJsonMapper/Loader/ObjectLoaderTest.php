@@ -3,17 +3,13 @@
 namespace Tests\Tsufeki\KayoJsonMapper\Loader;
 
 use phpDocumentor\Reflection\TypeResolver;
-use phpDocumentor\Reflection\Types;
-use phpDocumentor\Reflection\Fqsen;
 use PHPUnit\Framework\TestCase;
-use Tests\Tsufeki\KayoJsonMapper\Helpers;
 use Tests\Tsufeki\KayoJsonMapper\Fixtures\TestClass;
+use Tests\Tsufeki\KayoJsonMapper\Helpers;
+use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
+use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 use Tsufeki\KayoJsonMapper\Loader;
 use Tsufeki\KayoJsonMapper\Loader\ObjectLoader;
-use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
-use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
-use Tsufeki\KayoJsonMapper\Metadata\ClassMetadata;
-use Tsufeki\KayoJsonMapper\Metadata\PropertyMetadata;
 use Tsufeki\KayoJsonMapper\MetadataProvider;
 
 /**
