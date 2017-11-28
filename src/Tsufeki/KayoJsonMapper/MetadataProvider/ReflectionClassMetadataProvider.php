@@ -7,12 +7,12 @@ use phpDocumentor\Reflection\DocBlockFactory;
 use phpDocumentor\Reflection\Types\Context;
 use phpDocumentor\Reflection\Types\ContextFactory;
 use phpDocumentor\Reflection\Types\Mixed_;
+use Tsufeki\KayoJsonMapper\ClassMetadataProvider;
 use Tsufeki\KayoJsonMapper\Exception\MetadataException;
 use Tsufeki\KayoJsonMapper\Metadata\ClassMetadata;
 use Tsufeki\KayoJsonMapper\Metadata\PropertyMetadata;
-use Tsufeki\KayoJsonMapper\MetadataProvider;
 
-class ReflectionMetadataProvider implements MetadataProvider
+class ReflectionClassMetadataProvider implements ClassMetadataProvider
 {
     public function getClassMetadata(string $class): ClassMetadata
     {

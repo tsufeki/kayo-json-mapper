@@ -5,12 +5,12 @@ namespace Tests\Tsufeki\KayoJsonMapper\MetadataProvider;
 use PHPUnit\Framework\TestCase;
 use Tsufeki\KayoJsonMapper\Exception\MetadataException;
 use Tsufeki\KayoJsonMapper\Metadata\ClassMetadata;
-use Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionMetadataProvider;
+use Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionClassMetadataProvider;
 
 /**
- * @covers \Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionMetadataProvider
+ * @covers \Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionClassMetadataProvider
  */
-class ReflectionMetadataProviderTest extends TestCase
+class ReflectionClassMetadataProviderTest extends TestCase
 {
     private function checkProperties(ClassMetadata $metadata, array $expected)
     {
@@ -31,7 +31,7 @@ class ReflectionMetadataProviderTest extends TestCase
             public $barBaz;
         };
 
-        $metadata = (new ReflectionMetadataProvider())
+        $metadata = (new ReflectionClassMetadataProvider())
             ->getClassMetadata(get_class($object));
 
         $this->checkProperties($metadata, [
@@ -49,7 +49,7 @@ class ReflectionMetadataProviderTest extends TestCase
             public $barBaz;
         };
 
-        $metadata = (new ReflectionMetadataProvider())
+        $metadata = (new ReflectionClassMetadataProvider())
             ->getClassMetadata(get_class($object));
 
         $this->checkProperties($metadata, [
@@ -61,7 +61,7 @@ class ReflectionMetadataProviderTest extends TestCase
     public function test_throws_on_unknown_class()
     {
         $this->expectException(MetadataException::class);
-        $metadata = (new ReflectionMetadataProvider())
+        $metadata = (new ReflectionClassMetadataProvider())
             ->getClassMetadata('DoesntExist');
     }
 }

@@ -2,13 +2,13 @@
 
 namespace Tsufeki\KayoJsonMapper\MetadataProvider;
 
+use Tsufeki\KayoJsonMapper\ClassMetadataProvider;
 use Tsufeki\KayoJsonMapper\Metadata\ClassMetadata;
-use Tsufeki\KayoJsonMapper\MetadataProvider;
 
-class CachedMetadataProvider implements MetadataProvider
+class CachedClassMetadataProvider implements ClassMetadataProvider
 {
     /**
-     * @var MetadataProvider
+     * @var ClassMetadataProvider
      */
     private $innerMetadataProvider;
 
@@ -17,7 +17,7 @@ class CachedMetadataProvider implements MetadataProvider
      */
     private $classMetadataCache;
 
-    public function __construct(MetadataProvider $innerMetadataProvider)
+    public function __construct(ClassMetadataProvider $innerMetadataProvider)
     {
         $this->innerMetadataProvider = $innerMetadataProvider;
         $this->classMetadataCache = [];

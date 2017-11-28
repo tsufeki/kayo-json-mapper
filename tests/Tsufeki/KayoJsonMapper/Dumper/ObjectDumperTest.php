@@ -5,10 +5,10 @@ namespace Tests\Tsufeki\KayoJsonMapper\Dumper;
 use PHPUnit\Framework\TestCase;
 use Tests\Tsufeki\KayoJsonMapper\Fixtures\TestClass;
 use Tests\Tsufeki\KayoJsonMapper\Helpers;
+use Tsufeki\KayoJsonMapper\ClassMetadataProvider;
 use Tsufeki\KayoJsonMapper\Dumper;
 use Tsufeki\KayoJsonMapper\Dumper\ObjectDumper;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
-use Tsufeki\KayoJsonMapper\MetadataProvider;
 
 /**
  * @covers \Tsufeki\KayoJsonMapper\Dumper\ObjectDumper
@@ -26,7 +26,7 @@ class ObjectDumperTest extends TestCase
             ->withConsecutive([$this->identicalTo(42)], [$this->identicalTo('baz')])
             ->willReturnOnConsecutiveCalls(7, 'BAZ');
 
-        $metadataProvider = $this->createMock(MetadataProvider::class);
+        $metadataProvider = $this->createMock(ClassMetadataProvider::class);
         $metadataProvider
             ->expects($this->once())
             ->method('getClassMetadata')
@@ -45,7 +45,7 @@ class ObjectDumperTest extends TestCase
     public function test_returns_stdClass_unchanged()
     {
         $innerDumper = $this->createMock(Dumper::class);
-        $metadataProvider = $this->createMock(MetadataProvider::class);
+        $metadataProvider = $this->createMock(ClassMetadataProvider::class);
         $dumper = new ObjectDumper($innerDumper, $metadataProvider);
 
         $value = Helpers::makeStdClass(['foo' => 42]);
@@ -60,7 +60,7 @@ class ObjectDumperTest extends TestCase
     public function test_throws_on_bad_value($value)
     {
         $innerDumper = $this->createMock(Dumper::class);
-        $metadataProvider = $this->createMock(MetadataProvider::class);
+        $metadataProvider = $this->createMock(ClassMetadataProvider::class);
         $dumper = new ObjectDumper($innerDumper, $metadataProvider);
         $this->expectException(UnsupportedTypeException::class);
         $dumper->dump($value);

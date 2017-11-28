@@ -4,10 +4,10 @@ namespace Tsufeki\KayoJsonMapper\Loader;
 
 use phpDocumentor\Reflection\Type;
 use phpDocumentor\Reflection\Types;
+use Tsufeki\KayoJsonMapper\ClassMetadataProvider;
 use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 use Tsufeki\KayoJsonMapper\Loader;
-use Tsufeki\KayoJsonMapper\MetadataProvider;
 
 class ObjectLoader implements Loader
 {
@@ -17,11 +17,11 @@ class ObjectLoader implements Loader
     private $dispatchingLoader;
 
     /**
-     * @var MetadataProvider
+     * @var ClassMetadataProvider
      */
     private $metadataProvider;
 
-    public function __construct(Loader $dispatchingLoader, MetadataProvider $metadataProvider)
+    public function __construct(Loader $dispatchingLoader, ClassMetadataProvider $metadataProvider)
     {
         $this->dispatchingLoader = $dispatchingLoader;
         $this->metadataProvider = $metadataProvider;

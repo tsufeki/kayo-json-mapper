@@ -4,7 +4,7 @@ namespace Tsufeki\KayoJsonMapper;
 
 use Tsufeki\KayoJsonMapper\Exception\MetadataException;
 
-interface MetadataProvider
+interface ClassMetadataProvider
 {
     /**
      * @throws MetadataException

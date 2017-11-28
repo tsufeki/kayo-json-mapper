@@ -2,9 +2,9 @@
 
 namespace Tsufeki\KayoJsonMapper\Dumper;
 
+use Tsufeki\KayoJsonMapper\ClassMetadataProvider;
 use Tsufeki\KayoJsonMapper\Dumper;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
-use Tsufeki\KayoJsonMapper\MetadataProvider;
 
 class ObjectDumper implements Dumper
 {
@@ -14,11 +14,11 @@ class ObjectDumper implements Dumper
     private $dispatchingDumper;
 
     /**
-     * @var MetadataProvider
+     * @var ClassMetadataProvider
      */
     private $metadataProvider;
 
-    public function __construct(Dumper $dispatchingDumper, MetadataProvider $metadataProvider)
+    public function __construct(Dumper $dispatchingDumper, ClassMetadataProvider $metadataProvider)
     {
         $this->dispatchingDumper = $dispatchingDumper;
         $this->metadataProvider = $metadataProvider;

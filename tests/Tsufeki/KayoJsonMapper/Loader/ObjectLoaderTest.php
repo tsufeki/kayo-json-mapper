@@ -6,11 +6,11 @@ use phpDocumentor\Reflection\TypeResolver;
 use PHPUnit\Framework\TestCase;
 use Tests\Tsufeki\KayoJsonMapper\Fixtures\TestClass;
 use Tests\Tsufeki\KayoJsonMapper\Helpers;
+use Tsufeki\KayoJsonMapper\ClassMetadataProvider;
 use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 use Tsufeki\KayoJsonMapper\Loader;
 use Tsufeki\KayoJsonMapper\Loader\ObjectLoader;
-use Tsufeki\KayoJsonMapper\MetadataProvider;
 
 /**
  * @covers \Tsufeki\KayoJsonMapper\Loader\ObjectLoader
@@ -26,7 +26,7 @@ class ObjectLoaderTest extends TestCase
             'bar' => 'baz',
         ]);
 
-        $metadataProvider = $this->createMock(MetadataProvider::class);
+        $metadataProvider = $this->createMock(ClassMetadataProvider::class);
         $metadataProvider
             ->expects($this->once())
             ->method('getClassMetadata')
@@ -54,7 +54,7 @@ class ObjectLoaderTest extends TestCase
     public function test_returns_stdClass_unchanged()
     {
         $innerLoader = $this->createMock(Loader::class);
-        $metadataProvider = $this->createMock(MetadataProvider::class);
+        $metadataProvider = $this->createMock(ClassMetadataProvider::class);
         $loader = new ObjectLoader($innerLoader, $metadataProvider);
         $resolver = new TypeResolver();
 
@@ -73,7 +73,7 @@ class ObjectLoaderTest extends TestCase
     public function test_throws_on_unsupported_value($type)
     {
         $innerLoader = $this->createMock(Loader::class);
-        $metadataProvider = $this->createMock(MetadataProvider::class);
+        $metadataProvider = $this->createMock(ClassMetadataProvider::class);
         $loader = new ObjectLoader($innerLoader, $metadataProvider);
         $resolver = new TypeResolver();
 
@@ -98,7 +98,7 @@ class ObjectLoaderTest extends TestCase
     {
         $resolver = new TypeResolver();
         $innerLoader = $this->createMock(Loader::class);
-        $metadataProvider = $this->createMock(MetadataProvider::class);
+        $metadataProvider = $this->createMock(ClassMetadataProvider::class);
         $loader = new ObjectLoader($innerLoader, $metadataProvider);
 
         $this->expectException(TypeMismatchException::class);
