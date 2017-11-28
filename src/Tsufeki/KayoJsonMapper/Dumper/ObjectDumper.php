@@ -5,6 +5,7 @@ namespace Tsufeki\KayoJsonMapper\Dumper;
 use Tsufeki\KayoJsonMapper\ClassMetadataProvider;
 use Tsufeki\KayoJsonMapper\Dumper;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
+use Tsufeki\KayoJsonMapper\Context;
 
 class ObjectDumper implements Dumper
 {
@@ -24,7 +25,7 @@ class ObjectDumper implements Dumper
         $this->metadataProvider = $metadataProvider;
     }
 
-    public function dump($value)
+    public function dump($value, Context $context)
     {
         if (!is_object($value)) {
             throw new UnsupportedTypeException();
@@ -39,7 +40,7 @@ class ObjectDumper implements Dumper
         $result = new \stdClass();
 
         foreach ($metadata->properties as $property) {
-            $result->{$property->name} = $this->dispatchingDumper->dump($property->get($value));
+            $result->{$property->name} = $this->dispatchingDumper->dump($property->get($value), $context);
         }
 
         return $result;

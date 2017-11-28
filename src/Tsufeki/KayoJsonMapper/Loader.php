@@ -11,12 +11,12 @@ interface Loader
     /**
      * @param mixed      $data
      * @param Type       $type
-     * @param mixed|null $target
+     * @param Context $context
      *
      * @return mixed
      *
      * @throws UnsupportedTypeException
      * @throws TypeMismatchException
      */
-    public function load($data, Type $type, $target = null);
+    public function load($data, Type $type, Context $context);
 }

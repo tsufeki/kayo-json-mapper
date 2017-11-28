@@ -9,6 +9,7 @@ use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 use Tsufeki\KayoJsonMapper\Loader;
 use Tsufeki\KayoJsonMapper\Loader\ArrayLoader;
+use Tsufeki\KayoJsonMapper\Context;
 
 /**
  * @covers \Tsufeki\KayoJsonMapper\Loader\ArrayLoader
@@ -32,7 +33,7 @@ class ArrayLoaderTest extends TestCase
 
         $arrayLoader = new ArrayLoader($innerLoader);
 
-        $this->assertSame($output, $arrayLoader->load($input, $type));
+        $this->assertSame($output, $arrayLoader->load($input, $type, new Context()));
     }
 
     /**
@@ -45,7 +46,7 @@ class ArrayLoaderTest extends TestCase
         $resolver = new TypeResolver();
 
         $this->expectException(UnsupportedTypeException::class);
-        $arrayLoader->load(1, $resolver->resolve($type));
+        $arrayLoader->load(1, $resolver->resolve($type), new Context());
     }
 
     public function unsupported_types(): array
@@ -66,7 +67,7 @@ class ArrayLoaderTest extends TestCase
         $arrayLoader = new ArrayLoader($innerLoader);
 
         $this->expectException(TypeMismatchException::class);
-        $arrayLoader->load($data, $resolver->resolve($type));
+        $arrayLoader->load($data, $resolver->resolve($type), new Context());
     }
 
     public function bad_type_data(): array

@@ -4,6 +4,7 @@ namespace Tsufeki\KayoJsonMapper\Dumper;
 
 use Tsufeki\KayoJsonMapper\Dumper;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
+use Tsufeki\KayoJsonMapper\Context;
 
 class ArrayDumper implements Dumper
 {
@@ -17,7 +18,7 @@ class ArrayDumper implements Dumper
         $this->dispatchingDumper = $dispatchingDumper;
     }
 
-    public function dump($value)
+    public function dump($value, Context $context)
     {
         if (!is_array($value)) {
             throw new UnsupportedTypeException();
@@ -26,7 +27,7 @@ class ArrayDumper implements Dumper
         $result = [];
 
         foreach ($value as $element) {
-            $result[] = $this->dispatchingDumper->dump($element);
+            $result[] = $this->dispatchingDumper->dump($element, $context);
         }
 
         return $result;

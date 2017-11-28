@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Tsufeki\KayoJsonMapper\Dumper;
 use Tsufeki\KayoJsonMapper\Dumper\ArrayDumper;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
+use Tsufeki\KayoJsonMapper\Context;
 
 /**
  * @covers \Tsufeki\KayoJsonMapper\Dumper\ArrayDumper
@@ -26,7 +27,7 @@ class ArrayDumperTest extends TestCase
 
         $arrayDumper = new ArrayDumper($innerDumper);
 
-        $this->assertSame($output, $arrayDumper->dump($input));
+        $this->assertSame($output, $arrayDumper->dump($input, new Context()));
     }
 
     /**
@@ -37,7 +38,7 @@ class ArrayDumperTest extends TestCase
         $innerDumper = $this->createMock(Dumper::class);
         $dumper = new ArrayDumper($innerDumper);
         $this->expectException(UnsupportedTypeException::class);
-        $dumper->dump($value);
+        $dumper->dump($value, new Context());
     }
 
     public function bad_dump_data(): array

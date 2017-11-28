@@ -4,6 +4,7 @@ namespace Tsufeki\KayoJsonMapper\Dumper;
 
 use Tsufeki\KayoJsonMapper\Dumper;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
+use Tsufeki\KayoJsonMapper\Context;
 
 class DateTimeDumper implements Dumper
 {
@@ -17,7 +18,7 @@ class DateTimeDumper implements Dumper
         $this->format = $format;
     }
 
-    public function dump($value)
+    public function dump($value, Context $context)
     {
         if (!($value instanceof \DateTime)) {
             throw new UnsupportedTypeException();

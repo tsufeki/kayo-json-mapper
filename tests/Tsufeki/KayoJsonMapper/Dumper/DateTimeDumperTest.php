@@ -5,6 +5,7 @@ namespace Tests\Tsufeki\KayoJsonMapper\Dumper;
 use PHPUnit\Framework\TestCase;
 use Tsufeki\KayoJsonMapper\Dumper\DateTimeDumper;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
+use Tsufeki\KayoJsonMapper\Context;
 
 /**
  * @covers \Tsufeki\KayoJsonMapper\Dumper\DateTimeDumper
@@ -17,7 +18,7 @@ class DateTimeDumperTest extends TestCase
     public function test_dumps_datetime_to_string(\DateTime $datetime, string $result)
     {
         $dumper = new DateTimeDumper();
-        $this->assertSame($result, $dumper->dump($datetime));
+        $this->assertSame($result, $dumper->dump($datetime, new Context()));
     }
 
     public function dump_data(): array
@@ -35,7 +36,7 @@ class DateTimeDumperTest extends TestCase
     {
         $dumper = new DateTimeDumper();
         $this->expectException(UnsupportedTypeException::class);
-        $dumper->dump($value);
+        $dumper->dump($value, new Context());
     }
 
     public function bad_dump_data(): array

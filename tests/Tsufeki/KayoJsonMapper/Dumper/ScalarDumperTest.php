@@ -5,6 +5,7 @@ namespace Tests\Tsufeki\KayoJsonMapper\Dumper;
 use PHPUnit\Framework\TestCase;
 use Tsufeki\KayoJsonMapper\Dumper\ScalarDumper;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
+use Tsufeki\KayoJsonMapper\Context;
 
 /**
  * @covers \Tsufeki\KayoJsonMapper\Dumper\ScalarDumper
@@ -17,7 +18,7 @@ class ScalarDumperTest extends TestCase
     public function test_dumps_scalar($value)
     {
         $dumper = new ScalarDumper();
-        $this->assertSame($value, $dumper->dump($value));
+        $this->assertSame($value, $dumper->dump($value, new Context()));
     }
 
     public function dump_data(): array
@@ -38,7 +39,7 @@ class ScalarDumperTest extends TestCase
     {
         $dumper = new ScalarDumper();
         $this->expectException(UnsupportedTypeException::class);
-        $dumper->dump($value);
+        $dumper->dump($value, new Context());
     }
 
     public function bad_dump_data(): array

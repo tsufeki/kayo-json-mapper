@@ -7,6 +7,7 @@ use phpDocumentor\Reflection\Types\Mixed_;
 use PHPUnit\Framework\TestCase;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 use Tsufeki\KayoJsonMapper\Loader\MixedLoader;
+use Tsufeki\KayoJsonMapper\Context;
 
 /**
  * @covers \Tsufeki\KayoJsonMapper\Loader\MixedLoader
@@ -20,7 +21,7 @@ class MixedLoaderTest extends TestCase
     {
         $loader = new MixedLoader();
 
-        $this->assertSame($data, $loader->load($data, new Mixed_()));
+        $this->assertSame($data, $loader->load($data, new Mixed_(), new Context()));
     }
 
     public function load_data(): array
@@ -40,7 +41,7 @@ class MixedLoaderTest extends TestCase
         $resolver = new TypeResolver();
 
         $this->expectException(UnsupportedTypeException::class);
-        $loader->load(1, $resolver->resolve($type));
+        $loader->load(1, $resolver->resolve($type), new Context());
     }
 
     public function unsupported_types(): array

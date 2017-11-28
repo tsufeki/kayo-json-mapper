@@ -7,6 +7,7 @@ use phpDocumentor\Reflection\Types;
 use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 use Tsufeki\KayoJsonMapper\Loader;
+use Tsufeki\KayoJsonMapper\Context;
 
 class DateTimeLoader implements Loader
 {
@@ -20,7 +21,7 @@ class DateTimeLoader implements Loader
         $this->format = $format;
     }
 
-    public function load($data, Type $type, $target = null)
+    public function load($data, Type $type, Context $context)
     {
         if (!($type instanceof Types\Object_) || (string)$type !== '\\DateTime') {
             throw new UnsupportedTypeException();

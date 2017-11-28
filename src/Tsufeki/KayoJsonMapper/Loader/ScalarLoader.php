@@ -7,6 +7,7 @@ use phpDocumentor\Reflection\Types;
 use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 use Tsufeki\KayoJsonMapper\Loader;
+use Tsufeki\KayoJsonMapper\Context;
 
 class ScalarLoader implements Loader
 {
@@ -19,7 +20,7 @@ class ScalarLoader implements Loader
         Types\Scalar::class => ['boolean', 'double', 'integer', 'NULL', 'string'],
     ];
 
-    public function load($data, Type $type, $target = null)
+    public function load($data, Type $type, Context $context)
     {
         $expectedTypes = self::TYPE_MAP[get_class($type)] ?? null;
 

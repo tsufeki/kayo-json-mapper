@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 use Tsufeki\KayoJsonMapper\Loader\ScalarLoader;
+use Tsufeki\KayoJsonMapper\Context;
 
 /**
  * @covers \Tsufeki\KayoJsonMapper\Loader\ScalarLoader
@@ -21,7 +22,7 @@ class ScalarLoaderTest extends TestCase
         $resolver = new TypeResolver();
         $loader = new ScalarLoader();
 
-        $this->assertSame($data, $loader->load($data, $resolver->resolve($type)));
+        $this->assertSame($data, $loader->load($data, $resolver->resolve($type), new Context()));
     }
 
     public function load_data(): array
@@ -45,7 +46,7 @@ class ScalarLoaderTest extends TestCase
         $resolver = new TypeResolver();
 
         $this->expectException(UnsupportedTypeException::class);
-        $loader->load(1, $resolver->resolve($type));
+        $loader->load(1, $resolver->resolve($type), new Context());
     }
 
     public function unsupported_types(): array
@@ -68,7 +69,7 @@ class ScalarLoaderTest extends TestCase
         $loader = new ScalarLoader();
 
         $this->expectException(TypeMismatchException::class);
-        $loader->load($data, $resolver->resolve($type));
+        $loader->load($data, $resolver->resolve($type), new Context());
     }
 
     public function bad_type_data(): array

@@ -7,6 +7,7 @@ use phpDocumentor\Reflection\Types;
 use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 use Tsufeki\KayoJsonMapper\Loader;
+use Tsufeki\KayoJsonMapper\Context;
 
 class UnionLoader implements Loader
 {
@@ -20,7 +21,7 @@ class UnionLoader implements Loader
         $this->dispatchingLoader = $dispatchingLoader;
     }
 
-    public function load($data, Type $type, $target = null)
+    public function load($data, Type $type, Context $context)
     {
         $types = [];
         if ($type instanceof Types\Nullable) {
@@ -34,7 +35,7 @@ class UnionLoader implements Loader
         /** @var Type $altType */
         foreach ($types as $altType) {
             try {
-                return $this->dispatchingLoader->load($data, $altType, $target);
+                return $this->dispatchingLoader->load($data, $altType, $context);
             } catch (TypeMismatchException $e) {
             } catch (UnsupportedTypeException $e) {
             }

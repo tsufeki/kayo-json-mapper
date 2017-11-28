@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Tsufeki\KayoJsonMapper\Dumper;
 use Tsufeki\KayoJsonMapper\Dumper\DispatchingDumper;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
+use Tsufeki\KayoJsonMapper\Context;
 
 /**
  * @covers \Tsufeki\KayoJsonMapper\Dumper\DispatchingDumper
@@ -42,13 +43,13 @@ class DispatchingDumperTest extends TestCase
             ->add($dumper2)
             ->add($dumper3);
 
-        $this->assertSame($result, $dispatchingDumper->dump($value));
+        $this->assertSame($result, $dispatchingDumper->dump($value, new Context()));
     }
 
     public function test_throws_when_no_dumper_found()
     {
         $dispatchingDumper = new DispatchingDumper();
         $this->expectException(UnsupportedTypeException::class);
-        $dispatchingDumper->dump(1);
+        $dispatchingDumper->dump(1, new Context());
     }
 }

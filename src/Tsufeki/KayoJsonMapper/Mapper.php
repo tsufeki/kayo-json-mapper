@@ -37,8 +37,9 @@ class Mapper
     public function load(\stdClass $data, $object)
     {
         $type = new Types\Object_(new Fqsen('\\' . get_class($object)));
+        $context = new Context($object);
 
-        return $this->loader->load($data, $type, $object);
+        return $this->loader->load($data, $type, $context);
     }
 
     /**
@@ -50,7 +51,9 @@ class Mapper
      */
     public function dump($object): \stdClass
     {
-        return $this->dumper->dump($object);
+        $context = new Context();
+
+        return $this->dumper->dump($object, $context);
     }
 
     public static function create(): self

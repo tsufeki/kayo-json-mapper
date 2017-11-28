@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 use Tsufeki\KayoJsonMapper\Loader;
 use Tsufeki\KayoJsonMapper\Loader\DispatchingLoader;
+use Tsufeki\KayoJsonMapper\Context;
 
 /**
  * @covers \Tsufeki\KayoJsonMapper\Loader\DispatchingLoader
@@ -44,13 +45,13 @@ class DispatchingLoaderTest extends TestCase
             ->add($loader2)
             ->add($loader3);
 
-        $this->assertSame($result, $dispatchingLoader->load($value, $type));
+        $this->assertSame($result, $dispatchingLoader->load($value, $type, new Context()));
     }
 
     public function test_throws_when_no_loader_found()
     {
         $dispatchingLoader = new DispatchingLoader();
         $this->expectException(UnsupportedTypeException::class);
-        $dispatchingLoader->load('', new String_());
+        $dispatchingLoader->load('', new String_(), new Context());
     }
 }

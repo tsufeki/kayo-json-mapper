@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Tests\Tsufeki\KayoJsonMapper\Fixtures\TestClass;
 use Tests\Tsufeki\KayoJsonMapper\Helpers;
 use Tsufeki\KayoJsonMapper\ClassMetadataProvider;
+use Tsufeki\KayoJsonMapper\Context;
 use Tsufeki\KayoJsonMapper\Dumper;
 use Tsufeki\KayoJsonMapper\Dumper\ObjectDumper;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
@@ -34,7 +35,7 @@ class ObjectDumperTest extends TestCase
             ->willReturn(TestClass::metadata());
 
         $objectDumper = new ObjectDumper($innerDumper, $metadataProvider);
-        $result = $objectDumper->dump($object);
+        $result = $objectDumper->dump($object, new Context());
 
         $this->assertEquals(Helpers::makeStdClass([
             'foo' => 7,
@@ -50,7 +51,7 @@ class ObjectDumperTest extends TestCase
 
         $value = Helpers::makeStdClass(['foo' => 42]);
 
-        $result = $dumper->dump($value);
+        $result = $dumper->dump($value, new Context());
         $this->assertEquals($value, $result);
     }
 
@@ -63,7 +64,7 @@ class ObjectDumperTest extends TestCase
         $metadataProvider = $this->createMock(ClassMetadataProvider::class);
         $dumper = new ObjectDumper($innerDumper, $metadataProvider);
         $this->expectException(UnsupportedTypeException::class);
-        $dumper->dump($value);
+        $dumper->dump($value, new Context());
     }
 
     public function bad_dump_data(): array

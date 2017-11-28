@@ -9,6 +9,7 @@ use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 use Tsufeki\KayoJsonMapper\Loader;
 use Tsufeki\KayoJsonMapper\Loader\UnionLoader;
+use Tsufeki\KayoJsonMapper\Context;
 
 /**
  * @covers \Tsufeki\KayoJsonMapper\Loader\UnionLoader
@@ -41,7 +42,7 @@ class UnionLoaderTest extends TestCase
 
         $unionLoader = new UnionLoader($this->makeInnerLoader($type->get(0), $type->get(1), $value, $result));
 
-        $this->assertSame($result, $unionLoader->load($value, $type));
+        $this->assertSame($result, $unionLoader->load($value, $type, new Context()));
     }
 
     public function test_calls_one_matching_loader_for_nullable()
@@ -52,7 +53,7 @@ class UnionLoaderTest extends TestCase
 
         $unionLoader = new UnionLoader($this->makeInnerLoader($type->getActualType(), new Types\Null_(), $value, $result));
 
-        $this->assertSame($result, $unionLoader->load($value, $type));
+        $this->assertSame($result, $unionLoader->load($value, $type, new Context()));
     }
 
     public function test_throws_when_no_match()
@@ -70,7 +71,7 @@ class UnionLoaderTest extends TestCase
         $unionLoader = new UnionLoader($loader);
 
         $this->expectException(TypeMismatchException::class);
-        $unionLoader->load($value, $type);
+        $unionLoader->load($value, $type, new Context());
     }
 
     /**
@@ -83,7 +84,7 @@ class UnionLoaderTest extends TestCase
         $resolver = new TypeResolver();
 
         $this->expectException(UnsupportedTypeException::class);
-        $unionLoader->load(1, $resolver->resolve($type));
+        $unionLoader->load(1, $resolver->resolve($type), new Context());
     }
 
     public function unsupported_types(): array

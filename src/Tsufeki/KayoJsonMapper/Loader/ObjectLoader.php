@@ -8,6 +8,7 @@ use Tsufeki\KayoJsonMapper\ClassMetadataProvider;
 use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 use Tsufeki\KayoJsonMapper\Loader;
+use Tsufeki\KayoJsonMapper\Context;
 
 class ObjectLoader implements Loader
 {
@@ -27,7 +28,7 @@ class ObjectLoader implements Loader
         $this->metadataProvider = $metadataProvider;
     }
 
-    public function load($data, Type $type, $target = null)
+    public function load($data, Type $type, Context $context)
     {
         if (!($type instanceof Types\Object_)) {
             throw new UnsupportedTypeException();
@@ -42,13 +43,13 @@ class ObjectLoader implements Loader
         }
 
         $class = ltrim((string)$type, '\\');
-        $target = $target ?? new $class();
+        $target = $context->getTargetObject() ?? new $class();
         $metadata = $this->metadataProvider->getClassMetadata($class);
         $vars = get_object_vars($data);
 
         foreach ($metadata->properties as $property) {
             if (isset($vars[$property->name])) {
-                $value = $this->dispatchingLoader->load($vars[$property->name], $property->type);
+                $value = $this->dispatchingLoader->load($vars[$property->name], $property->type, $context);
                 $property->set($target, $value);
                 unset($vars[$property->name]);
             }

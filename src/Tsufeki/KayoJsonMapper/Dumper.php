@@ -8,10 +8,11 @@ interface Dumper
 {
     /**
      * @param mixed $value
+     * @param Context $context
      *
      * @return mixed
      *
      * @throws UnsupportedTypeException
      */
-    public function dump($value);
+    public function dump($value, Context $context);
 }

@@ -11,6 +11,7 @@ use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 use Tsufeki\KayoJsonMapper\Loader;
 use Tsufeki\KayoJsonMapper\Loader\ObjectLoader;
+use Tsufeki\KayoJsonMapper\Context;
 
 /**
  * @covers \Tsufeki\KayoJsonMapper\Loader\ObjectLoader
@@ -44,7 +45,7 @@ class ObjectLoaderTest extends TestCase
             ->willReturnOnConsecutiveCalls(7, 'BAZ');
 
         $objectLoader = new ObjectLoader($innerLoader, $metadataProvider);
-        $result = $objectLoader->load($data, $resolver->resolve('\\' . TestClass::class));
+        $result = $objectLoader->load($data, $resolver->resolve('\\' . TestClass::class), new Context());
 
         $this->assertCount(2, get_object_vars($result));
         $this->assertSame(7, $result->foo);
@@ -64,7 +65,7 @@ class ObjectLoaderTest extends TestCase
         ]);
         $expected = clone $data;
 
-        $this->assertEquals($expected, $loader->load($data, $resolver->resolve('\\stdClass')));
+        $this->assertEquals($expected, $loader->load($data, $resolver->resolve('\\stdClass'), new Context()));
     }
 
     /**
@@ -78,7 +79,7 @@ class ObjectLoaderTest extends TestCase
         $resolver = new TypeResolver();
 
         $this->expectException(UnsupportedTypeException::class);
-        $loader->load(1, $resolver->resolve($type));
+        $loader->load(1, $resolver->resolve($type), new Context());
     }
 
     public function unsupported_types(): array
@@ -102,7 +103,7 @@ class ObjectLoaderTest extends TestCase
         $loader = new ObjectLoader($innerLoader, $metadataProvider);
 
         $this->expectException(TypeMismatchException::class);
-        $loader->load($data, $resolver->resolve('object'));
+        $loader->load($data, $resolver->resolve('object'), new Context());
     }
 
     public function bad_type_data(): array
