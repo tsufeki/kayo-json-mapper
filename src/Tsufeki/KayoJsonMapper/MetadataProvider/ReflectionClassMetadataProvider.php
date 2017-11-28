@@ -14,14 +14,28 @@ use Tsufeki\KayoJsonMapper\Metadata\PropertyMetadata;
 class ReflectionClassMetadataProvider implements ClassMetadataProvider
 {
     /**
+     * @var CallableMetadataProvider
+     */
+    private $callableMetadataProvider;
+
+    /**
+     * @var AccessorStrategy
+     */
+    private $accessorStrategy;
+
+    /**
      * @var PhpdocTypeExtractor
      */
     private $phpdocTypeExtractor;
 
     public function __construct(
+        CallableMetadataProvider $callableMetadataProvider = null,
+        AccessorStrategy $accessorStrategy = null,
         PhpdocTypeExtractor $phpdocTypeExtractor = null
     ) {
         $this->phpdocTypeExtractor = $phpdocTypeExtractor ?? new PhpdocTypeExtractor();
+        $this->callableMetadataProvider = $callableMetadataProvider ?? new ReflectionCallableMetadataProvider($this->phpdocTypeExtractor);
+        $this->accessorStrategy = $accessorStrategy ?? new StandardAccessorStrategy();
     }
 
     public function getClassMetadata(string $class): ClassMetadata

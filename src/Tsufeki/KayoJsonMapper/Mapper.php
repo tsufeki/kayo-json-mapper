@@ -51,7 +51,10 @@ class Mapper
     public static function create(): self
     {
         $metadataProvider = new MetadataProvider\CachedClassMetadataProvider(
-            new MetadataProvider\ReflectionClassMetadataProvider()
+            new MetadataProvider\ReflectionClassMetadataProvider(
+                new MetadataProvider\ReflectionCallableMetadataProvider(),
+                new MetadataProvider\StandardAccessorStrategy()
+            )
         );
 
         $loader = new Loader\DispatchingLoader();
