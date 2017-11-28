@@ -2,11 +2,10 @@
 
 namespace Tsufeki\KayoJsonMapper\MetadataProvider;
 
-use phpDocumentor\Reflection\DocBlock\Tags\Var_;
-use phpDocumentor\Reflection\DocBlockFactory;
 use phpDocumentor\Reflection\Types\Context;
 use phpDocumentor\Reflection\Types\ContextFactory;
 use phpDocumentor\Reflection\Types\Mixed_;
+use Tsufeki\KayoJsonMapper\CallableMetadataProvider;
 use Tsufeki\KayoJsonMapper\ClassMetadataProvider;
 use Tsufeki\KayoJsonMapper\Exception\MetadataException;
 use Tsufeki\KayoJsonMapper\Metadata\ClassMetadata;
@@ -14,6 +13,17 @@ use Tsufeki\KayoJsonMapper\Metadata\PropertyMetadata;
 
 class ReflectionClassMetadataProvider implements ClassMetadataProvider
 {
+    /**
+     * @var PhpdocTypeExtractor
+     */
+    private $phpdocTypeExtractor;
+
+    public function __construct(
+        PhpdocTypeExtractor $phpdocTypeExtractor = null
+    ) {
+        $this->phpdocTypeExtractor = $phpdocTypeExtractor ?? new PhpdocTypeExtractor();
+    }
+
     public function getClassMetadata(string $class): ClassMetadata
     {
         try {
@@ -37,21 +47,9 @@ class ReflectionClassMetadataProvider implements ClassMetadataProvider
     {
         $metadata = new PropertyMetadata();
         $metadata->name = $property->getName();
-        $type = null;
+        $tags = $this->phpdocTypeExtractor->getPhpdocTypesByVar($property, 'var');
 
-        if (trim($property->getDocComment())) {
-            $docBlock = DocBlockFactory::createInstance()->create($property, $context);
-
-            /** @var Var_ $tag */
-            foreach ($docBlock->getTagsByName('var') as $tag) {
-                if (in_array($tag->getVariableName(), [$metadata->name, ''], true)) {
-                    $type = $tag->getType();
-                    break;
-                }
-            }
-        }
-
-        $metadata->type = $type ?? new Mixed_();
+        $metadata->type = $tags[$metadata->name] ?? $tags[''] ?? new Mixed_();
 
         return $metadata;
     }

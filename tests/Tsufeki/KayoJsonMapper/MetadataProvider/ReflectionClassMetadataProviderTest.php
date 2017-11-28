@@ -9,6 +9,7 @@ use Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionClassMetadataProvider;
 
 /**
  * @covers \Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionClassMetadataProvider
+ * @covers \Tsufeki\KayoJsonMapper\MetadataProvider\PhpdocTypeExtractor
  */
 class ReflectionClassMetadataProviderTest extends TestCase
 {
@@ -19,7 +20,7 @@ class ReflectionClassMetadataProviderTest extends TestCase
         $i = 0;
         foreach ($expected as $name => $type) {
             $property = $metadata->properties[$i++];
-            $this->assertSame($name, $property->name, "Propery $name");
+            $this->assertSame($name, $property->name, "Property $name");
             $this->assertSame($type, (string)$property->type, "Property $name");
         }
     }
