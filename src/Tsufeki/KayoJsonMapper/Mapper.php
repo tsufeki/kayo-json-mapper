@@ -27,7 +27,7 @@ class Mapper
      * Load data (such as returned by `json_decode`) into object.
      *
      * @param \stdClass $data
-     * @param object    $targetObject
+     * @param object    $object
      */
     public function load(\stdClass $data, $object)
     {

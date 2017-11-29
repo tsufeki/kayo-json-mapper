@@ -1,0 +1,10 @@
+includes:
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-phpunit/rules.neon
+
+parameters:
+    excludes_analyse:
+        - %rootDir%/../../../tests/Tsufeki/KayoJsonMapper/Fixtures/*
+    ignoreErrors:
+        # Fixed in TypeResolver master, just wait for a release:
+        - '~Parameter #2 \$type of method Tsufeki\\KayoJsonMapper\\Loader\\.*Loader::load\(\) expects phpDocumentor\\Reflection\\Type, phpDocumentor\\Reflection\\Type\|null given~'
