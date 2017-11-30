@@ -1,6 +1,4 @@
-* Infinite recursion check
 * Max depth in dump
-* Getters/setters in object dump/load
 * Throw on unknown property in json
 * Throw on required property missing in json
 * (?) Non-strict nulls
