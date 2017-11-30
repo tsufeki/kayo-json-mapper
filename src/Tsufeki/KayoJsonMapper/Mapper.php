@@ -18,12 +18,18 @@ class Mapper
     private $dumper;
 
     /**
+     * @var CallableMetadataProvider
+     */
+    private $callableMetadataProvider;
+
+    /**
      * @see MapperBuilder
      */
-    public function __construct(Loader $loader, Dumper $dumper)
+    public function __construct(Loader $loader, Dumper $dumper, CallableMetadataProvider $callableMetadataProvider)
     {
         $this->loader = $loader;
         $this->dumper = $dumper;
+        $this->callableMetadataProvider = $callableMetadataProvider;
     }
 
     /**
@@ -31,6 +37,12 @@ class Mapper
      *
      * @param \stdClass $data
      * @param object    $object
+     *
+     * @return object
+     *
+     * @throws Exception\InfiniteRecursionException
+     * @throws Exception\TypeMismatchException
+     * @throws Exception\MetadataException
      */
     public function load(\stdClass $data, $object)
     {
@@ -41,11 +53,58 @@ class Mapper
     }
 
     /**
+     * @param array|\stdClass $data     Serialized arguments values as sequencial array or associative object.
+     * @param callable        $callable
+     *
+     * @return array Unserialized, sequencial arguments.
+     *
+     * @throws Exception\InfiniteRecursionException
+     * @throws Exception\TypeMismatchException
+     * @throws Exception\MetadataException
+     */
+    public function loadArguments($data, callable $callable): array
+    {
+        $metadata = $this->callableMetadataProvider->getCallableMetadata($callable);
+
+        if (is_object($data)) {
+            $dataArray = [];
+
+            foreach ($metadata->parameters as $param) {
+                if (!property_exists($data, $param->name)) {
+                    break;
+                }
+
+                $dataArray[] = $data->{$param->name};
+            }
+        } else {
+            $dataArray = array_slice(array_values($data), 0, count($metadata->parameters));
+        }
+
+        $argCount = count($dataArray);
+        if (isset($metadata->parameters[$argCount]) && !$metadata->parameters[$argCount]->optional) {
+            throw new Exception\TypeMismatchException('Not enough arguments');
+        }
+
+        $args = [];
+        foreach ($dataArray as $i => $arg) {
+            $context = new Context();
+            $type = $metadata->parameters[$i]->type;
+            $args[] = $this->loader->load($data, $type, $context);
+        }
+
+        return $args;
+    }
+
+    /**
      * Dump object to a respresentation suitable for `json_encode`.
      *
      * @param object $object
      *
      * @return \stdClass
+     *
+     * @throws Exception\InfiniteRecursionException
+     * @throws Exception\TypeMismatchException
+     * @throws Exception\MetadataException
      */
     public function dump($object): \stdClass
     {

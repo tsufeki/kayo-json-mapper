@@ -156,6 +156,6 @@ class MapperBuilder
             $dumper->add($userDumper);
         }
 
-        return new Mapper($loader, $dumper);
+        return new Mapper($loader, $dumper, $callableMetadataProvider);
     }
 }
