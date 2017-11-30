@@ -5,10 +5,11 @@ namespace Tests\Tsufeki\KayoJsonMapper;
 use PHPUnit\Framework\TestCase;
 use Tests\Tsufeki\KayoJsonMapper\Fixtures\TestClass;
 use Tests\Tsufeki\KayoJsonMapper\Fixtures\TestCompoundClass;
-use Tsufeki\KayoJsonMapper\Mapper;
+use Tsufeki\KayoJsonMapper\MapperBuilder;
 
 /**
  * @covers \Tsufeki\KayoJsonMapper\Mapper
+ * @covers \Tsufeki\KayoJsonMapper\MapperBuilder
  */
 class MapperTest extends TestCase
 {
@@ -17,7 +18,7 @@ class MapperTest extends TestCase
      */
     public function test($target, $dumped, $loaded)
     {
-        $mapper = Mapper::create();
+        $mapper = MapperBuilder::create()->getMapper();
         $actualLoaded = $mapper->load($dumped, $target);
         $actualDumped = $mapper->dump($loaded);
 

@@ -4,11 +4,6 @@ namespace Tsufeki\KayoJsonMapper;
 
 use phpDocumentor\Reflection\Fqsen;
 use phpDocumentor\Reflection\Types;
-use Tsufeki\KayoJsonMapper\MetadataProvider\CachedClassMetadataProvider;
-use Tsufeki\KayoJsonMapper\MetadataProvider\PhpdocTypeExtractor;
-use Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionCallableMetadataProvider;
-use Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionClassMetadataProvider;
-use Tsufeki\KayoJsonMapper\MetadataProvider\StandardAccessorStrategy;
 
 class Mapper
 {
@@ -22,6 +17,9 @@ class Mapper
      */
     private $dumper;
 
+    /**
+     * @see MapperBuilder
+     */
     public function __construct(Loader $loader, Dumper $dumper)
     {
         $this->loader = $loader;
@@ -54,38 +52,5 @@ class Mapper
         $context = new Context();
 
         return $this->dumper->dump($object, $context);
-    }
-
-    public static function create(): self
-    {
-        $phpdocTypeExtractor = new PhpdocTypeExtractor();
-        $accessorStrategy = new StandardAccessorStrategy();
-        $callableMetadataProvider = new ReflectionCallableMetadataProvider($phpdocTypeExtractor);
-
-        $classMetadataProvider = new CachedClassMetadataProvider(
-            new ReflectionClassMetadataProvider(
-                $callableMetadataProvider,
-                $accessorStrategy,
-                $phpdocTypeExtractor
-            )
-        );
-
-        $loader = new Loader\DispatchingLoader();
-        $loader
-            ->add(new Loader\UnionLoader($loader))
-            ->add(new Loader\MixedLoader())
-            ->add(new Loader\ScalarLoader())
-            ->add(new Loader\ArrayLoader($loader))
-            ->add(new Loader\ObjectLoader($loader, $classMetadataProvider))
-            ->add(new Loader\DateTimeLoader());
-
-        $dumper = new Dumper\DispatchingDumper();
-        $dumper
-            ->add(new Dumper\ScalarDumper())
-            ->add(new Dumper\ArrayDumper($dumper))
-            ->add(new Dumper\ObjectDumper($dumper, $classMetadataProvider))
-            ->add(new Dumper\DateTimeDumper());
-
-        return new static($loader, $dumper);
     }
 }
