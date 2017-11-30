@@ -5,6 +5,7 @@ namespace Tests\Tsufeki\KayoJsonMapper\MetadataProvider;
 use PHPUnit\Framework\TestCase;
 use Tests\Tsufeki\KayoJsonMapper\Fixtures\TestCallables;
 use Tests\Tsufeki\KayoJsonMapper\Fixtures\TestParentClass;
+use Tsufeki\KayoJsonMapper\Exception\MetadataException;
 use Tsufeki\KayoJsonMapper\Metadata\CallableMetadata;
 use Tsufeki\KayoJsonMapper\MetadataProvider\PhpdocTypeExtractor;
 use Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionCallableMetadataProvider;
@@ -46,7 +47,7 @@ class ReflectionCallableMetadataProviderTest extends TestCase
     /**
      * @dataProvider callables
      */
-    public function test_callable(callable $callable, array $expected)
+    public function test_callable($callable, array $expected)
     {
         $metadata = $this->getProvider()->getCallableMetadata($callable);
 
@@ -104,6 +105,20 @@ class ReflectionCallableMetadataProviderTest extends TestCase
                     'return' => 'mixed',
                 ],
             ],
+
+            [
+                new \ReflectionFunction(function (int $foo): string { }),
+                [
+                    'foo' => 'int',
+                    'return' => 'string',
+                ],
+            ],
         ];
+    }
+
+    public function test_throws_on_unknown_function()
+    {
+        $this->expectException(MetadataException::class);
+        $this->getProvider()->getCallableMetadata('DoesntExist');
     }
 }

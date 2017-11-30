@@ -3,9 +3,9 @@
 namespace Tests\Tsufeki\KayoJsonMapper\Dumper;
 
 use PHPUnit\Framework\TestCase;
+use Tsufeki\KayoJsonMapper\Context;
 use Tsufeki\KayoJsonMapper\Dumper\ScalarDumper;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
-use Tsufeki\KayoJsonMapper\Context;
 
 /**
  * @covers \Tsufeki\KayoJsonMapper\Dumper\ScalarDumper

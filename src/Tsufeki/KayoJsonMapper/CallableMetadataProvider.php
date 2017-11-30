@@ -7,7 +7,11 @@ use Tsufeki\KayoJsonMapper\Exception\MetadataException;
 interface CallableMetadataProvider
 {
     /**
+     * @param callable|\ReflectionFunctionAbstract $callable
+     *
+     * @return Metadata\CallableMetadata
+     *
      * @throws MetadataException
      */
-    public function getCallableMetadata(callable $callable): Metadata\CallableMetadata;
+    public function getCallableMetadata($callable): Metadata\CallableMetadata;
 }

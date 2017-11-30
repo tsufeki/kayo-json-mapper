@@ -23,20 +23,25 @@ class ReflectionCallableMetadataProvider implements CallableMetadataProvider
         $this->phpdocTypeExtractor = $phpdocTypeExtractor;
     }
 
-    public function getCallableMetadata(callable $callable): CallableMetadata
+    public function getCallableMetadata($callable): CallableMetadata
     {
-        $metadata = new CallableMetadata();
-
-        try {
-            $reflectionCallable = $this->getCallableReflection($callable);
-            // @codeCoverageIgnoreStart
-        } catch (\ReflectionException $e) {
-            // This should never happen, as we already
-            // check the callable through the typehint
-            throw new MetadataException($e->getMessage());
+        if ($callable instanceof \ReflectionFunctionAbstract) {
+            $reflectionCallable = $callable;
+        } elseif (is_callable($callable)) {
+            try {
+                $reflectionCallable = $this->getCallableReflection($callable);
+                // @codeCoverageIgnoreStart
+            } catch (\ReflectionException $e) {
+                // This should never happen, as we already
+                // check the callable above
+                throw new MetadataException($e->getMessage());
+            }
+            // @codeCoverageIgnoreEnd
+        } else {
+            throw new MetadataException();
         }
-        // @codeCoverageIgnoreEnd
 
+        $metadata = new CallableMetadata();
         $phpdocTypes = $this->phpdocTypeExtractor->getPhpdocTypesByVar($reflectionCallable, 'param');
 
         foreach ($reflectionCallable->getParameters() as $reflectionParameter) {
@@ -58,7 +63,7 @@ class ReflectionCallableMetadataProvider implements CallableMetadataProvider
         return $metadata;
     }
 
-    private function getCallableReflection(callable $callable): \ReflectionFunctionAbstract
+    private function getCallableReflection($callable): \ReflectionFunctionAbstract
     {
         if (is_string($callable)) {
             if (strpos($callable, '::') !== false) {

@@ -63,12 +63,11 @@ class ReflectionClassMetadataProvider implements ClassMetadataProvider
         $metadata->name = $property->getName();
         $metadata->variableName = $property->isPublic() ? $metadata->name : null;
 
-        $class = $property->getDeclaringClass()->getName();
+        $class = $property->getDeclaringClass();
 
         $getterType = null;
         foreach ($this->accessorStrategy->getGetters($metadata->name) as $getter) {
-            $method = [$class, $getter];
-            if (is_callable($method)) {
+            if ($method = $this->getMethod($class, $getter)) {
                 $getterMetadata = $this->callableMetadataProvider->getCallableMetadata($method);
                 if (empty($getterMetadata->parameters) || $getterMetadata->parameters[0]->optional) {
                     $metadata->getter = $getter;
@@ -82,13 +81,27 @@ class ReflectionClassMetadataProvider implements ClassMetadataProvider
         $metadata->type = $tags[$metadata->name] ?? $tags[''] ?? $getterType ?? new Mixed_();
 
         foreach ($this->accessorStrategy->getSetters($metadata->name) as $setter) {
-            $method = [$class, $setter];
-            if (is_callable($method)) {
+            if ($method = $this->getMethod($class, $setter)) {
                 $metadata->setter = $setter;
                 break;
             }
         }
 
         return $metadata;
+    }
+
+    /**
+     * @return \ReflectionMethod|null
+     */
+    private function getMethod(\ReflectionClass $class, string $method)
+    {
+        if ($class->hasMethod($method)) {
+            $reflectionMethod = $class->getMethod($method);
+            if ($reflectionMethod->isPublic()) {
+                return $reflectionMethod;
+            }
+        }
+
+        return null;
     }
 }

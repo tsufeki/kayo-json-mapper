@@ -5,11 +5,11 @@ namespace Tests\Tsufeki\KayoJsonMapper\Loader;
 use phpDocumentor\Reflection\TypeResolver;
 use phpDocumentor\Reflection\Types;
 use PHPUnit\Framework\TestCase;
+use Tsufeki\KayoJsonMapper\Context;
 use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 use Tsufeki\KayoJsonMapper\Loader;
 use Tsufeki\KayoJsonMapper\Loader\UnionLoader;
-use Tsufeki\KayoJsonMapper\Context;
 
 /**
  * @covers \Tsufeki\KayoJsonMapper\Loader\UnionLoader
