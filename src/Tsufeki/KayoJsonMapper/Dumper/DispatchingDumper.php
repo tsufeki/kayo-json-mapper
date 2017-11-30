@@ -13,6 +13,16 @@ class DispatchingDumper implements Dumper
      */
     private $dumpers = [];
 
+    /**
+     * @var int|float
+     */
+    private $maxDepth;
+
+    public function __construct($maxDepth = INF)
+    {
+        $this->maxDepth = $maxDepth;
+    }
+
     public function add(Dumper $dumper): self
     {
         array_unshift($this->dumpers, $dumper);
@@ -22,6 +32,10 @@ class DispatchingDumper implements Dumper
 
     public function dump($value, Context $context)
     {
+        if ($context->getDepth() >= $this->maxDepth) {
+            return null;
+        }
+
         foreach ($this->dumpers as $dumper) {
             try {
                 $context->push($value);

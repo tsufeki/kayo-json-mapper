@@ -7,14 +7,14 @@ use Tsufeki\KayoJsonMapper\Exception\InfiniteRecursionException;
 class Context
 {
     /**
-     * @var int
-     */
-    private $depth = 0;
-
-    /**
      * @var object|null
      */
     private $targetObject;
+
+    /**
+     * @var int
+     */
+    private $depth;
 
     /**
      * @var array
@@ -27,6 +27,7 @@ class Context
     public function __construct($targetObject = null)
     {
         $this->targetObject = $targetObject;
+        $this->depth = 0;
         $this->objectIds = [];
     }
 

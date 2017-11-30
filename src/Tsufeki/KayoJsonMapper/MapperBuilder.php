@@ -41,6 +41,11 @@ class MapperBuilder
      */
     private $dateTimeFormat = \DateTime::RFC3339;
 
+    /**
+     * @var int|float
+     */
+    private $dumpMaxDepth = INF;
+
     public static function create(): self
     {
         return new static();
@@ -118,6 +123,18 @@ class MapperBuilder
         return $this;
     }
 
+    /**
+     * @param int $dumpMaxDepth
+     *
+     * @return $this
+     */
+    public function setDumpMaxDepth(int $dumpMaxDepth): self
+    {
+        $this->dumpMaxDepth = $dumpMaxDepth;
+
+        return $this;
+    }
+
     public function getMapper(): Mapper
     {
         $phpdocTypeExtractor = new PhpdocTypeExtractor();
@@ -145,7 +162,7 @@ class MapperBuilder
             $loader->add($userLoader);
         }
 
-        $dumper = new Dumper\DispatchingDumper();
+        $dumper = new Dumper\DispatchingDumper($this->dumpMaxDepth);
         $dumper
             ->add(new Dumper\ScalarDumper())
             ->add(new Dumper\ArrayDumper($dumper))

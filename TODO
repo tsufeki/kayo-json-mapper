@@ -1,4 +1,3 @@
-* Max depth in dump
 * Throw on unknown property in json
 * Throw on required property missing in json
 * (?) Non-strict nulls
