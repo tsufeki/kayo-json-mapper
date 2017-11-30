@@ -5,7 +5,10 @@ namespace Tests\Tsufeki\KayoJsonMapper\MetadataProvider;
 use PHPUnit\Framework\TestCase;
 use Tsufeki\KayoJsonMapper\Exception\MetadataException;
 use Tsufeki\KayoJsonMapper\Metadata\ClassMetadata;
+use Tsufeki\KayoJsonMapper\MetadataProvider\PhpdocTypeExtractor;
+use Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionCallableMetadataProvider;
 use Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionClassMetadataProvider;
+use Tsufeki\KayoJsonMapper\MetadataProvider\StandardAccessorStrategy;
 
 /**
  * @covers \Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionClassMetadataProvider
@@ -13,6 +16,17 @@ use Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionClassMetadataProvider;
  */
 class ReflectionClassMetadataProviderTest extends TestCase
 {
+    private function getProvider(): ReflectionClassMetadataProvider
+    {
+        $phpdocTypeExtractor = new PhpdocTypeExtractor();
+
+        return new ReflectionClassMetadataProvider(
+            new ReflectionCallableMetadataProvider($phpdocTypeExtractor),
+            new StandardAccessorStrategy(),
+            $phpdocTypeExtractor
+        );
+    }
+
     private function checkProperties(ClassMetadata $metadata, array $expected)
     {
         $this->assertCount(count($expected), $metadata->properties);
@@ -38,8 +52,7 @@ class ReflectionClassMetadataProviderTest extends TestCase
             public $barBaz;
         };
 
-        $metadata = (new ReflectionClassMetadataProvider())
-            ->getClassMetadata(get_class($object));
+        $metadata = $this->getProvider()->getClassMetadata(get_class($object));
 
         $this->checkProperties($metadata, [
             'foo' => 'mixed',
@@ -56,8 +69,7 @@ class ReflectionClassMetadataProviderTest extends TestCase
             public $barBaz;
         };
 
-        $metadata = (new ReflectionClassMetadataProvider())
-            ->getClassMetadata(get_class($object));
+        $metadata = $this->getProvider()->getClassMetadata(get_class($object));
 
         $this->checkProperties($metadata, [
             'foo' => 'int',
@@ -81,8 +93,7 @@ class ReflectionClassMetadataProviderTest extends TestCase
             }
         };
 
-        $metadata = (new ReflectionClassMetadataProvider())
-            ->getClassMetadata(get_class($object));
+        $metadata = $this->getProvider()->getClassMetadata(get_class($object));
 
         $this->checkProperties($metadata, [
             'foo' => [
@@ -96,7 +107,6 @@ class ReflectionClassMetadataProviderTest extends TestCase
     public function test_throws_on_unknown_class()
     {
         $this->expectException(MetadataException::class);
-        $metadata = (new ReflectionClassMetadataProvider())
-            ->getClassMetadata('DoesntExist');
+        $this->getProvider()->getClassMetadata('DoesntExist');
     }
 }

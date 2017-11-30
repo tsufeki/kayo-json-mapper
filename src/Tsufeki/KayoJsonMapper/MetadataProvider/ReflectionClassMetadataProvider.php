@@ -29,13 +29,13 @@ class ReflectionClassMetadataProvider implements ClassMetadataProvider
     private $phpdocTypeExtractor;
 
     public function __construct(
-        CallableMetadataProvider $callableMetadataProvider = null,
-        AccessorStrategy $accessorStrategy = null,
-        PhpdocTypeExtractor $phpdocTypeExtractor = null
+        CallableMetadataProvider $callableMetadataProvider,
+        AccessorStrategy $accessorStrategy,
+        PhpdocTypeExtractor $phpdocTypeExtractor
     ) {
-        $this->phpdocTypeExtractor = $phpdocTypeExtractor ?? new PhpdocTypeExtractor();
-        $this->callableMetadataProvider = $callableMetadataProvider ?? new ReflectionCallableMetadataProvider($this->phpdocTypeExtractor);
-        $this->accessorStrategy = $accessorStrategy ?? new StandardAccessorStrategy();
+        $this->callableMetadataProvider = $callableMetadataProvider;
+        $this->accessorStrategy = $accessorStrategy;
+        $this->phpdocTypeExtractor = $phpdocTypeExtractor;
     }
 
     public function getClassMetadata(string $class): ClassMetadata

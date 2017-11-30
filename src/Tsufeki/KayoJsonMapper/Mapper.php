@@ -4,6 +4,11 @@ namespace Tsufeki\KayoJsonMapper;
 
 use phpDocumentor\Reflection\Fqsen;
 use phpDocumentor\Reflection\Types;
+use Tsufeki\KayoJsonMapper\MetadataProvider\CachedClassMetadataProvider;
+use Tsufeki\KayoJsonMapper\MetadataProvider\PhpdocTypeExtractor;
+use Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionCallableMetadataProvider;
+use Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionClassMetadataProvider;
+use Tsufeki\KayoJsonMapper\MetadataProvider\StandardAccessorStrategy;
 
 class Mapper
 {
@@ -50,10 +55,15 @@ class Mapper
 
     public static function create(): self
     {
-        $metadataProvider = new MetadataProvider\CachedClassMetadataProvider(
-            new MetadataProvider\ReflectionClassMetadataProvider(
-                new MetadataProvider\ReflectionCallableMetadataProvider(),
-                new MetadataProvider\StandardAccessorStrategy()
+        $phpdocTypeExtractor = new PhpdocTypeExtractor();
+        $accessorStrategy = new StandardAccessorStrategy();
+        $callableMetadataProvider = new ReflectionCallableMetadataProvider($phpdocTypeExtractor);
+
+        $classMetadataProvider = new CachedClassMetadataProvider(
+            new ReflectionClassMetadataProvider(
+                $callableMetadataProvider,
+                $accessorStrategy,
+                $phpdocTypeExtractor
             )
         );
 
@@ -63,14 +73,14 @@ class Mapper
             ->add(new Loader\MixedLoader())
             ->add(new Loader\ScalarLoader())
             ->add(new Loader\ArrayLoader($loader))
-            ->add(new Loader\ObjectLoader($loader, $metadataProvider))
+            ->add(new Loader\ObjectLoader($loader, $classMetadataProvider))
             ->add(new Loader\DateTimeLoader());
 
         $dumper = new Dumper\DispatchingDumper();
         $dumper
             ->add(new Dumper\ScalarDumper())
             ->add(new Dumper\ArrayDumper($dumper))
-            ->add(new Dumper\ObjectDumper($dumper, $metadataProvider))
+            ->add(new Dumper\ObjectDumper($dumper, $classMetadataProvider))
             ->add(new Dumper\DateTimeDumper());
 
         return new static($loader, $dumper);

@@ -18,10 +18,9 @@ class ReflectionCallableMetadataProvider implements CallableMetadataProvider
      */
     private $phpdocTypeExtractor;
 
-    public function __construct(
-        PhpdocTypeExtractor $phpdocTypeExtractor = null
-    ) {
-        $this->phpdocTypeExtractor = $phpdocTypeExtractor ?? new PhpdocTypeExtractor();
+    public function __construct(PhpdocTypeExtractor $phpdocTypeExtractor)
+    {
+        $this->phpdocTypeExtractor = $phpdocTypeExtractor;
     }
 
     public function getCallableMetadata(callable $callable): CallableMetadata

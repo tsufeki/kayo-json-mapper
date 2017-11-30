@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Tests\Tsufeki\KayoJsonMapper\Fixtures\TestCallables;
 use Tests\Tsufeki\KayoJsonMapper\Fixtures\TestParentClass;
 use Tsufeki\KayoJsonMapper\Metadata\CallableMetadata;
+use Tsufeki\KayoJsonMapper\MetadataProvider\PhpdocTypeExtractor;
 use Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionCallableMetadataProvider;
 
 /**
@@ -14,6 +15,13 @@ use Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionCallableMetadataProvider;
  */
 class ReflectionCallableMetadataProviderTest extends TestCase
 {
+    private function getProvider(): ReflectionCallableMetadataProvider
+    {
+        return new ReflectionCallableMetadataProvider(
+            new PhpdocTypeExtractor()
+        );
+    }
+
     private function checkSignature(CallableMetadata $metadata, array $expected)
     {
         $this->assertSame($expected['return'], (string)$metadata->returnType);
@@ -40,8 +48,7 @@ class ReflectionCallableMetadataProviderTest extends TestCase
      */
     public function test_callable(callable $callable, array $expected)
     {
-        $metadata = (new ReflectionCallableMetadataProvider())
-            ->getCallableMetadata($callable);
+        $metadata = $this->getProvider()->getCallableMetadata($callable);
 
         $this->checkSignature($metadata, $expected);
     }
