@@ -28,9 +28,11 @@ class TestClass
     {
         $foo = new PropertyMetadata();
         $foo->name = 'foo';
+        $foo->variableName = 'foo';
         $foo->type = new Types\Integer();
         $bar = new PropertyMetadata();
-        $bar->name = 'bar';
+        $bar->name = 'barSerializedOnly';
+        $bar->variableName = 'bar';
         $bar->type = new Types\String_();
         $classMetadata = new ClassMetadata();
         $classMetadata->properties = [$foo, $bar];

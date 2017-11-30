@@ -61,9 +61,33 @@ class ReflectionClassMetadataProvider implements ClassMetadataProvider
     {
         $metadata = new PropertyMetadata();
         $metadata->name = $property->getName();
-        $tags = $this->phpdocTypeExtractor->getPhpdocTypesByVar($property, 'var');
+        $metadata->variableName = $property->isPublic() ? $metadata->name : null;
 
-        $metadata->type = $tags[$metadata->name] ?? $tags[''] ?? new Mixed_();
+        $class = $property->getDeclaringClass()->getName();
+
+        $getterType = null;
+        foreach ($this->accessorStrategy->getGetters($metadata->name) as $getter) {
+            $method = [$class, $getter];
+            if (is_callable($method)) {
+                $getterMetadata = $this->callableMetadataProvider->getCallableMetadata($method);
+                if (empty($getterMetadata->parameters) || $getterMetadata->parameters[0]->optional) {
+                    $metadata->getter = $getter;
+                    $getterType = $getterMetadata->returnType;
+                    break;
+                }
+            }
+        }
+
+        $tags = $this->phpdocTypeExtractor->getPhpdocTypesByVar($property, 'var');
+        $metadata->type = $tags[$metadata->name] ?? $tags[''] ?? $getterType ?? new Mixed_();
+
+        foreach ($this->accessorStrategy->getSetters($metadata->name) as $setter) {
+            $method = [$class, $setter];
+            if (is_callable($method)) {
+                $metadata->setter = $setter;
+                break;
+            }
+        }
 
         return $metadata;
     }

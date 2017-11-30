@@ -23,7 +23,7 @@ class ObjectLoaderTest extends TestCase
 
         $data = Helpers::makeStdClass([
             'foo' => 42,
-            'bar' => 'baz',
+            'barSerializedOnly' => 'baz',
         ]);
 
         $metadataProvider = $this->createMock(ClassMetadataProvider::class);

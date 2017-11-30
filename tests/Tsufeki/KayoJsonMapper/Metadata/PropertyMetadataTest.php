@@ -17,7 +17,7 @@ class PropertyMetadataTest extends TestCase
         };
 
         $md = new PropertyMetadata();
-        $md->name = 'foo';
+        $md->variableName = 'foo';
 
         $this->assertSame(42, $md->get($object));
     }
@@ -44,7 +44,7 @@ class PropertyMetadataTest extends TestCase
         };
 
         $md = new PropertyMetadata();
-        $md->name = 'foo';
+        $md->variableName = 'foo';
 
         $md->set($object, 42);
         $this->assertSame(42, $object->foo);

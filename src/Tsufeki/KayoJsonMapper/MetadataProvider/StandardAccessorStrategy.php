@@ -11,7 +11,6 @@ class StandardAccessorStrategy implements AccessorStrategy
         return [
             'get' . $uppercase,
             'is' . $uppercase,
-            'has' . $uppercase,
             $property,
         ];
     }
@@ -22,6 +21,7 @@ class StandardAccessorStrategy implements AccessorStrategy
 
         return [
             'set' . $uppercase,
+            $property,
         ];
     }
 }

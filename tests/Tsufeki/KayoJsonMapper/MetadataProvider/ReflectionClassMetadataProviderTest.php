@@ -18,10 +18,16 @@ class ReflectionClassMetadataProviderTest extends TestCase
         $this->assertCount(count($expected), $metadata->properties);
 
         $i = 0;
-        foreach ($expected as $name => $type) {
+        foreach ($expected as $name => $data) {
             $property = $metadata->properties[$i++];
+            if (!is_array($data)) {
+                $data = ['type' => $data];
+            }
+
             $this->assertSame($name, $property->name, "Property $name");
-            $this->assertSame($type, (string)$property->type, "Property $name");
+            $this->assertSame($data['type'], (string)$property->type, "Property $name");
+            $this->assertSame($data['getter'] ?? null, $property->getter, "Property $name");
+            $this->assertSame($data['setter'] ?? null, $property->setter, "Property $name");
         }
     }
 
@@ -56,6 +62,34 @@ class ReflectionClassMetadataProviderTest extends TestCase
         $this->checkProperties($metadata, [
             'foo' => 'int',
             'barBaz' => 'string|null',
+        ]);
+    }
+
+    public function test_class_with_accessors()
+    {
+        $object = new class() {
+            private $foo;
+
+            public function getFoo(): int
+            {
+                return $this->foo;
+            }
+
+            public function setFoo($foo)
+            {
+                $this->foo = $foo;
+            }
+        };
+
+        $metadata = (new ReflectionClassMetadataProvider())
+            ->getClassMetadata(get_class($object));
+
+        $this->checkProperties($metadata, [
+            'foo' => [
+                'type' => 'int',
+                'getter' => 'getFoo',
+                'setter' => 'setFoo',
+            ],
         ]);
     }
 

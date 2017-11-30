@@ -30,13 +30,13 @@ class ReflectionCallableMetadataProvider implements CallableMetadataProvider
 
         try {
             $reflectionCallable = $this->getCallableReflection($callable);
-            // @codeCoverageIgnoreStart
+        // @codeCoverageIgnoreStart
         } catch (\ReflectionException $e) {
             // This should never happen, as we already
             // check the callable through the typehint
             throw new MetadataException($e->getMessage());
-            // @codeCoverageIgnoreEnd
         }
+        // @codeCoverageIgnoreEnd
 
         $phpdocTypes = $this->phpdocTypeExtractor->getPhpdocTypesByVar($reflectionCallable, 'param');
 

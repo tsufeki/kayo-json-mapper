@@ -38,7 +38,7 @@ class ObjectDumperTest extends TestCase
 
         $this->assertEquals(Helpers::makeStdClass([
             'foo' => 7,
-            'bar' => 'BAZ',
+            'barSerializedOnly' => 'BAZ',
         ]), $result);
     }
 
