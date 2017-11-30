@@ -7,7 +7,7 @@ use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 interface Dumper
 {
     /**
-     * @param mixed $value
+     * @param mixed   $value
      * @param Context $context
      *
      * @return mixed

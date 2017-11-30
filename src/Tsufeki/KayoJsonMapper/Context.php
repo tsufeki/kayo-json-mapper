@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tsufeki\KayoJsonMapper;
 
@@ -49,24 +49,28 @@ class Context
     /**
      * @param mixed $value
      *
-     * @return self
-     *
      * @throws InfiniteRecursionException
      */
-    public function createNested($value = null): self
+    public function push($value = null)
     {
-        $nested = new static(null);
-        $nested->depth = $this->depth + 1;
-        $nested->objectIds = $this->objectIds;
-
         if (is_object($value)) {
             $oid = spl_object_hash($value);
             if (isset($this->objectIds[$oid])) {
                 throw new InfiniteRecursionException();
             }
-            $nested->objectIds[$oid] = true;
+
+            $this->objectIds[$oid] = true;
+        } else {
+            $this->objectIds[] = true;
         }
 
-        return $nested;
+        $this->depth++;
+        $this->targetObject = null;
+    }
+
+    public function pop()
+    {
+        array_pop($this->objectIds);
+        $this->depth--;
     }
 }

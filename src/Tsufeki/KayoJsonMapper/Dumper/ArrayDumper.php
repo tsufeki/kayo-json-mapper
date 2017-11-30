@@ -2,9 +2,9 @@
 
 namespace Tsufeki\KayoJsonMapper\Dumper;
 
+use Tsufeki\KayoJsonMapper\Context;
 use Tsufeki\KayoJsonMapper\Dumper;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
-use Tsufeki\KayoJsonMapper\Context;
 
 class ArrayDumper implements Dumper
 {

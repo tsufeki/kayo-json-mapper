@@ -2,9 +2,9 @@
 
 namespace Tsufeki\KayoJsonMapper\Dumper;
 
+use Tsufeki\KayoJsonMapper\Context;
 use Tsufeki\KayoJsonMapper\Dumper;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
-use Tsufeki\KayoJsonMapper\Context;
 
 class DispatchingDumper implements Dumper
 {
@@ -24,8 +24,12 @@ class DispatchingDumper implements Dumper
     {
         foreach ($this->dumpers as $dumper) {
             try {
-                return $dumper->dump($value, $context->createNested($value));
+                $context->push($value);
+
+                return $dumper->dump($value, $context);
             } catch (UnsupportedTypeException $e) {
+            } finally {
+                $context->pop();
             }
         }
 

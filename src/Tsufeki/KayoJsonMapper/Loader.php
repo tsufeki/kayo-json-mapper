@@ -9,8 +9,8 @@ use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 interface Loader
 {
     /**
-     * @param mixed      $data
-     * @param Type       $type
+     * @param mixed   $data
+     * @param Type    $type
      * @param Context $context
      *
      * @return mixed

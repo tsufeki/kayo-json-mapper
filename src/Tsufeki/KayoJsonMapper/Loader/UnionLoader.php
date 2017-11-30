@@ -4,10 +4,10 @@ namespace Tsufeki\KayoJsonMapper\Loader;
 
 use phpDocumentor\Reflection\Type;
 use phpDocumentor\Reflection\Types;
+use Tsufeki\KayoJsonMapper\Context;
 use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 use Tsufeki\KayoJsonMapper\Loader;
-use Tsufeki\KayoJsonMapper\Context;
 
 class UnionLoader implements Loader
 {
@@ -31,6 +31,10 @@ class UnionLoader implements Loader
         } else {
             throw new UnsupportedTypeException();
         }
+
+        // Pop the context to avoid InfiniteRecursionException as we are dispatching
+        // the same object for a second time.
+        $context->pop();
 
         /** @var Type $altType */
         foreach ($types as $altType) {
