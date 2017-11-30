@@ -19,10 +19,28 @@ class TestCompoundClass
      */
     public $testClassArray;
 
-    public function __construct($intArray = null, $testClass = null, $testClassArray = null)
+    /**
+     * @var string
+     */
+    private $testPrivate;
+
+    public function __construct($intArray = null, $testClass = null, $testClassArray = null, $testPrivate = null)
     {
         $this->intArray = $intArray;
         $this->testClass = $testClass;
         $this->testClassArray = $testClassArray;
+        $this->testPrivate = $testPrivate;
+    }
+
+    public function getTestPrivate()
+    {
+        return $this->testPrivate;
+    }
+
+    public function setTestPrivate(string $testPrivate)
+    {
+        $this->testPrivate = $testPrivate;
+
+        return $this;
     }
 }

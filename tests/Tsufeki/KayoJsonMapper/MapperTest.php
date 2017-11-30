@@ -59,6 +59,7 @@ class MapperTest extends TestCase
                             'bar' => 'b3',
                         ]),
                     ],
+                    'testPrivate' => 'Foo',
                 ]),
 
                 new TestCompoundClass(
@@ -67,7 +68,8 @@ class MapperTest extends TestCase
                     [
                         new TestClass(2, 'b2'),
                         new TestClass(3, 'b3'),
-                    ]
+                    ],
+                    'Foo'
                 ),
             ],
         ];
