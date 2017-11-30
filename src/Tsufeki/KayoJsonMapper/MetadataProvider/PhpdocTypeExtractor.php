@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tsufeki\KayoJsonMapper\MetadataProvider;
 
@@ -73,7 +73,7 @@ class PhpdocTypeExtractor
      */
     private function getTags($reflection, string $tagName): array
     {
-        if (!trim($reflection->getDocComment())) {
+        if (!$reflection->getDocComment() || !trim($reflection->getDocComment())) {
             return [];
         }
 

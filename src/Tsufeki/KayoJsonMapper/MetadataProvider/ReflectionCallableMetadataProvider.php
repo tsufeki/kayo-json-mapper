@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tsufeki\KayoJsonMapper\MetadataProvider;
 
@@ -29,7 +29,7 @@ class ReflectionCallableMetadataProvider implements CallableMetadataProvider
 
         try {
             $reflectionCallable = $this->getCallableReflection($callable);
-        // @codeCoverageIgnoreStart
+            // @codeCoverageIgnoreStart
         } catch (\ReflectionException $e) {
             // This should never happen, as we already
             // check the callable through the typehint
