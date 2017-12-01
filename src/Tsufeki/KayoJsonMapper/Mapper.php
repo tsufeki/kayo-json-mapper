@@ -53,6 +53,24 @@ class Mapper
     }
 
     /**
+     * @param array  $data
+     * @param string $class Class of the elements.
+     *
+     * @return object[]
+     *
+     * @throws Exception\InfiniteRecursionException
+     * @throws Exception\TypeMismatchException
+     * @throws Exception\MetadataException
+     */
+    public function loadArray(array $data, string $class)
+    {
+        $type = new Types\Array_(new Types\Object_(new Fqsen('\\' . $class)));
+        $context = new Context();
+
+        return $this->loader->load($data, $type, $context);
+    }
+
+    /**
      * @param array|\stdClass $data     Serialized arguments values as sequencial array or associative object.
      * @param callable        $callable
      *
@@ -89,7 +107,7 @@ class Mapper
         foreach ($dataArray as $i => $arg) {
             $context = new Context();
             $type = $metadata->parameters[$i]->type;
-            $args[] = $this->loader->load($data, $type, $context);
+            $args[] = $this->loader->load($arg, $type, $context);
         }
 
         return $args;

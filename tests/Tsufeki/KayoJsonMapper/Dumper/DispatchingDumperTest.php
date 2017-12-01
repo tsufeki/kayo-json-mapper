@@ -52,4 +52,16 @@ class DispatchingDumperTest extends TestCase
         $this->expectException(UnsupportedTypeException::class);
         $dispatchingDumper->dump(1, new Context());
     }
+
+    public function test_returns_null_when_max_depth_exceeded()
+    {
+        $context = $this->createMock(Context::class);
+        $context
+            ->expects($this->once())
+            ->method('getDepth')
+            ->willReturn(3);
+
+        $dispatchingDumper = new DispatchingDumper(3);
+        $this->assertNull($dispatchingDumper->dump(1, $context));
+    }
 }

@@ -5,6 +5,7 @@ namespace Tests\Tsufeki\KayoJsonMapper;
 use PHPUnit\Framework\TestCase;
 use Tests\Tsufeki\KayoJsonMapper\Fixtures\TestClass;
 use Tests\Tsufeki\KayoJsonMapper\Fixtures\TestCompoundClass;
+use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
 use Tsufeki\KayoJsonMapper\MapperBuilder;
 
 /**
@@ -74,5 +75,85 @@ class MapperTest extends TestCase
                 ),
             ],
         ];
+    }
+
+    public function test_load_array()
+    {
+        $data = [
+            Helpers::makeStdClass([
+                'foo' => 1,
+                'bar' => 'baz',
+            ]),
+            Helpers::makeStdClass([
+                'foo' => 2,
+                'bar' => '',
+            ]),
+        ];
+
+        $mapper = MapperBuilder::create()->getMapper();
+        $args = $mapper->loadArray($data, TestClass::class);
+
+        $this->assertEquals([
+            new TestClass(1, 'baz'),
+            new TestClass(2, ''),
+        ], $args);
+    }
+
+    public function test_load_arguments_assoc()
+    {
+        $function = function (int $foo, TestClass $bar) { };
+        $data = Helpers::makeStdClass([
+            'bar' => Helpers::makeStdClass([
+                'foo' => 1,
+                'bar' => 'baz',
+            ]),
+            'foo' => 42,
+        ]);
+
+        $mapper = MapperBuilder::create()->getMapper();
+        $args = $mapper->loadArguments($data, $function);
+
+        $this->assertEquals([42, new TestClass(1, 'baz')], $args);
+    }
+
+    public function test_load_arguments_array()
+    {
+        $function = function (int $foo, TestClass $bar) { };
+        $data = [
+            42,
+            Helpers::makeStdClass([
+                'foo' => 1,
+                'bar' => 'baz',
+            ]),
+        ];
+
+        $mapper = MapperBuilder::create()->getMapper();
+        $args = $mapper->loadArguments($data, $function);
+
+        $this->assertEquals([42, new TestClass(1, 'baz')], $args);
+    }
+
+    public function test_load_arguments_missing_optional()
+    {
+        $function = function (int $foo, string $bar = 'x') { };
+        $data = Helpers::makeStdClass([
+            'foo' => 42,
+        ]);
+
+        $mapper = MapperBuilder::create()->getMapper();
+        $args = $mapper->loadArguments($data, $function);
+
+        $this->assertEquals([42], $args);
+    }
+
+    public function test_load_arguments_missing_required()
+    {
+        $function = function (int $foo, string $bar = 'x') { };
+        $data = [];
+
+        $mapper = MapperBuilder::create()->getMapper();
+
+        $this->expectException(TypeMismatchException::class);
+        $args = $mapper->loadArguments($data, $function);
     }
 }
