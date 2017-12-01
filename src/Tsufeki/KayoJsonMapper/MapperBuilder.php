@@ -2,6 +2,7 @@
 
 namespace Tsufeki\KayoJsonMapper;
 
+use Tsufeki\KayoJsonMapper\Instantiator\ClassMappingInstantiator;
 use Tsufeki\KayoJsonMapper\MetadataProvider\AccessorStrategy;
 use Tsufeki\KayoJsonMapper\MetadataProvider\CachedClassMetadataProvider;
 use Tsufeki\KayoJsonMapper\MetadataProvider\PhpdocTypeExtractor;
@@ -12,19 +13,29 @@ use Tsufeki\KayoJsonMapper\MetadataProvider\StandardAccessorStrategy;
 class MapperBuilder
 {
     /**
-     * @var AccessorStrategy
+     * @var AccessorStrategy|null
      */
     private $accessorStrategy;
 
     /**
-     * @var CallableMetadataProvider
+     * @var CallableMetadataProvider|null
      */
     private $callableMetadataProvider;
 
     /**
-     * @var ClassMetadataProvider
+     * @var ClassMetadataProvider|null
      */
     private $classMetadataProvider;
+
+    /**
+     * @var Instantiator|null
+     */
+    private $instantiator;
+
+    /**
+     * @var array<string,string|callable>
+     */
+    private $classMappings = [];
 
     /**
      * @var Loader[]
@@ -83,6 +94,44 @@ class MapperBuilder
     public function setClassMetadataProvider(ClassMetadataProvider $classMetadataProvider): self
     {
         $this->classMetadataProvider = $classMetadataProvider;
+
+        return $this;
+    }
+
+    /**
+     * @param Instantiator $instantiator
+     *
+     * @return $this
+     */
+    public function setInstantiator(Instantiator $instantiator): self
+    {
+        $this->instantiator = $instantiator;
+
+        return $this;
+    }
+
+    /**
+     * @param string $class
+     * @param string $targetClass
+     *
+     * @return $this
+     */
+    public function addClassMapping(string $class, string $targetClass): self
+    {
+        $this->classMappings[$class] = $targetClass;
+
+        return $this;
+    }
+
+    /**
+     * @param string   $class
+     * @param callable $callback (\stdClass $data) -> string class name
+     *
+     * @return $this
+     */
+    public function addClassMappingCallback(string $class, callable $callback): self
+    {
+        $this->classMappings[$class] = $callback;
 
         return $this;
     }
@@ -149,13 +198,26 @@ class MapperBuilder
             )
         );
 
+        $instantiator = $this->instantiator;
+        if ($instantiator === null) {
+            $instantiator = new ClassMappingInstantiator();
+
+            foreach ($this->classMappings as $class => $target) {
+                if (is_callable($target)) {
+                    $instantiator->addCallback($class, $target);
+                } else {
+                    $instantiator->addMapping($class, $target);
+                }
+            }
+        }
+
         $loader = new Loader\DispatchingLoader();
         $loader
             ->add(new Loader\UnionLoader($loader))
             ->add(new Loader\MixedLoader())
             ->add(new Loader\ScalarLoader())
             ->add(new Loader\ArrayLoader($loader))
-            ->add(new Loader\ObjectLoader($loader, $classMetadataProvider))
+            ->add(new Loader\ObjectLoader($loader, $classMetadataProvider, $instantiator))
             ->add(new Loader\DateTimeLoader($this->dateTimeFormat));
 
         foreach ($this->loaders as $userLoader) {

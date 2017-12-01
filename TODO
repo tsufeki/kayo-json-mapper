@@ -3,7 +3,6 @@
 * (?) Non-strict nulls
 * (?) Non-strict scalars
 * (?) Load objects from assoc arrays
-* Configurable object factory
 * Property name mangling: underscores and dashes
 * (?) Logger
 * (?) Array keys

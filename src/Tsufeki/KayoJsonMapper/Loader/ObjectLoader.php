@@ -8,6 +8,7 @@ use Tsufeki\KayoJsonMapper\ClassMetadataProvider;
 use Tsufeki\KayoJsonMapper\Context;
 use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
+use Tsufeki\KayoJsonMapper\Instantiator;
 use Tsufeki\KayoJsonMapper\Loader;
 
 class ObjectLoader implements Loader
@@ -22,10 +23,19 @@ class ObjectLoader implements Loader
      */
     private $metadataProvider;
 
-    public function __construct(Loader $dispatchingLoader, ClassMetadataProvider $metadataProvider)
-    {
+    /**
+     * @var Instantiator
+     */
+    private $instantiator;
+
+    public function __construct(
+        Loader $dispatchingLoader,
+        ClassMetadataProvider $metadataProvider,
+        Instantiator $instantiator
+    ) {
         $this->dispatchingLoader = $dispatchingLoader;
         $this->metadataProvider = $metadataProvider;
+        $this->instantiator = $instantiator;
     }
 
     public function load($data, Type $type, Context $context)
@@ -43,7 +53,7 @@ class ObjectLoader implements Loader
         }
 
         $class = ltrim((string)$type, '\\');
-        $target = $context->getTargetObject() ?? new $class();
+        $target = $context->getTargetObject() ?? $this->instantiator->instantiate($class, $data);
         $metadata = $this->metadataProvider->getClassMetadata($class);
         $vars = get_object_vars($data);
 

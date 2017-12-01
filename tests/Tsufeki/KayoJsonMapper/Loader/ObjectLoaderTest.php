@@ -10,6 +10,7 @@ use Tsufeki\KayoJsonMapper\ClassMetadataProvider;
 use Tsufeki\KayoJsonMapper\Context;
 use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
+use Tsufeki\KayoJsonMapper\Instantiator;
 use Tsufeki\KayoJsonMapper\Loader;
 use Tsufeki\KayoJsonMapper\Loader\ObjectLoader;
 
@@ -44,7 +45,14 @@ class ObjectLoaderTest extends TestCase
             )
             ->willReturnOnConsecutiveCalls(7, 'BAZ');
 
-        $objectLoader = new ObjectLoader($innerLoader, $metadataProvider);
+        $instantiator = $this->createMock(Instantiator::class);
+        $instantiator
+            ->expects($this->once())
+            ->method('instantiate')
+            ->with($this->identicalTo(TestClass::class), $this->identicalTo($data))
+            ->willReturn(new TestClass());
+
+        $objectLoader = new ObjectLoader($innerLoader, $metadataProvider, $instantiator);
         $result = $objectLoader->load($data, $resolver->resolve('\\' . TestClass::class), new Context());
 
         $this->assertCount(2, get_object_vars($result));
@@ -56,7 +64,8 @@ class ObjectLoaderTest extends TestCase
     {
         $innerLoader = $this->createMock(Loader::class);
         $metadataProvider = $this->createMock(ClassMetadataProvider::class);
-        $loader = new ObjectLoader($innerLoader, $metadataProvider);
+        $instantiator = $this->createMock(Instantiator::class);
+        $loader = new ObjectLoader($innerLoader, $metadataProvider, $instantiator);
         $resolver = new TypeResolver();
 
         $data = Helpers::makeStdClass([
@@ -75,7 +84,8 @@ class ObjectLoaderTest extends TestCase
     {
         $innerLoader = $this->createMock(Loader::class);
         $metadataProvider = $this->createMock(ClassMetadataProvider::class);
-        $loader = new ObjectLoader($innerLoader, $metadataProvider);
+        $instantiator = $this->createMock(Instantiator::class);
+        $loader = new ObjectLoader($innerLoader, $metadataProvider, $instantiator);
         $resolver = new TypeResolver();
 
         $this->expectException(UnsupportedTypeException::class);
@@ -100,7 +110,8 @@ class ObjectLoaderTest extends TestCase
         $resolver = new TypeResolver();
         $innerLoader = $this->createMock(Loader::class);
         $metadataProvider = $this->createMock(ClassMetadataProvider::class);
-        $loader = new ObjectLoader($innerLoader, $metadataProvider);
+        $instantiator = $this->createMock(Instantiator::class);
+        $loader = new ObjectLoader($innerLoader, $metadataProvider, $instantiator);
 
         $this->expectException(TypeMismatchException::class);
         $loader->load($data, $resolver->resolve('object'), new Context());
