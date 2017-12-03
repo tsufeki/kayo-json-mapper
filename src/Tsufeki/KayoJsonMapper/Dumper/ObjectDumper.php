@@ -2,10 +2,9 @@
 
 namespace Tsufeki\KayoJsonMapper\Dumper;
 
-use Tsufeki\KayoJsonMapper\ClassMetadataProvider;
 use Tsufeki\KayoJsonMapper\Context;
-use Tsufeki\KayoJsonMapper\Dumper;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
+use Tsufeki\KayoJsonMapper\MetadataProvider\ClassMetadataProvider;
 
 class ObjectDumper implements Dumper
 {

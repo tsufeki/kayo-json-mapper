@@ -2,13 +2,30 @@
 
 namespace Tsufeki\KayoJsonMapper;
 
-use Tsufeki\KayoJsonMapper\Instantiator\ClassMappingInstantiator;
-use Tsufeki\KayoJsonMapper\MetadataProvider\AccessorStrategy;
+use Tsufeki\KayoJsonMapper\Dumper\ArrayDumper;
+use Tsufeki\KayoJsonMapper\Dumper\DateTimeDumper;
+use Tsufeki\KayoJsonMapper\Dumper\DispatchingDumper;
+use Tsufeki\KayoJsonMapper\Dumper\Dumper;
+use Tsufeki\KayoJsonMapper\Dumper\ObjectDumper;
+use Tsufeki\KayoJsonMapper\Dumper\ScalarDumper;
+use Tsufeki\KayoJsonMapper\Loader\ArrayLoader;
+use Tsufeki\KayoJsonMapper\Loader\DateTimeLoader;
+use Tsufeki\KayoJsonMapper\Loader\DispatchingLoader;
+use Tsufeki\KayoJsonMapper\Loader\Instantiator\ClassMappingInstantiator;
+use Tsufeki\KayoJsonMapper\Loader\Instantiator\Instantiator;
+use Tsufeki\KayoJsonMapper\Loader\Loader;
+use Tsufeki\KayoJsonMapper\Loader\MixedLoader;
+use Tsufeki\KayoJsonMapper\Loader\ObjectLoader;
+use Tsufeki\KayoJsonMapper\Loader\ScalarLoader;
+use Tsufeki\KayoJsonMapper\Loader\UnionLoader;
+use Tsufeki\KayoJsonMapper\MetadataProvider\AccessorStrategy\AccessorStrategy;
+use Tsufeki\KayoJsonMapper\MetadataProvider\AccessorStrategy\StandardAccessorStrategy;
 use Tsufeki\KayoJsonMapper\MetadataProvider\CachedClassMetadataProvider;
-use Tsufeki\KayoJsonMapper\MetadataProvider\PhpdocTypeExtractor;
+use Tsufeki\KayoJsonMapper\MetadataProvider\CallableMetadataProvider;
+use Tsufeki\KayoJsonMapper\MetadataProvider\ClassMetadataProvider;
+use Tsufeki\KayoJsonMapper\MetadataProvider\Phpdoc\PhpdocTypeExtractor;
 use Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionCallableMetadataProvider;
 use Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionClassMetadataProvider;
-use Tsufeki\KayoJsonMapper\MetadataProvider\StandardAccessorStrategy;
 
 class MapperBuilder
 {
@@ -211,25 +228,25 @@ class MapperBuilder
             }
         }
 
-        $loader = new Loader\DispatchingLoader();
+        $loader = new DispatchingLoader();
         $loader
-            ->add(new Loader\UnionLoader($loader))
-            ->add(new Loader\MixedLoader())
-            ->add(new Loader\ScalarLoader())
-            ->add(new Loader\ArrayLoader($loader))
-            ->add(new Loader\ObjectLoader($loader, $classMetadataProvider, $instantiator))
-            ->add(new Loader\DateTimeLoader($this->dateTimeFormat));
+            ->add(new UnionLoader($loader))
+            ->add(new MixedLoader())
+            ->add(new ScalarLoader())
+            ->add(new ArrayLoader($loader))
+            ->add(new ObjectLoader($loader, $classMetadataProvider, $instantiator))
+            ->add(new DateTimeLoader($this->dateTimeFormat));
 
         foreach ($this->loaders as $userLoader) {
             $loader->add($userLoader);
         }
 
-        $dumper = new Dumper\DispatchingDumper($this->dumpMaxDepth);
+        $dumper = new DispatchingDumper($this->dumpMaxDepth);
         $dumper
-            ->add(new Dumper\ScalarDumper())
-            ->add(new Dumper\ArrayDumper($dumper))
-            ->add(new Dumper\ObjectDumper($dumper, $classMetadataProvider))
-            ->add(new Dumper\DateTimeDumper($this->dateTimeFormat));
+            ->add(new ScalarDumper())
+            ->add(new ArrayDumper($dumper))
+            ->add(new ObjectDumper($dumper, $classMetadataProvider))
+            ->add(new DateTimeDumper($this->dateTimeFormat));
 
         foreach ($this->dumpers as $userDumper) {
             $dumper->add($userDumper);

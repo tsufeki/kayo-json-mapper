@@ -5,11 +5,11 @@ namespace Tests\Tsufeki\KayoJsonMapper\Dumper;
 use PHPUnit\Framework\TestCase;
 use Tests\Tsufeki\KayoJsonMapper\Fixtures\TestClass;
 use Tests\Tsufeki\KayoJsonMapper\Helpers;
-use Tsufeki\KayoJsonMapper\ClassMetadataProvider;
 use Tsufeki\KayoJsonMapper\Context;
-use Tsufeki\KayoJsonMapper\Dumper;
+use Tsufeki\KayoJsonMapper\Dumper\Dumper;
 use Tsufeki\KayoJsonMapper\Dumper\ObjectDumper;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
+use Tsufeki\KayoJsonMapper\MetadataProvider\ClassMetadataProvider;
 
 /**
  * @covers \Tsufeki\KayoJsonMapper\Dumper\ObjectDumper

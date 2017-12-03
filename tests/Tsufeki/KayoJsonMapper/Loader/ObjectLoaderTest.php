@@ -6,13 +6,13 @@ use phpDocumentor\Reflection\TypeResolver;
 use PHPUnit\Framework\TestCase;
 use Tests\Tsufeki\KayoJsonMapper\Fixtures\TestClass;
 use Tests\Tsufeki\KayoJsonMapper\Helpers;
-use Tsufeki\KayoJsonMapper\ClassMetadataProvider;
 use Tsufeki\KayoJsonMapper\Context;
 use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
-use Tsufeki\KayoJsonMapper\Instantiator;
-use Tsufeki\KayoJsonMapper\Loader;
+use Tsufeki\KayoJsonMapper\Loader\Instantiator\Instantiator;
+use Tsufeki\KayoJsonMapper\Loader\Loader;
 use Tsufeki\KayoJsonMapper\Loader\ObjectLoader;
+use Tsufeki\KayoJsonMapper\MetadataProvider\ClassMetadataProvider;
 
 /**
  * @covers \Tsufeki\KayoJsonMapper\Loader\ObjectLoader

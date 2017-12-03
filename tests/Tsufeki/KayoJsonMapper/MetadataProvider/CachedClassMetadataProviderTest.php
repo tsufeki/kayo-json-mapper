@@ -3,9 +3,9 @@
 namespace Tests\Tsufeki\KayoJsonMapper\MetadataProvider;
 
 use PHPUnit\Framework\TestCase;
-use Tsufeki\KayoJsonMapper\ClassMetadataProvider;
 use Tsufeki\KayoJsonMapper\Metadata\ClassMetadata;
 use Tsufeki\KayoJsonMapper\MetadataProvider\CachedClassMetadataProvider;
+use Tsufeki\KayoJsonMapper\MetadataProvider\ClassMetadataProvider;
 
 /**
  * @covers \Tsufeki\KayoJsonMapper\MetadataProvider\CachedClassMetadataProvider

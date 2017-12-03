@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace Tsufeki\KayoJsonMapper;
+namespace Tsufeki\KayoJsonMapper\MetadataProvider;
 
 use Tsufeki\KayoJsonMapper\Exception\MetadataException;
+use Tsufeki\KayoJsonMapper\Metadata\ClassMetadata;
 
 interface ClassMetadataProvider
 {
@@ -11,7 +12,7 @@ interface ClassMetadataProvider
      *
      * @throws MetadataException
      *
-     * @return Metadata\ClassMetadata
+     * @return ClassMetadata
      */
-    public function getClassMetadata(string $class): Metadata\ClassMetadata;
+    public function getClassMetadata(string $class): ClassMetadata;
 }

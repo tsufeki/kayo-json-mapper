@@ -8,8 +8,8 @@ use PHPUnit\Framework\TestCase;
 use Tsufeki\KayoJsonMapper\Context;
 use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
-use Tsufeki\KayoJsonMapper\Loader;
 use Tsufeki\KayoJsonMapper\Loader\ArrayLoader;
+use Tsufeki\KayoJsonMapper\Loader\Loader;
 
 /**
  * @covers \Tsufeki\KayoJsonMapper\Loader\ArrayLoader

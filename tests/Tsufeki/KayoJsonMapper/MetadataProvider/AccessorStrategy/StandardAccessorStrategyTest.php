@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace Tests\Tsufeki\KayoJsonMapper\MetadataProvider;
+namespace Tests\Tsufeki\KayoJsonMapper\MetadataProvider\AccessorStrategy;
 
 use PHPUnit\Framework\TestCase;
-use Tsufeki\KayoJsonMapper\MetadataProvider\StandardAccessorStrategy;
+use Tsufeki\KayoJsonMapper\MetadataProvider\AccessorStrategy\StandardAccessorStrategy;
 
 /**
- * @covers \Tsufeki\KayoJsonMapper\MetadataProvider\StandardAccessorStrategy
+ * @covers \Tsufeki\KayoJsonMapper\MetadataProvider\AccessorStrategy\StandardAccessorStrategy
  */
 class StandardAccessorStrategyTest extends TestCase
 {

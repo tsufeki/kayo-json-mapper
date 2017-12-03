@@ -3,6 +3,9 @@
 namespace Tsufeki\KayoJsonMapper;
 
 use phpDocumentor\Reflection\TypeResolver;
+use Tsufeki\KayoJsonMapper\Dumper\Dumper;
+use Tsufeki\KayoJsonMapper\Loader\Loader;
+use Tsufeki\KayoJsonMapper\MetadataProvider\CallableMetadataProvider;
 
 class Mapper
 {

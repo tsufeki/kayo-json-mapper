@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace Tsufeki\KayoJsonMapper;
+namespace Tsufeki\KayoJsonMapper\Loader;
 
 use phpDocumentor\Reflection\Type;
+use Tsufeki\KayoJsonMapper\Context;
 use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 

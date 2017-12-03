@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace Tests\Tsufeki\KayoJsonMapper\Instantiator;
+namespace Tests\Tsufeki\KayoJsonMapper\Loader\Instantiator;
 
 use PHPUnit\Framework\TestCase;
-use Tsufeki\KayoJsonMapper\Instantiator\ClassMappingInstantiator;
+use Tsufeki\KayoJsonMapper\Loader\Instantiator\ClassMappingInstantiator;
 
 /**
- * @covers \Tsufeki\KayoJsonMapper\Instantiator\ClassMappingInstantiator
+ * @covers \Tsufeki\KayoJsonMapper\Loader\Instantiator\ClassMappingInstantiator
  */
 class ClassMappingInstantiatorTest extends TestCase
 {

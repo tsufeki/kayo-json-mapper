@@ -5,7 +5,6 @@ namespace Tsufeki\KayoJsonMapper\Loader;
 use phpDocumentor\Reflection\Type;
 use Tsufeki\KayoJsonMapper\Context;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
-use Tsufeki\KayoJsonMapper\Loader;
 
 class DispatchingLoader implements Loader
 {

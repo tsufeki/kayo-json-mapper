@@ -6,8 +6,8 @@ use phpDocumentor\Reflection\Types\String_;
 use PHPUnit\Framework\TestCase;
 use Tsufeki\KayoJsonMapper\Context;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
-use Tsufeki\KayoJsonMapper\Loader;
 use Tsufeki\KayoJsonMapper\Loader\DispatchingLoader;
+use Tsufeki\KayoJsonMapper\Loader\Loader;
 
 /**
  * @covers \Tsufeki\KayoJsonMapper\Loader\DispatchingLoader

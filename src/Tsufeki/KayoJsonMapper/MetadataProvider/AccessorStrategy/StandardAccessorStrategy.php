@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Tsufeki\KayoJsonMapper\MetadataProvider;
+namespace Tsufeki\KayoJsonMapper\MetadataProvider\AccessorStrategy;
 
 class StandardAccessorStrategy implements AccessorStrategy
 {

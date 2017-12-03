@@ -1,7 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Tsufeki\KayoJsonMapper;
+namespace Tsufeki\KayoJsonMapper\Dumper;
 
+use Tsufeki\KayoJsonMapper\Context;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 
 interface Dumper

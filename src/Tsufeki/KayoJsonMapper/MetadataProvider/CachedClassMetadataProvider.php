@@ -2,7 +2,6 @@
 
 namespace Tsufeki\KayoJsonMapper\MetadataProvider;
 
-use Tsufeki\KayoJsonMapper\ClassMetadataProvider;
 use Tsufeki\KayoJsonMapper\Metadata\ClassMetadata;
 
 class CachedClassMetadataProvider implements ClassMetadataProvider

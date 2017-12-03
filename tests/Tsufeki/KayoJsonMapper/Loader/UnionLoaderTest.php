@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Tsufeki\KayoJsonMapper\Context;
 use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
-use Tsufeki\KayoJsonMapper\Loader;
+use Tsufeki\KayoJsonMapper\Loader\Loader;
 use Tsufeki\KayoJsonMapper\Loader\UnionLoader;
 
 /**

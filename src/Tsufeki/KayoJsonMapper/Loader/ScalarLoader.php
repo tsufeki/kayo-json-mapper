@@ -7,7 +7,6 @@ use phpDocumentor\Reflection\Types;
 use Tsufeki\KayoJsonMapper\Context;
 use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
-use Tsufeki\KayoJsonMapper\Loader;
 
 class ScalarLoader implements Loader
 {

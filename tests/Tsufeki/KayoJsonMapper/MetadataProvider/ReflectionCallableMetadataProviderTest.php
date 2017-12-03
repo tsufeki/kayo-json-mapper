@@ -7,12 +7,12 @@ use Tests\Tsufeki\KayoJsonMapper\Fixtures\TestCallables;
 use Tests\Tsufeki\KayoJsonMapper\Fixtures\TestParentClass;
 use Tsufeki\KayoJsonMapper\Exception\MetadataException;
 use Tsufeki\KayoJsonMapper\Metadata\CallableMetadata;
-use Tsufeki\KayoJsonMapper\MetadataProvider\PhpdocTypeExtractor;
+use Tsufeki\KayoJsonMapper\MetadataProvider\Phpdoc\PhpdocTypeExtractor;
 use Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionCallableMetadataProvider;
 
 /**
  * @covers \Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionCallableMetadataProvider
- * @covers \Tsufeki\KayoJsonMapper\MetadataProvider\PhpdocTypeExtractor
+ * @covers \Tsufeki\KayoJsonMapper\MetadataProvider\Phpdoc\PhpdocTypeExtractor
  */
 class ReflectionCallableMetadataProviderTest extends TestCase
 {

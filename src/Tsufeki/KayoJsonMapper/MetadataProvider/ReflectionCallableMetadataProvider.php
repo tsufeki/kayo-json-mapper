@@ -6,10 +6,10 @@ use phpDocumentor\Reflection\DocBlock\Tags\Param;
 use phpDocumentor\Reflection\Type;
 use phpDocumentor\Reflection\TypeResolver;
 use phpDocumentor\Reflection\Types\Mixed_;
-use Tsufeki\KayoJsonMapper\CallableMetadataProvider;
 use Tsufeki\KayoJsonMapper\Exception\MetadataException;
 use Tsufeki\KayoJsonMapper\Metadata\CallableMetadata;
 use Tsufeki\KayoJsonMapper\Metadata\ParameterMetadata;
+use Tsufeki\KayoJsonMapper\MetadataProvider\Phpdoc\PhpdocTypeExtractor;
 
 class ReflectionCallableMetadataProvider implements CallableMetadataProvider
 {

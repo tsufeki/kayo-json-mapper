@@ -1,8 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Tsufeki\KayoJsonMapper\Instantiator;
-
-use Tsufeki\KayoJsonMapper\Instantiator;
+namespace Tsufeki\KayoJsonMapper\Loader\Instantiator;
 
 class ClassMappingInstantiator implements Instantiator
 {

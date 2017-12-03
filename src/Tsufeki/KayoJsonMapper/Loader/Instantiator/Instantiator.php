@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Tsufeki\KayoJsonMapper;
+namespace Tsufeki\KayoJsonMapper\Loader\Instantiator;
 
 interface Instantiator
 {

@@ -5,11 +5,11 @@ namespace Tsufeki\KayoJsonMapper\MetadataProvider;
 use phpDocumentor\Reflection\Types\Context;
 use phpDocumentor\Reflection\Types\ContextFactory;
 use phpDocumentor\Reflection\Types\Mixed_;
-use Tsufeki\KayoJsonMapper\CallableMetadataProvider;
-use Tsufeki\KayoJsonMapper\ClassMetadataProvider;
 use Tsufeki\KayoJsonMapper\Exception\MetadataException;
 use Tsufeki\KayoJsonMapper\Metadata\ClassMetadata;
 use Tsufeki\KayoJsonMapper\Metadata\PropertyMetadata;
+use Tsufeki\KayoJsonMapper\MetadataProvider\AccessorStrategy\AccessorStrategy;
+use Tsufeki\KayoJsonMapper\MetadataProvider\Phpdoc\PhpdocTypeExtractor;
 
 class ReflectionClassMetadataProvider implements ClassMetadataProvider
 {

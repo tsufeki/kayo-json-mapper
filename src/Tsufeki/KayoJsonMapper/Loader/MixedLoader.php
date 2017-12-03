@@ -6,7 +6,6 @@ use phpDocumentor\Reflection\Type;
 use phpDocumentor\Reflection\Types;
 use Tsufeki\KayoJsonMapper\Context;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
-use Tsufeki\KayoJsonMapper\Loader;
 
 class MixedLoader implements Loader
 {

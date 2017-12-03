@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Tsufeki\KayoJsonMapper\MetadataProvider;
+namespace Tsufeki\KayoJsonMapper\MetadataProvider\Phpdoc;
 
 use phpDocumentor\Reflection\DocBlock\Tag;
 use phpDocumentor\Reflection\DocBlock\Tags\Param;

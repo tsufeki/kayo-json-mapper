@@ -5,14 +5,14 @@ namespace Tests\Tsufeki\KayoJsonMapper\MetadataProvider;
 use PHPUnit\Framework\TestCase;
 use Tsufeki\KayoJsonMapper\Exception\MetadataException;
 use Tsufeki\KayoJsonMapper\Metadata\ClassMetadata;
-use Tsufeki\KayoJsonMapper\MetadataProvider\PhpdocTypeExtractor;
+use Tsufeki\KayoJsonMapper\MetadataProvider\AccessorStrategy\StandardAccessorStrategy;
+use Tsufeki\KayoJsonMapper\MetadataProvider\Phpdoc\PhpdocTypeExtractor;
 use Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionCallableMetadataProvider;
 use Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionClassMetadataProvider;
-use Tsufeki\KayoJsonMapper\MetadataProvider\StandardAccessorStrategy;
 
 /**
  * @covers \Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionClassMetadataProvider
- * @covers \Tsufeki\KayoJsonMapper\MetadataProvider\PhpdocTypeExtractor
+ * @covers \Tsufeki\KayoJsonMapper\MetadataProvider\Phpdoc\PhpdocTypeExtractor
  */
 class ReflectionClassMetadataProviderTest extends TestCase
 {

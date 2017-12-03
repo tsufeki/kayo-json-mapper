@@ -1,17 +1,18 @@
 <?php declare(strict_types=1);
 
-namespace Tsufeki\KayoJsonMapper;
+namespace Tsufeki\KayoJsonMapper\MetadataProvider;
 
 use Tsufeki\KayoJsonMapper\Exception\MetadataException;
+use Tsufeki\KayoJsonMapper\Metadata\CallableMetadata;
 
 interface CallableMetadataProvider
 {
     /**
      * @param callable|\ReflectionFunctionAbstract $callable
      *
-     * @return Metadata\CallableMetadata
+     * @return CallableMetadata
      *
      * @throws MetadataException
      */
-    public function getCallableMetadata($callable): Metadata\CallableMetadata;
+    public function getCallableMetadata($callable): CallableMetadata;
 }
