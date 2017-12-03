@@ -7,11 +7,6 @@ use Tsufeki\KayoJsonMapper\Exception\InfiniteRecursionException;
 class Context
 {
     /**
-     * @var object|null
-     */
-    private $targetObject;
-
-    /**
      * @var int
      */
     private $depth;
@@ -21,12 +16,8 @@ class Context
      */
     private $objectIds;
 
-    /**
-     * @param object|null $targetObject
-     */
-    public function __construct($targetObject = null)
+    public function __construct()
     {
-        $this->targetObject = $targetObject;
         $this->depth = 0;
         $this->objectIds = [];
     }
@@ -37,14 +28,6 @@ class Context
     public function getDepth(): int
     {
         return $this->depth;
-    }
-
-    /**
-     * @return object|null
-     */
-    public function getTargetObject()
-    {
-        return $this->targetObject;
     }
 
     /**
@@ -66,7 +49,6 @@ class Context
         }
 
         $this->depth++;
-        $this->targetObject = null;
     }
 
     public function pop()

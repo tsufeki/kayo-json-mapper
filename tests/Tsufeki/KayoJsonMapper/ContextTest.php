@@ -26,16 +26,6 @@ class ContextTest extends TestCase
         $this->assertSame(2, $ctx->getDepth());
     }
 
-    public function test_target_object()
-    {
-        $foo = new \stdClass();
-        $ctx = new Context($foo);
-
-        $this->assertSame($foo, $ctx->getTargetObject());
-        $ctx->push(1);
-        $this->assertNull($ctx->getTargetObject());
-    }
-
     public function test_throws_on_infinite_recursion()
     {
         $ctx = new Context();

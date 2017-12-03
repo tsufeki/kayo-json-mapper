@@ -52,7 +52,7 @@ class ObjectLoader implements Loader
         }
 
         $class = ltrim((string)$type, '\\');
-        $target = $context->getTargetObject() ?? $this->instantiator->instantiate($class, $data);
+        $target = $this->instantiator->instantiate($class, $data);
         $metadata = $this->metadataProvider->getClassMetadata($class);
         $vars = get_object_vars($data);
 
