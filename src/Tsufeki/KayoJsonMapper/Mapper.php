@@ -2,8 +2,7 @@
 
 namespace Tsufeki\KayoJsonMapper;
 
-use phpDocumentor\Reflection\Fqsen;
-use phpDocumentor\Reflection\Types;
+use phpDocumentor\Reflection\TypeResolver;
 
 class Mapper
 {
@@ -23,6 +22,11 @@ class Mapper
     private $callableMetadataProvider;
 
     /**
+     * @var TypeResolver
+     */
+    private $typeResolver;
+
+    /**
      * @see MapperBuilder
      */
     public function __construct(Loader $loader, Dumper $dumper, CallableMetadataProvider $callableMetadataProvider)
@@ -30,53 +34,35 @@ class Mapper
         $this->loader = $loader;
         $this->dumper = $dumper;
         $this->callableMetadataProvider = $callableMetadataProvider;
+        $this->typeResolver = new TypeResolver();
     }
 
     /**
-     * Load data (such as returned by `json_decode`) into object.
+     * Load data (such as returned by `json_decode`).
      *
-     * @param \stdClass $data
-     * @param object    $object
+     * @param mixed  $data
+     * @param string $type Phpdoc-like target type.
      *
-     * @return object
-     *
-     * @throws Exception\InfiniteRecursionException
-     * @throws Exception\InvalidDataException
-     * @throws Exception\MetadataException
-     * @throws Exception\UnsupportedTypeException
-     */
-    public function load(\stdClass $data, $object)
-    {
-        $type = new Types\Object_(new Fqsen('\\' . get_class($object)));
-        $context = new Context($object);
-
-        return $this->loader->load($data, $type, $context);
-    }
-
-    /**
-     * @param array  $data
-     * @param string $class Class of the elements.
-     *
-     * @return object[]
+     * @return mixed
      *
      * @throws Exception\InvalidDataException
      * @throws Exception\InfiniteRecursionException
      * @throws Exception\MetadataException
      * @throws Exception\UnsupportedTypeException
      */
-    public function loadArray(array $data, string $class)
+    public function load($data, string $type)
     {
-        $type = new Types\Array_(new Types\Object_(new Fqsen('\\' . $class)));
+        $typeObject = $this->typeResolver->resolve($type);
         $context = new Context();
 
-        return $this->loader->load($data, $type, $context);
+        return $this->loader->load($data, $typeObject, $context);
     }
 
     /**
      * @param array|\stdClass $data     Serialized arguments values as sequencial array or associative object.
      * @param callable        $callable
      *
-     * @return array Unserialized, sequencial arguments.
+     * @return array Unserialized arguments as a sequencial array.
      *
      * @throws Exception\InvalidDataException
      * @throws Exception\InfiniteRecursionException
@@ -117,20 +103,20 @@ class Mapper
     }
 
     /**
-     * Dump object to a respresentation suitable for `json_encode`.
+     * Dump value to a respresentation suitable for `json_encode`.
      *
-     * @param object $object
+     * @param mixed $value
      *
-     * @return \stdClass
+     * @return mixed
      *
      * @throws Exception\InfiniteRecursionException
      * @throws Exception\MetadataException
      * @throws Exception\UnsupportedTypeException
      */
-    public function dump($object): \stdClass
+    public function dump($value)
     {
         $context = new Context();
 
-        return $this->dumper->dump($object, $context);
+        return $this->dumper->dump($value, $context);
     }
 }

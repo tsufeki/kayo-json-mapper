@@ -17,10 +17,10 @@ class MapperTest extends TestCase
     /**
      * @dataProvider data
      */
-    public function test($target, $dumped, $loaded)
+    public function test(string $type, $dumped, $loaded)
     {
         $mapper = MapperBuilder::create()->getMapper();
-        $actualLoaded = $mapper->load($dumped, $target);
+        $actualLoaded = $mapper->load($dumped, $type);
         $actualDumped = $mapper->dump($loaded);
 
         $this->assertEquals($loaded, $actualLoaded);
@@ -31,7 +31,7 @@ class MapperTest extends TestCase
     {
         return [
             [
-                new TestClass(),
+                TestClass::class,
                 Helpers::makeStdClass([
                     'foo' => 42,
                     'bar' => 'baz',
@@ -43,7 +43,7 @@ class MapperTest extends TestCase
             ],
 
             [
-                new TestCompoundClass(),
+                TestCompoundClass::class,
 
                 Helpers::makeStdClass([
                     'intArray' => [1, 2],
@@ -74,29 +74,27 @@ class MapperTest extends TestCase
                     'Foo'
                 ),
             ],
+
+            [
+                TestClass::class . '[]',
+
+                [
+                    Helpers::makeStdClass([
+                        'foo' => 1,
+                        'bar' => 'baz',
+                    ]),
+                    Helpers::makeStdClass([
+                        'foo' => 2,
+                        'bar' => '',
+                    ]),
+                ],
+
+                [
+                    new TestClass(1, 'baz'),
+                    new TestClass(2, ''),
+                ],
+            ],
         ];
-    }
-
-    public function test_load_array()
-    {
-        $data = [
-            Helpers::makeStdClass([
-                'foo' => 1,
-                'bar' => 'baz',
-            ]),
-            Helpers::makeStdClass([
-                'foo' => 2,
-                'bar' => '',
-            ]),
-        ];
-
-        $mapper = MapperBuilder::create()->getMapper();
-        $args = $mapper->loadArray($data, TestClass::class);
-
-        $this->assertEquals([
-            new TestClass(1, 'baz'),
-            new TestClass(2, ''),
-        ], $args);
     }
 
     public function test_load_arguments_assoc()
