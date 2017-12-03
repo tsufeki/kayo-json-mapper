@@ -5,7 +5,7 @@ namespace Tests\Tsufeki\KayoJsonMapper\Loader;
 use phpDocumentor\Reflection\TypeResolver;
 use phpDocumentor\Reflection\Types;
 use PHPUnit\Framework\TestCase;
-use Tsufeki\KayoJsonMapper\Context;
+use Tsufeki\KayoJsonMapper\Context\Context;
 use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 use Tsufeki\KayoJsonMapper\Loader\Loader;

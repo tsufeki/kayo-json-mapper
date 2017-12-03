@@ -6,8 +6,10 @@ use phpDocumentor\Reflection\TypeResolver;
 use PHPUnit\Framework\TestCase;
 use Tests\Tsufeki\KayoJsonMapper\Fixtures\TestClass;
 use Tests\Tsufeki\KayoJsonMapper\Helpers;
-use Tsufeki\KayoJsonMapper\Context;
+use Tsufeki\KayoJsonMapper\Context\Context;
+use Tsufeki\KayoJsonMapper\Exception\MissingPropertyException;
 use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
+use Tsufeki\KayoJsonMapper\Exception\UnknownPropertyException;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 use Tsufeki\KayoJsonMapper\Loader\Instantiator\Instantiator;
 use Tsufeki\KayoJsonMapper\Loader\Loader;
@@ -58,6 +60,73 @@ class ObjectLoaderTest extends TestCase
         $this->assertCount(2, get_object_vars($result));
         $this->assertSame(7, $result->foo);
         $this->assertSame('BAZ', $result->bar);
+    }
+
+    public function test_throws_on_unknown_property()
+    {
+        $resolver = new TypeResolver();
+
+        $data = Helpers::makeStdClass([
+            'foo' => 42,
+            'barSerializedOnly' => 'baz',
+            'unknownProperty' => true,
+        ]);
+
+        $metadataProvider = $this->createMock(ClassMetadataProvider::class);
+        $metadataProvider
+            ->expects($this->once())
+            ->method('getClassMetadata')
+            ->with($this->identicalTo(TestClass::class))
+            ->willReturn(TestClass::metadata());
+
+        $innerLoader = $this->createMock(Loader::class);
+
+        $instantiator = $this->createMock(Instantiator::class);
+        $instantiator
+            ->expects($this->once())
+            ->method('instantiate')
+            ->with($this->identicalTo(TestClass::class), $this->identicalTo($data))
+            ->willReturn(new TestClass());
+
+        $objectLoader = new ObjectLoader($innerLoader, $metadataProvider, $instantiator);
+
+        $this->expectException(UnknownPropertyException::class);
+        $result = $objectLoader->load($data, $resolver->resolve('\\' . TestClass::class), new Context());
+    }
+
+    public function test_throws_on_missing_property()
+    {
+        $resolver = new TypeResolver();
+
+        $data = Helpers::makeStdClass([
+            'foo' => 42,
+        ]);
+
+        $metadataProvider = $this->createMock(ClassMetadataProvider::class);
+        $metadataProvider
+            ->expects($this->once())
+            ->method('getClassMetadata')
+            ->with($this->identicalTo(TestClass::class))
+            ->willReturn(TestClass::metadata());
+
+        $innerLoader = $this->createMock(Loader::class);
+        $innerLoader
+            ->expects($this->once())
+            ->method('load')
+            ->with($this->identicalTo(42), $resolver->resolve('int'))
+            ->willReturn(7);
+
+        $instantiator = $this->createMock(Instantiator::class);
+        $instantiator
+            ->expects($this->once())
+            ->method('instantiate')
+            ->with($this->identicalTo(TestClass::class), $this->identicalTo($data))
+            ->willReturn(new TestClass());
+
+        $objectLoader = new ObjectLoader($innerLoader, $metadataProvider, $instantiator);
+
+        $this->expectException(MissingPropertyException::class);
+        $result = $objectLoader->load($data, $resolver->resolve('\\' . TestClass::class), new Context());
     }
 
     public function test_returns_stdClass_unchanged()

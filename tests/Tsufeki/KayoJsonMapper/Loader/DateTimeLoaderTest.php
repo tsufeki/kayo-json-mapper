@@ -4,7 +4,7 @@ namespace Tests\Tsufeki\KayoJsonMapper\Loader;
 
 use phpDocumentor\Reflection\TypeResolver;
 use PHPUnit\Framework\TestCase;
-use Tsufeki\KayoJsonMapper\Context;
+use Tsufeki\KayoJsonMapper\Context\Context;
 use Tsufeki\KayoJsonMapper\Exception\BadDateTimeFormatException;
 use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;

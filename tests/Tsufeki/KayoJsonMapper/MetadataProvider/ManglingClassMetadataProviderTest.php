@@ -5,8 +5,8 @@ namespace Tests\Tsufeki\KayoJsonMapper\MetadataProvider;
 use PHPUnit\Framework\TestCase;
 use Tsufeki\KayoJsonMapper\Metadata\ClassMetadata;
 use Tsufeki\KayoJsonMapper\Metadata\PropertyMetadata;
-use Tsufeki\KayoJsonMapper\MetadataProvider\ManglingClassMetadataProvider;
 use Tsufeki\KayoJsonMapper\MetadataProvider\ClassMetadataProvider;
+use Tsufeki\KayoJsonMapper\MetadataProvider\ManglingClassMetadataProvider;
 use Tsufeki\KayoJsonMapper\MetadataProvider\NameMangler\NameMangler;
 
 /**

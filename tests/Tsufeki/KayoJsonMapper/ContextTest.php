@@ -3,11 +3,12 @@
 namespace Tests\Tsufeki\KayoJsonMapper;
 
 use PHPUnit\Framework\TestCase;
-use Tsufeki\KayoJsonMapper\Context;
+use Tsufeki\KayoJsonMapper\Context\Context;
 use Tsufeki\KayoJsonMapper\Exception\InfiniteRecursionException;
+use Tsufeki\KayoJsonMapper\Exception\MaxDepthExceededException;
 
 /**
- * @covers \Tsufeki\KayoJsonMapper\Context
+ * @covers \Tsufeki\KayoJsonMapper\Context\Context
  */
 class ContextTest extends TestCase
 {
@@ -37,5 +38,16 @@ class ContextTest extends TestCase
 
         $this->expectException(InfiniteRecursionException::class);
         $ctx->push($foo);
+    }
+
+    public function test_throws_on_max_depth_exceeded()
+    {
+        $ctx = new Context(2);
+
+        $ctx->push(1);
+        $ctx->push(2);
+
+        $this->expectException(MaxDepthExceededException::class);
+        $ctx->push(3);
     }
 }

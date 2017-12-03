@@ -2,7 +2,9 @@
 
 namespace Tsufeki\KayoJsonMapper\Dumper;
 
-use Tsufeki\KayoJsonMapper\Context;
+use Tsufeki\KayoJsonMapper\Context\Context;
+use Tsufeki\KayoJsonMapper\Exception\InfiniteRecursionException;
+use Tsufeki\KayoJsonMapper\Exception\MaxDepthExceededException;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 
 class DispatchingDumper implements Dumper
@@ -13,13 +15,21 @@ class DispatchingDumper implements Dumper
     private $dumpers = [];
 
     /**
-     * @var int|float
+     * @var bool
      */
-    private $maxDepth;
+    private $throwOnMaxDepthExceeded;
 
-    public function __construct($maxDepth = INF)
-    {
-        $this->maxDepth = $maxDepth;
+    /**
+     * @var bool
+     */
+    private $throwOnInfiniteRecursion;
+
+    public function __construct(
+        bool $throwOnMaxDepthExceeded = true,
+        bool $throwOnInfiniteRecursion = true
+    ) {
+        $this->throwOnMaxDepthExceeded = $throwOnMaxDepthExceeded;
+        $this->throwOnInfiniteRecursion = $throwOnInfiniteRecursion;
     }
 
     public function add(Dumper $dumper): self
@@ -31,19 +41,31 @@ class DispatchingDumper implements Dumper
 
     public function dump($value, Context $context)
     {
-        if ($context->getDepth() >= $this->maxDepth) {
+        try {
+            $context->push($value);
+        } catch (InfiniteRecursionException $e) {
+            if ($this->throwOnInfiniteRecursion) {
+                throw $e;
+            }
+
+            return null;
+        } catch (MaxDepthExceededException $e) {
+            if ($this->throwOnMaxDepthExceeded) {
+                throw $e;
+            }
+
             return null;
         }
 
-        foreach ($this->dumpers as $dumper) {
-            $context->push($value);
-
-            try {
-                return $dumper->dump($value, $context);
-            } catch (UnsupportedTypeException $e) {
-            } finally {
-                $context->pop();
+        try {
+            foreach ($this->dumpers as $dumper) {
+                try {
+                    return $dumper->dump($value, $context);
+                } catch (UnsupportedTypeException $e) {
+                }
             }
+        } finally {
+            $context->pop();
         }
 
         throw new UnsupportedTypeException(null, $value);

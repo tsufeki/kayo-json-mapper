@@ -3,9 +3,11 @@
 namespace Tests\Tsufeki\KayoJsonMapper\Dumper;
 
 use PHPUnit\Framework\TestCase;
-use Tsufeki\KayoJsonMapper\Context;
+use Tsufeki\KayoJsonMapper\Context\Context;
 use Tsufeki\KayoJsonMapper\Dumper\DispatchingDumper;
 use Tsufeki\KayoJsonMapper\Dumper\Dumper;
+use Tsufeki\KayoJsonMapper\Exception\InfiniteRecursionException;
+use Tsufeki\KayoJsonMapper\Exception\MaxDepthExceededException;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 
 /**
@@ -58,10 +60,50 @@ class DispatchingDumperTest extends TestCase
         $context = $this->createMock(Context::class);
         $context
             ->expects($this->once())
-            ->method('getDepth')
-            ->willReturn(3);
+            ->method('push')
+            ->willThrowException(new MaxDepthExceededException());
 
-        $dispatchingDumper = new DispatchingDumper(3);
+        $dispatchingDumper = new DispatchingDumper(false);
         $this->assertNull($dispatchingDumper->dump(1, $context));
+    }
+
+    public function test_throws_on_max_depth_exceeded()
+    {
+        $context = $this->createMock(Context::class);
+        $context
+            ->expects($this->once())
+            ->method('push')
+            ->willThrowException(new MaxDepthExceededException());
+
+        $dispatchingDumper = new DispatchingDumper(true);
+
+        $this->expectException(MaxDepthExceededException::class);
+        $dispatchingDumper->dump(1, $context);
+    }
+
+    public function test_returns_null_on_infinite_recursion()
+    {
+        $context = $this->createMock(Context::class);
+        $context
+            ->expects($this->once())
+            ->method('push')
+            ->willThrowException(new InfiniteRecursionException());
+
+        $dispatchingDumper = new DispatchingDumper(false, false);
+        $this->assertNull($dispatchingDumper->dump(1, $context));
+    }
+
+    public function test_throws_on_infinite_recursion()
+    {
+        $context = $this->createMock(Context::class);
+        $context
+            ->expects($this->once())
+            ->method('push')
+            ->willThrowException(new InfiniteRecursionException());
+
+        $dispatchingDumper = new DispatchingDumper(false, true);
+
+        $this->expectException(InfiniteRecursionException::class);
+        $dispatchingDumper->dump(1, $context);
     }
 }

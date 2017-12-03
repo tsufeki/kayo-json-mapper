@@ -3,6 +3,7 @@
 namespace Tsufeki\KayoJsonMapper;
 
 use phpDocumentor\Reflection\TypeResolver;
+use Tsufeki\KayoJsonMapper\Context\ContextFactory;
 use Tsufeki\KayoJsonMapper\Dumper\Dumper;
 use Tsufeki\KayoJsonMapper\Loader\Loader;
 use Tsufeki\KayoJsonMapper\MetadataProvider\CallableMetadataProvider;
@@ -20,6 +21,11 @@ class Mapper
     private $dumper;
 
     /**
+     * @var ContextFactory
+     */
+    private $contextFactory;
+
+    /**
      * @var CallableMetadataProvider
      */
     private $callableMetadataProvider;
@@ -32,10 +38,15 @@ class Mapper
     /**
      * @see MapperBuilder
      */
-    public function __construct(Loader $loader, Dumper $dumper, CallableMetadataProvider $callableMetadataProvider)
-    {
+    public function __construct(
+        Loader $loader,
+        Dumper $dumper,
+        ContextFactory $contextFactory,
+        CallableMetadataProvider $callableMetadataProvider
+    ) {
         $this->loader = $loader;
         $this->dumper = $dumper;
+        $this->contextFactory = $contextFactory;
         $this->callableMetadataProvider = $callableMetadataProvider;
         $this->typeResolver = new TypeResolver();
     }
@@ -56,7 +67,7 @@ class Mapper
     public function load($data, string $type)
     {
         $typeObject = $this->typeResolver->resolve($type);
-        $context = new Context();
+        $context = $this->contextFactory->createLoadContext();
 
         return $this->loader->load($data, $typeObject, $context);
     }
@@ -97,7 +108,7 @@ class Mapper
 
         $args = [];
         foreach ($dataArray as $i => $arg) {
-            $context = new Context();
+            $context = $this->contextFactory->createLoadContext();
             $type = $metadata->parameters[$i]->type;
             $args[] = $this->loader->load($arg, $type, $context);
         }
@@ -118,7 +129,7 @@ class Mapper
      */
     public function dump($value)
     {
-        $context = new Context();
+        $context = $this->contextFactory->createDumpContext();
 
         return $this->dumper->dump($value, $context);
     }

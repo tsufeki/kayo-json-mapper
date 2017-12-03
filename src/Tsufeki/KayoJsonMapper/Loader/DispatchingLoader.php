@@ -3,7 +3,7 @@
 namespace Tsufeki\KayoJsonMapper\Loader;
 
 use phpDocumentor\Reflection\Type;
-use Tsufeki\KayoJsonMapper\Context;
+use Tsufeki\KayoJsonMapper\Context\Context;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 
 class DispatchingLoader implements Loader
@@ -22,14 +22,17 @@ class DispatchingLoader implements Loader
 
     public function load($data, Type $type, Context $context)
     {
-        foreach ($this->loaders as $loader) {
-            try {
-                $context->push($data);
+        $context->push($data);
 
-                return $loader->load($data, $type, $context);
-            } catch (UnsupportedTypeException $e) {
-                $context->pop();
+        try {
+            foreach ($this->loaders as $loader) {
+                try {
+                    return $loader->load($data, $type, $context);
+                } catch (UnsupportedTypeException $e) {
+                }
             }
+        } finally {
+            $context->pop();
         }
 
         throw new UnsupportedTypeException((string)$type);

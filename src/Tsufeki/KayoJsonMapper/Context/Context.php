@@ -1,11 +1,17 @@
 <?php declare(strict_types=1);
 
-namespace Tsufeki\KayoJsonMapper;
+namespace Tsufeki\KayoJsonMapper\Context;
 
 use Tsufeki\KayoJsonMapper\Exception\InfiniteRecursionException;
+use Tsufeki\KayoJsonMapper\Exception\MaxDepthExceededException;
 
 class Context
 {
+    /**
+     * @var int|float
+     */
+    private $maxDepth;
+
     /**
      * @var int
      */
@@ -16,8 +22,12 @@ class Context
      */
     private $objectIds;
 
-    public function __construct()
+    /**
+     * @param int|float $maxDepth
+     */
+    public function __construct($maxDepth = INF)
     {
+        $this->maxDepth = $maxDepth;
         $this->depth = 0;
         $this->objectIds = [];
     }
@@ -34,9 +44,14 @@ class Context
      * @param mixed $value
      *
      * @throws InfiniteRecursionException
+     * @throws MaxDepthExceededException
      */
     public function push($value = null)
     {
+        if ($this->depth >= $this->maxDepth) {
+            throw new MaxDepthExceededException();
+        }
+
         if (is_object($value)) {
             $oid = spl_object_hash($value);
             if (isset($this->objectIds[$oid])) {

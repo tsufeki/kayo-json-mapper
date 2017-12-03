@@ -2,6 +2,7 @@
 
 namespace Tsufeki\KayoJsonMapper;
 
+use Tsufeki\KayoJsonMapper\Context\ContextFactory;
 use Tsufeki\KayoJsonMapper\Dumper\ArrayDumper;
 use Tsufeki\KayoJsonMapper\Dumper\DateTimeDumper;
 use Tsufeki\KayoJsonMapper\Dumper\DispatchingDumper;
@@ -81,6 +82,26 @@ class MapperBuilder
      * @var int|float
      */
     private $dumpMaxDepth = INF;
+
+    /**
+     * @var bool
+     */
+    private $throwOnInfiniteRecursion = false;
+
+    /**
+     * @var bool
+     */
+    private $throwOnMaxDepthExceeded = false;
+
+    /**
+     * @var bool
+     */
+    private $throwOnMissingProperty = false;
+
+    /**
+     * @var bool
+     */
+    private $throwOnUnknownProperty = true;
 
     public static function create(): self
     {
@@ -221,6 +242,54 @@ class MapperBuilder
         return $this;
     }
 
+    /**
+     * @param bool $throwOnInfiniteRecursion
+     *
+     * @return $this
+     */
+    public function throwOnInfiniteRecursion(bool $throwOnInfiniteRecursion): self
+    {
+        $this->throwOnInfiniteRecursion = $throwOnInfiniteRecursion;
+
+        return $this;
+    }
+
+    /**
+     * @param bool $throwOnMaxDepthExceeded
+     *
+     * @return $this
+     */
+    public function throwOnMaxDepthExceeded(bool $throwOnMaxDepthExceeded): self
+    {
+        $this->throwOnMaxDepthExceeded = $throwOnMaxDepthExceeded;
+
+        return $this;
+    }
+
+    /**
+     * @param bool $throwOnMissingProperty
+     *
+     * @return $this
+     */
+    public function throwOnMissingProperty(bool $throwOnMissingProperty): self
+    {
+        $this->throwOnMissingProperty = $throwOnMissingProperty;
+
+        return $this;
+    }
+
+    /**
+     * @param bool $throwOnUnknownProperty
+     *
+     * @return $this
+     */
+    public function throwOnUnknownProperty(bool $throwOnUnknownProperty): self
+    {
+        $this->throwOnUnknownProperty = $throwOnUnknownProperty;
+
+        return $this;
+    }
+
     public function getMapper(): Mapper
     {
         $phpdocTypeExtractor = new PhpdocTypeExtractor();
@@ -258,14 +327,23 @@ class MapperBuilder
             ->add(new MixedLoader())
             ->add(new ScalarLoader())
             ->add(new ArrayLoader($loader))
-            ->add(new ObjectLoader($loader, $classMetadataProvider, $instantiator))
+            ->add(new ObjectLoader(
+                $loader,
+                $classMetadataProvider,
+                $instantiator,
+                $this->throwOnUnknownProperty,
+                $this->throwOnMissingProperty
+            ))
             ->add(new DateTimeLoader($this->dateTimeFormat));
 
         foreach ($this->loaders as $userLoader) {
             $loader->add($userLoader);
         }
 
-        $dumper = new DispatchingDumper($this->dumpMaxDepth);
+        $dumper = new DispatchingDumper(
+            $this->throwOnMaxDepthExceeded,
+            $this->throwOnInfiniteRecursion
+        );
         $dumper
             ->add(new ScalarDumper())
             ->add(new ArrayDumper($dumper))
@@ -276,6 +354,8 @@ class MapperBuilder
             $dumper->add($userDumper);
         }
 
-        return new Mapper($loader, $dumper, $callableMetadataProvider);
+        $contextFactory = new ContextFactory($this->dumpMaxDepth);
+
+        return new Mapper($loader, $dumper, $contextFactory, $callableMetadataProvider);
     }
 }

@@ -1,10 +1,10 @@
-* Throw on unknown property in json
-* Throw on required property missing in json
-* (?) Non-strict nulls
-* (?) Non-strict scalars
-* (?) Load objects from assoc arrays
-* Property name mangling: underscores and dashes
-* (?) Logger
-* (?) Array keys
-* (?) Getter/setter without property
-* (?) Case insensitive properties
+Just a list of ideas:
+
+* Case insensitive properties
+* Getter/setter without property (virtual properties)
+* "Leave property unchanged" option when required property is missing in json
+* Non-strict nulls
+* Non-strict scalars
+* Load objects from assoc arrays
+* Dump arrays with string keys
+* Logger

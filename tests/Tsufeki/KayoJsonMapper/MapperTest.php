@@ -154,4 +154,33 @@ class MapperTest extends TestCase
         $this->expectException(InvalidDataException::class);
         $args = $mapper->loadArguments($data, $function);
     }
+
+    public function test_dumps_up_to_max_depth()
+    {
+        $mapper = MapperBuilder::create()
+            ->setDumpMaxDepth(2)
+            ->getMapper();
+
+        $object = new TestCompoundClass(
+            [1, 2],
+            new TestClass(1, 'b1'),
+            [
+                new TestClass(2, 'b2'),
+                new TestClass(3, 'b3'),
+            ],
+            'Foo'
+        );
+
+        $expected = Helpers::makeStdClass([
+            'int_array' => [null, null],
+            'test_class' => Helpers::makeStdClass([
+                'foo' => null,
+                'bar' => null,
+            ]),
+            'test_class_array' => [null, null],
+            'test_private' => 'Foo',
+        ]);
+
+        $this->assertEquals($expected, $mapper->dump($object));
+    }
 }
