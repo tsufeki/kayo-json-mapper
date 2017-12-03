@@ -54,7 +54,7 @@ class Mapper
     /**
      * Load data (such as returned by `json_decode`).
      *
-     * @param mixed  $data
+     * @param mixed  $data Only stdClass, arrays and scalars.
      * @param string $type Phpdoc-like target type.
      *
      * @return mixed
@@ -73,10 +73,15 @@ class Mapper
     }
 
     /**
-     * @param array|\stdClass $data     Serialized arguments values as sequencial array or associative object.
+     * Load arguments for callable.
+     *
+     * Does not make actual call, just returns argument values.
+     *
+     * @param array|\stdClass $data     Serialized arguments values either as
+     *                                  an array (by position) or object (by name).
      * @param callable        $callable
      *
-     * @return array Unserialized arguments as a sequencial array.
+     * @return array Unserialized arguments as positional array.
      *
      * @throws Exception\InvalidDataException
      * @throws Exception\InfiniteRecursionException

@@ -48,7 +48,7 @@ class PhpdocTypeExtractor
      * @param mixed  $reflection
      * @param string $tagName
      *
-     * @return Type[]
+     * @return Type[] variable name => type.
      */
     public function getPhpdocTypesByVar($reflection, string $tagName): array
     {

@@ -31,6 +31,9 @@ use Tsufeki\KayoJsonMapper\MetadataProvider\Phpdoc\PhpdocTypeExtractor;
 use Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionCallableMetadataProvider;
 use Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionClassMetadataProvider;
 
+/**
+ * Configure and build Mapper object.
+ */
 class MapperBuilder
 {
     /**
@@ -109,6 +112,11 @@ class MapperBuilder
     }
 
     /**
+     * Set accessor strategy for finding getters/setters of private properties.
+     *
+     * Default one checks getProp(), isProp() and prop() for getters, setProp()
+     * for setter.
+     *
      * @param AccessorStrategy $accessorStrategy
      *
      * @return $this
@@ -121,6 +129,10 @@ class MapperBuilder
     }
 
     /**
+     * Set metadata provider for callables.
+     *
+     * Default one uses reflection and doc comments.
+     *
      * @param CallableMetadataProvider $callableMetadataProvider
      *
      * @return $this
@@ -133,6 +145,10 @@ class MapperBuilder
     }
 
     /**
+     * Set metadata provider for classes.
+     *
+     * Default one uses reflection and doc comments.
+     *
      * @param ClassMetadataProvider $classMetadataProvider
      *
      * @return $this
@@ -145,6 +161,10 @@ class MapperBuilder
     }
 
     /**
+     * Set property name mangler.
+     *
+     * Default one changes camel case to underscores (fooBar -> foo_bar).
+     *
      * @param NameMangler $nameMangler
      *
      * @return $this
@@ -157,6 +177,8 @@ class MapperBuilder
     }
 
     /**
+     * Set factory of new objects.
+     *
      * @param Instantiator $instantiator
      *
      * @return $this
@@ -169,6 +191,13 @@ class MapperBuilder
     }
 
     /**
+     * Create instances of different class instead of given.
+     *
+     * Useful when properties are typed with abstract class/interface, i.e
+     * DateTimeInterface => DateTime.
+     *
+     * Ignored when not using default instantiator.
+     *
      * @param string $class
      * @param string $targetClass
      *
@@ -182,6 +211,13 @@ class MapperBuilder
     }
 
     /**
+     * Create instances of different class instead of given.
+     *
+     * Similar to `addClassMapping()`, but using a callback. The callback will
+     * receive unserialized data as an argument.
+     *
+     * Ignored when not using default instantiator.
+     *
      * @param string   $class
      * @param callable $callback (\stdClass $data) -> string class name
      *
@@ -195,6 +231,10 @@ class MapperBuilder
     }
 
     /**
+     * Add custom loader.
+     *
+     * Loader added last has the highest priority.
+     *
      * @param Loader $loader
      *
      * @return $this
@@ -207,6 +247,10 @@ class MapperBuilder
     }
 
     /**
+     * Add custom dumper.
+     *
+     * Dumper added last has the highest priority.
+     *
      * @param Dumper $dumper
      *
      * @return $this
@@ -219,6 +263,10 @@ class MapperBuilder
     }
 
     /**
+     * Set date format for loading\dumping DateTime objects.
+     *
+     * The same format as for `date()`. Default is \DateTime::RFC3339.
+     *
      * @param string $dateTimeFormat
      *
      * @return $this
@@ -231,6 +279,10 @@ class MapperBuilder
     }
 
     /**
+     * Set max recursion depth for dumping.
+     *
+     * Default is no limit.
+     *
      * @param int $dumpMaxDepth
      *
      * @return $this
@@ -243,6 +295,10 @@ class MapperBuilder
     }
 
     /**
+     * Whether to throw exception or return null when infinite recursion is detected.
+     *
+     * Default false.
+     *
      * @param bool $throwOnInfiniteRecursion
      *
      * @return $this
@@ -255,6 +311,10 @@ class MapperBuilder
     }
 
     /**
+     * Whether to throw exception or return null when max depth is exceeded.
+     *
+     * Default false.
+     *
      * @param bool $throwOnMaxDepthExceeded
      *
      * @return $this
@@ -267,6 +327,10 @@ class MapperBuilder
     }
 
     /**
+     * Whether to throw exception when a property is missing from loaded data.
+     *
+     * Default false.
+     *
      * @param bool $throwOnMissingProperty
      *
      * @return $this
@@ -279,6 +343,10 @@ class MapperBuilder
     }
 
     /**
+     * Whether to throw exception when unknown property is encountered in loaded data.
+     *
+     * Default true.
+     *
      * @param bool $throwOnUnknownProperty
      *
      * @return $this
@@ -290,6 +358,9 @@ class MapperBuilder
         return $this;
     }
 
+    /**
+     * Build Mapper.
+     */
     public function getMapper(): Mapper
     {
         $phpdocTypeExtractor = new PhpdocTypeExtractor();

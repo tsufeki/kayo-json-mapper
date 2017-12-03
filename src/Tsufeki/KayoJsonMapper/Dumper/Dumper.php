@@ -11,9 +11,9 @@ interface Dumper
      * @param mixed   $value
      * @param Context $context
      *
-     * @return mixed
+     * @return mixed A dumped representation, ready to be passed to `json_encode()`.
      *
-     * @throws UnsupportedTypeException
+     * @throws UnsupportedTypeException If this dumper doesn't support given value.
      */
     public function dump($value, Context $context);
 }

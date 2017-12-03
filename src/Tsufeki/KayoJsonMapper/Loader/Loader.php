@@ -10,11 +10,12 @@ use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 interface Loader
 {
     /**
-     * @param mixed   $data
-     * @param Type    $type
+     * @param mixed   $data    As returned by `json_decode()` i.e only stdClass,
+     *                         arrays and scalars.
+     * @param Type    $type    Expected type.
      * @param Context $context
      *
-     * @return mixed
+     * @return mixed Unserialized value.
      *
      * @throws UnsupportedTypeException
      * @throws TypeMismatchException
