@@ -37,9 +37,9 @@ class DispatchingDumper implements Dumper
         }
 
         foreach ($this->dumpers as $dumper) {
-            try {
-                $context->push($value);
+            $context->push($value);
 
+            try {
                 return $dumper->dump($value, $context);
             } catch (UnsupportedTypeException $e) {
             } finally {
@@ -47,6 +47,6 @@ class DispatchingDumper implements Dumper
             }
         }
 
-        throw new UnsupportedTypeException();
+        throw new UnsupportedTypeException(null, $value);
     }
 }

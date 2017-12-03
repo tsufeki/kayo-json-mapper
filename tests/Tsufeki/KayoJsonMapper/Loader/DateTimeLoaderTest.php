@@ -5,6 +5,7 @@ namespace Tests\Tsufeki\KayoJsonMapper\Loader;
 use phpDocumentor\Reflection\TypeResolver;
 use PHPUnit\Framework\TestCase;
 use Tsufeki\KayoJsonMapper\Context;
+use Tsufeki\KayoJsonMapper\Exception\BadDateTimeFormatException;
 use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 use Tsufeki\KayoJsonMapper\Loader\DateTimeLoader;
@@ -75,7 +76,25 @@ class DateTimeLoaderTest extends TestCase
             [null],
             [[]],
             [new \stdClass()],
-            ['foobar'], // bad format
+        ];
+    }
+
+    /**
+     * @dataProvider bad_format_data
+     */
+    public function test_throws_on_bad_format($data)
+    {
+        $resolver = new TypeResolver();
+        $loader = new DateTimeLoader();
+
+        $this->expectException(BadDateTimeFormatException::class);
+        $loader->load($data, $resolver->resolve('\\DateTime'), new Context());
+    }
+
+    public function bad_format_data(): array
+    {
+        return [
+            ['foobar'],
         ];
     }
 }

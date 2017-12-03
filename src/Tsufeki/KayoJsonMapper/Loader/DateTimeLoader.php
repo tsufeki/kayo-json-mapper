@@ -5,6 +5,7 @@ namespace Tsufeki\KayoJsonMapper\Loader;
 use phpDocumentor\Reflection\Type;
 use phpDocumentor\Reflection\Types;
 use Tsufeki\KayoJsonMapper\Context;
+use Tsufeki\KayoJsonMapper\Exception\BadDateTimeFormatException;
 use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 use Tsufeki\KayoJsonMapper\Loader;
@@ -28,14 +29,12 @@ class DateTimeLoader implements Loader
         }
 
         if (!is_string($data)) {
-            throw new TypeMismatchException();
+            throw new TypeMismatchException('string', $data);
         }
 
         $result = \DateTime::createFromFormat($this->format, $data);
         if ($result === false) {
-            $errors = \DateTime::getLastErrors()['errors'];
-
-            throw new TypeMismatchException('Bad datetime format: ' . implode('; ', $errors));
+            throw new BadDateTimeFormatException($this->format, \DateTime::getLastErrors()['errors']);
         }
 
         return $result;

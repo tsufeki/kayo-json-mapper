@@ -5,7 +5,7 @@ namespace Tests\Tsufeki\KayoJsonMapper;
 use PHPUnit\Framework\TestCase;
 use Tests\Tsufeki\KayoJsonMapper\Fixtures\TestClass;
 use Tests\Tsufeki\KayoJsonMapper\Fixtures\TestCompoundClass;
-use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
+use Tsufeki\KayoJsonMapper\Exception\InvalidDataException;
 use Tsufeki\KayoJsonMapper\MapperBuilder;
 
 /**
@@ -153,7 +153,7 @@ class MapperTest extends TestCase
 
         $mapper = MapperBuilder::create()->getMapper();
 
-        $this->expectException(TypeMismatchException::class);
+        $this->expectException(InvalidDataException::class);
         $args = $mapper->loadArguments($data, $function);
     }
 }

@@ -33,6 +33,6 @@ class DispatchingLoader implements Loader
             }
         }
 
-        throw new UnsupportedTypeException();
+        throw new UnsupportedTypeException((string)$type);
     }
 }

@@ -41,8 +41,9 @@ class Mapper
      * @return object
      *
      * @throws Exception\InfiniteRecursionException
-     * @throws Exception\TypeMismatchException
+     * @throws Exception\InvalidDataException
      * @throws Exception\MetadataException
+     * @throws Exception\UnsupportedTypeException
      */
     public function load(\stdClass $data, $object)
     {
@@ -58,9 +59,10 @@ class Mapper
      *
      * @return object[]
      *
+     * @throws Exception\InvalidDataException
      * @throws Exception\InfiniteRecursionException
-     * @throws Exception\TypeMismatchException
      * @throws Exception\MetadataException
+     * @throws Exception\UnsupportedTypeException
      */
     public function loadArray(array $data, string $class)
     {
@@ -76,9 +78,10 @@ class Mapper
      *
      * @return array Unserialized, sequencial arguments.
      *
+     * @throws Exception\InvalidDataException
      * @throws Exception\InfiniteRecursionException
-     * @throws Exception\TypeMismatchException
      * @throws Exception\MetadataException
+     * @throws Exception\UnsupportedTypeException
      */
     public function loadArguments($data, callable $callable): array
     {
@@ -100,7 +103,7 @@ class Mapper
 
         $argCount = count($dataArray);
         if (isset($metadata->parameters[$argCount]) && !$metadata->parameters[$argCount]->optional) {
-            throw new Exception\TypeMismatchException('Not enough arguments');
+            throw new Exception\InvalidDataException('Not enough arguments');
         }
 
         $args = [];
@@ -121,8 +124,8 @@ class Mapper
      * @return \stdClass
      *
      * @throws Exception\InfiniteRecursionException
-     * @throws Exception\TypeMismatchException
      * @throws Exception\MetadataException
+     * @throws Exception\UnsupportedTypeException
      */
     public function dump($object): \stdClass
     {

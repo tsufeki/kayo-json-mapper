@@ -45,7 +45,7 @@ class ObjectLoader implements Loader
         }
 
         if (!is_object($data) || !($data instanceof \stdClass)) {
-            throw new TypeMismatchException();
+            throw new TypeMismatchException('stdClass', $data);
         }
 
         if (in_array((string)$type, ['object', '\\stdClass'], true)) {

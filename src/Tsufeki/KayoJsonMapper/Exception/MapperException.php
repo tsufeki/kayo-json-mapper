@@ -2,6 +2,6 @@
 
 namespace Tsufeki\KayoJsonMapper\Exception;
 
-class MetadataException extends MapperException
+class MapperException extends \Exception
 {
 }

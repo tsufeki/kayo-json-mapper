@@ -28,7 +28,7 @@ class ArrayLoader implements Loader
         }
 
         if (!is_array($data)) {
-            throw new TypeMismatchException();
+            throw new TypeMismatchException('array', $data);
         }
 
         $result = [];
