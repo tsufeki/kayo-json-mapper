@@ -15,4 +15,13 @@ class CallableMetadata
      * @var Type
      */
     public $returnType;
+
+    public function __clone()
+    {
+        $parameters = [];
+        foreach ($this->parameters as $parameter) {
+            $parameters[] = clone $parameter;
+        }
+        $this->parameters = $parameters;
+    }
 }

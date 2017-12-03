@@ -46,12 +46,12 @@ class MapperTest extends TestCase
                 TestCompoundClass::class,
 
                 Helpers::makeStdClass([
-                    'intArray' => [1, 2],
-                    'testClass' => Helpers::makeStdClass([
+                    'int_array' => [1, 2],
+                    'test_class' => Helpers::makeStdClass([
                         'foo' => 1,
                         'bar' => 'b1',
                     ]),
-                    'testClassArray' => [
+                    'test_class_array' => [
                         Helpers::makeStdClass([
                             'foo' => 2,
                             'bar' => 'b2',
@@ -61,7 +61,7 @@ class MapperTest extends TestCase
                             'bar' => 'b3',
                         ]),
                     ],
-                    'testPrivate' => 'Foo',
+                    'test_private' => 'Foo',
                 ]),
 
                 new TestCompoundClass(

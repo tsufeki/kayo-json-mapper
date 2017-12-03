@@ -16,6 +16,7 @@ class CachedClassMetadataProviderTest extends TestCase
     {
         $class = 'Foo\\Bar';
         $metadata = new ClassMetadata();
+        $metadata->name = $class;
 
         $innerProvider = $this->createMock(ClassMetadataProvider::class);
         $innerProvider
@@ -26,7 +27,7 @@ class CachedClassMetadataProviderTest extends TestCase
 
         $provider = new CachedClassMetadataProvider($innerProvider);
 
-        $this->assertSame($metadata, $provider->getClassMetadata($class));
-        $this->assertSame($metadata, $provider->getClassMetadata($class));
+        $this->assertEquals($metadata, $provider->getClassMetadata($class));
+        $this->assertEquals($metadata, $provider->getClassMetadata($class));
     }
 }

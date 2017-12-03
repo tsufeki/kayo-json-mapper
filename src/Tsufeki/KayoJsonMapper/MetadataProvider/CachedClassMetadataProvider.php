@@ -24,10 +24,10 @@ class CachedClassMetadataProvider implements ClassMetadataProvider
 
     public function getClassMetadata(string $class): ClassMetadata
     {
-        if (isset($this->classMetadataCache[$class])) {
-            return $this->classMetadataCache[$class];
+        if (!isset($this->classMetadataCache[$class])) {
+            $this->classMetadataCache[$class] = $this->innerMetadataProvider->getClassMetadata($class);
         }
 
-        return $this->classMetadataCache[$class] = $this->innerMetadataProvider->getClassMetadata($class);
+        return clone $this->classMetadataCache[$class];
     }
 }

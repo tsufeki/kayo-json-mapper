@@ -23,6 +23,9 @@ use Tsufeki\KayoJsonMapper\MetadataProvider\AccessorStrategy\StandardAccessorStr
 use Tsufeki\KayoJsonMapper\MetadataProvider\CachedClassMetadataProvider;
 use Tsufeki\KayoJsonMapper\MetadataProvider\CallableMetadataProvider;
 use Tsufeki\KayoJsonMapper\MetadataProvider\ClassMetadataProvider;
+use Tsufeki\KayoJsonMapper\MetadataProvider\ManglingClassMetadataProvider;
+use Tsufeki\KayoJsonMapper\MetadataProvider\NameMangler\CamelCaseToUnderscoreNameMangler;
+use Tsufeki\KayoJsonMapper\MetadataProvider\NameMangler\NameMangler;
 use Tsufeki\KayoJsonMapper\MetadataProvider\Phpdoc\PhpdocTypeExtractor;
 use Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionCallableMetadataProvider;
 use Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionClassMetadataProvider;
@@ -43,6 +46,11 @@ class MapperBuilder
      * @var ClassMetadataProvider|null
      */
     private $classMetadataProvider;
+
+    /**
+     * @var NameMangler
+     */
+    private $nameMangler;
 
     /**
      * @var Instantiator|null
@@ -111,6 +119,18 @@ class MapperBuilder
     public function setClassMetadataProvider(ClassMetadataProvider $classMetadataProvider): self
     {
         $this->classMetadataProvider = $classMetadataProvider;
+
+        return $this;
+    }
+
+    /**
+     * @param NameMangler $nameMangler
+     *
+     * @return $this
+     */
+    public function setNameMangler(NameMangler $nameMangler)
+    {
+        $this->nameMangler = $nameMangler;
 
         return $this;
     }
@@ -205,13 +225,17 @@ class MapperBuilder
     {
         $phpdocTypeExtractor = new PhpdocTypeExtractor();
         $accessorStrategy = $this->accessorStrategy ?? new StandardAccessorStrategy();
+        $nameMangler = $this->nameMangler ?? new CamelCaseToUnderscoreNameMangler();
         $callableMetadataProvider = $this->callableMetadataProvider ?? new ReflectionCallableMetadataProvider($phpdocTypeExtractor);
 
         $classMetadataProvider = $this->classMetadataProvider ?? new CachedClassMetadataProvider(
-            new ReflectionClassMetadataProvider(
-                $callableMetadataProvider,
-                $accessorStrategy,
-                $phpdocTypeExtractor
+            new ManglingClassMetadataProvider(
+                new ReflectionClassMetadataProvider(
+                    $callableMetadataProvider,
+                    $accessorStrategy,
+                    $phpdocTypeExtractor
+                ),
+                $nameMangler
             )
         );
 

@@ -15,4 +15,13 @@ class ClassMetadata
      * @var PropertyMetadata[]
      */
     public $properties = [];
+
+    public function __clone()
+    {
+        $properties = [];
+        foreach ($this->properties as $property) {
+            $properties[] = clone $property;
+        }
+        $this->properties = $properties;
+    }
 }
