@@ -5,6 +5,7 @@ namespace Tests\Tsufeki\KayoJsonMapper\Loader;
 use phpDocumentor\Reflection\TypeResolver;
 use PHPUnit\Framework\TestCase;
 use Tests\Tsufeki\KayoJsonMapper\Fixtures\TestClass;
+use Tests\Tsufeki\KayoJsonMapper\Fixtures\TestParentClass;
 use Tests\Tsufeki\KayoJsonMapper\Helpers;
 use Tsufeki\KayoJsonMapper\Context\Context;
 use Tsufeki\KayoJsonMapper\Exception\MissingPropertyException;
@@ -56,6 +57,47 @@ class ObjectLoaderTest extends TestCase
 
         $objectLoader = new ObjectLoader($innerLoader, $metadataProvider, $instantiator);
         $result = $objectLoader->load($data, $resolver->resolve('\\' . TestClass::class), new Context());
+
+        $this->assertCount(2, get_object_vars($result));
+        $this->assertSame(7, $result->foo);
+        $this->assertSame('BAZ', $result->bar);
+    }
+
+    public function test_loads_object_when_a_subclass_is_instantiated()
+    {
+        $resolver = new TypeResolver();
+
+        $data = Helpers::makeStdClass([
+            'foo' => 42,
+            'barSerializedOnly' => 'baz',
+        ]);
+
+        $metadataProvider = $this->createMock(ClassMetadataProvider::class);
+        $metadataProvider
+            ->expects($this->once())
+            ->method('getClassMetadata')
+            ->with($this->identicalTo(TestClass::class))
+            ->willReturn(TestClass::metadata());
+
+        $innerLoader = $this->createMock(Loader::class);
+        $innerLoader
+            ->expects($this->exactly(2))
+            ->method('load')
+            ->withConsecutive(
+                [$this->identicalTo(42), $resolver->resolve('int')],
+                [$this->identicalTo('baz'), $resolver->resolve('string')]
+            )
+            ->willReturnOnConsecutiveCalls(7, 'BAZ');
+
+        $instantiator = $this->createMock(Instantiator::class);
+        $instantiator
+            ->expects($this->once())
+            ->method('instantiate')
+            ->with($this->identicalTo(TestParentClass::class), $this->identicalTo($data))
+            ->willReturn(new TestClass());
+
+        $objectLoader = new ObjectLoader($innerLoader, $metadataProvider, $instantiator);
+        $result = $objectLoader->load($data, $resolver->resolve('\\' . TestParentClass::class), new Context());
 
         $this->assertCount(2, get_object_vars($result));
         $this->assertSame(7, $result->foo);

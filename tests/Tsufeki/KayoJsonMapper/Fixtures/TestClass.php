@@ -6,7 +6,7 @@ use phpDocumentor\Reflection\Types;
 use Tsufeki\KayoJsonMapper\Metadata\ClassMetadata;
 use Tsufeki\KayoJsonMapper\Metadata\PropertyMetadata;
 
-class TestClass
+class TestClass extends TestParentClass
 {
     /**
      * @var int
