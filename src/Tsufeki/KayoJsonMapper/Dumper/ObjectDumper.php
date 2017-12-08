@@ -31,7 +31,13 @@ class ObjectDumper implements Dumper
         }
 
         if ($value instanceof \stdClass) {
-            return $value;
+            $result = new \stdClass();
+
+            foreach (get_object_vars($value) as $name => $propertyValue) {
+                $result->$name = $this->dispatchingDumper->dump($propertyValue, $context);
+            }
+
+            return $result;
         }
 
         $class = get_class($value);

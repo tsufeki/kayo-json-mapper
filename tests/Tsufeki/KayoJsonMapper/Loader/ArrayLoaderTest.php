@@ -16,10 +16,12 @@ use Tsufeki\KayoJsonMapper\Loader\Loader;
  */
 class ArrayLoaderTest extends TestCase
 {
-    public function test_loads_array()
+    /**
+     * @dataProvider load_array_data
+     */
+    public function test_loads_array($input)
     {
         $type = new Types\Array_(new Types\Integer());
-        $input = [1, 2, 3];
         $output = [4, 8, 12];
 
         $innerLoader = $this->createMock(Loader::class);
@@ -28,12 +30,20 @@ class ArrayLoaderTest extends TestCase
             ->method('load')
             ->withConsecutive(...array_map(function ($i) use ($type) {
                 return [$this->identicalTo($i), $type->getValueType()];
-            }, $input))
+            }, (array)$input))
             ->willReturnOnConsecutiveCalls(...$output);
 
         $arrayLoader = new ArrayLoader($innerLoader);
 
         $this->assertSame($output, $arrayLoader->load($input, $type, new Context()));
+    }
+
+    public function load_array_data(): array
+    {
+        return [
+            [[1, 2, 3]],
+            [(object)[1, 2, 3]],
+        ];
     }
 
     /**
@@ -75,7 +85,7 @@ class ArrayLoaderTest extends TestCase
         return [
             ['int[]', 7.5],
             ['array', 'foo'],
-            ['mixed[]', new \stdClass()],
+            ['mixed[]', new \DateTime()],
             ['array', null],
         ];
     }

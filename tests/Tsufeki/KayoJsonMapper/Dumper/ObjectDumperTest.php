@@ -46,6 +46,12 @@ class ObjectDumperTest extends TestCase
     public function test_returns_stdClass_unchanged()
     {
         $innerDumper = $this->createMock(Dumper::class);
+        $innerDumper
+            ->expects($this->once())
+            ->method('dump')
+            ->with($this->identicalTo(42))
+            ->willReturn(42);
+
         $metadataProvider = $this->createMock(ClassMetadataProvider::class);
         $dumper = new ObjectDumper($innerDumper, $metadataProvider);
 

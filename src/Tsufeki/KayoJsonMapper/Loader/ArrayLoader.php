@@ -26,14 +26,18 @@ class ArrayLoader implements Loader
             throw new UnsupportedTypeException();
         }
 
+        if (is_object($data) && $data instanceof \stdClass) {
+            $data = get_object_vars($data);
+        }
+
         if (!is_array($data)) {
-            throw new TypeMismatchException('array', $data);
+            throw new TypeMismatchException('array|stdClass', $data);
         }
 
         $result = [];
         $elementType = $type->getValueType();
-        foreach ($data as $element) {
-            $result[] = $this->dispatchingLoader->load($element, $elementType, $context);
+        foreach ($data as $key => $element) {
+            $result[$key] = $this->dispatchingLoader->load($element, $elementType, $context);
         }
 
         return $result;

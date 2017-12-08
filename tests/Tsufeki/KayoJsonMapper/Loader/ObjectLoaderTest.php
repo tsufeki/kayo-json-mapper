@@ -22,14 +22,12 @@ use Tsufeki\KayoJsonMapper\MetadataProvider\ClassMetadataProvider;
  */
 class ObjectLoaderTest extends TestCase
 {
-    public function test_loads_object()
+    /**
+     * @dataProvider load_object_data
+     */
+    public function test_loads_object($data)
     {
         $resolver = new TypeResolver();
-
-        $data = Helpers::makeStdClass([
-            'foo' => 42,
-            'barSerializedOnly' => 'baz',
-        ]);
 
         $metadataProvider = $this->createMock(ClassMetadataProvider::class);
         $metadataProvider
@@ -52,7 +50,7 @@ class ObjectLoaderTest extends TestCase
         $instantiator
             ->expects($this->once())
             ->method('instantiate')
-            ->with($this->identicalTo(TestClass::class), $this->identicalTo($data))
+            ->with($this->identicalTo(TestClass::class), $this->equalTo((object)$data))
             ->willReturn(new TestClass());
 
         $objectLoader = new ObjectLoader($innerLoader, $metadataProvider, $instantiator);
@@ -61,6 +59,20 @@ class ObjectLoaderTest extends TestCase
         $this->assertCount(2, get_object_vars($result));
         $this->assertSame(7, $result->foo);
         $this->assertSame('BAZ', $result->bar);
+    }
+
+    public function load_object_data(): array
+    {
+        return [
+            [Helpers::makeStdClass([
+                'foo' => 42,
+                'barSerializedOnly' => 'baz',
+            ])],
+            [[
+                'foo' => 42,
+                'barSerializedOnly' => 'baz',
+            ]],
+        ];
     }
 
     public function test_loads_object_when_a_subclass_is_instantiated()
@@ -173,15 +185,21 @@ class ObjectLoaderTest extends TestCase
 
     public function test_returns_stdClass_unchanged()
     {
+        $resolver = new TypeResolver();
+
         $innerLoader = $this->createMock(Loader::class);
+        $innerLoader
+            ->expects($this->once())
+            ->method('load')
+            ->with($this->identicalTo(42), $resolver->resolve('mixed'))
+            ->willReturn(42);
+
         $metadataProvider = $this->createMock(ClassMetadataProvider::class);
         $instantiator = $this->createMock(Instantiator::class);
         $loader = new ObjectLoader($innerLoader, $metadataProvider, $instantiator);
-        $resolver = new TypeResolver();
 
         $data = Helpers::makeStdClass([
             'foo' => 42,
-            'bar' => 'baz',
         ]);
         $expected = clone $data;
 
@@ -234,7 +252,6 @@ class ObjectLoaderTest extends TestCase
             [1],
             ['foo'],
             [null],
-            [[]],
             [new \DateTime()],
         ];
     }

@@ -59,12 +59,22 @@ class ObjectLoader implements Loader
             throw new UnsupportedTypeException();
         }
 
+        if (is_array($data)) {
+            $data = (object)$data;
+        }
+
         if (!is_object($data) || !($data instanceof \stdClass)) {
-            throw new TypeMismatchException('stdClass', $data);
+            throw new TypeMismatchException('stdClass|array', $data);
         }
 
         if (in_array((string)$type, ['object', '\\stdClass'], true)) {
-            return $data;
+            $result = new \stdClass();
+
+            foreach (get_object_vars($data) as $name => $value) {
+                $result->$name = $this->dispatchingLoader->load($value, new Types\Mixed_(), $context);
+            }
+
+            return $result;
         }
 
         $class = ltrim((string)$type, '\\');

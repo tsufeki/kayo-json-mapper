@@ -25,8 +25,8 @@ class ArrayDumper implements Dumper
 
         $result = [];
 
-        foreach ($value as $element) {
-            $result[] = $this->dispatchingDumper->dump($element, $context);
+        foreach ($value as $key => $element) {
+            $result[$key] = $this->dispatchingDumper->dump($element, $context);
         }
 
         return $result;
