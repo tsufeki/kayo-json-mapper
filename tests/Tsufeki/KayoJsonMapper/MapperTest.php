@@ -155,6 +155,17 @@ class MapperTest extends TestCase
         $args = $mapper->loadArguments($data, $function);
     }
 
+    public function test_load_arguments_variadic()
+    {
+        $function = function (string $foo, int ...$bar) { };
+        $data = ['FOO', 5, 6, 7];
+
+        $mapper = MapperBuilder::create()->getMapper();
+        $args = $mapper->loadArguments($data, $function);
+
+        $this->assertEquals($data, $args);
+    }
+
     public function test_dumps_up_to_max_depth()
     {
         $mapper = MapperBuilder::create()

@@ -91,6 +91,8 @@ class Mapper
     public function loadArguments($data, callable $callable): array
     {
         $metadata = $this->callableMetadataProvider->getCallableMetadata($callable);
+        $paramCount = count($metadata->parameters);
+        $variadic = $paramCount !== 0 && $metadata->parameters[$paramCount - 1]->variadic;
 
         if (is_object($data)) {
             $dataArray = [];
@@ -103,7 +105,11 @@ class Mapper
                 $dataArray[] = $data->{$param->name};
             }
         } else {
-            $dataArray = array_slice(array_values($data), 0, count($metadata->parameters));
+            $dataArray = array_values($data);
+
+            if (!$variadic) {
+                $dataArray = array_slice($dataArray, 0, $paramCount);
+            }
         }
 
         $argCount = count($dataArray);
@@ -112,9 +118,15 @@ class Mapper
         }
 
         $args = [];
+        $arg = null;
+        $i = 0;
         foreach ($dataArray as $i => $arg) {
-            $context = $this->contextFactory->createLoadContext();
+            if ($variadic && $i >= $paramCount) {
+                $i = $paramCount - 1;
+            }
+
             $type = $metadata->parameters[$i]->type;
+            $context = $this->contextFactory->createLoadContext();
             $args[] = $this->loader->load($arg, $type, $context);
         }
 
