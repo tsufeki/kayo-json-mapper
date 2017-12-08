@@ -6,7 +6,6 @@ use phpDocumentor\Reflection\TypeResolver;
 use PHPUnit\Framework\TestCase;
 use Tests\Tsufeki\KayoJsonMapper\Fixtures\TestClass;
 use Tests\Tsufeki\KayoJsonMapper\Fixtures\TestParentClass;
-use Tests\Tsufeki\KayoJsonMapper\Helpers;
 use Tsufeki\KayoJsonMapper\Context\Context;
 use Tsufeki\KayoJsonMapper\Exception\MissingPropertyException;
 use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
@@ -64,10 +63,10 @@ class ObjectLoaderTest extends TestCase
     public function load_object_data(): array
     {
         return [
-            [Helpers::makeStdClass([
+            [(object)[
                 'foo' => 42,
                 'barSerializedOnly' => 'baz',
-            ])],
+            ]],
             [[
                 'foo' => 42,
                 'barSerializedOnly' => 'baz',
@@ -79,10 +78,10 @@ class ObjectLoaderTest extends TestCase
     {
         $resolver = new TypeResolver();
 
-        $data = Helpers::makeStdClass([
+        $data = (object)[
             'foo' => 42,
             'barSerializedOnly' => 'baz',
-        ]);
+        ];
 
         $metadataProvider = $this->createMock(ClassMetadataProvider::class);
         $metadataProvider
@@ -120,11 +119,11 @@ class ObjectLoaderTest extends TestCase
     {
         $resolver = new TypeResolver();
 
-        $data = Helpers::makeStdClass([
+        $data = (object)[
             'foo' => 42,
             'barSerializedOnly' => 'baz',
             'unknownProperty' => true,
-        ]);
+        ];
 
         $metadataProvider = $this->createMock(ClassMetadataProvider::class);
         $metadataProvider
@@ -152,9 +151,9 @@ class ObjectLoaderTest extends TestCase
     {
         $resolver = new TypeResolver();
 
-        $data = Helpers::makeStdClass([
+        $data = (object)[
             'foo' => 42,
-        ]);
+        ];
 
         $metadataProvider = $this->createMock(ClassMetadataProvider::class);
         $metadataProvider
@@ -198,9 +197,9 @@ class ObjectLoaderTest extends TestCase
         $instantiator = $this->createMock(Instantiator::class);
         $loader = new ObjectLoader($innerLoader, $metadataProvider, $instantiator);
 
-        $data = Helpers::makeStdClass([
+        $data = (object)[
             'foo' => 42,
-        ]);
+        ];
         $expected = clone $data;
 
         $this->assertEquals($expected, $loader->load($data, $resolver->resolve('\\stdClass'), new Context()));

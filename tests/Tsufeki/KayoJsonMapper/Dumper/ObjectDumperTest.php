@@ -4,7 +4,6 @@ namespace Tests\Tsufeki\KayoJsonMapper\Dumper;
 
 use PHPUnit\Framework\TestCase;
 use Tests\Tsufeki\KayoJsonMapper\Fixtures\TestClass;
-use Tests\Tsufeki\KayoJsonMapper\Helpers;
 use Tsufeki\KayoJsonMapper\Context\Context;
 use Tsufeki\KayoJsonMapper\Dumper\Dumper;
 use Tsufeki\KayoJsonMapper\Dumper\ObjectDumper;
@@ -37,10 +36,10 @@ class ObjectDumperTest extends TestCase
         $objectDumper = new ObjectDumper($innerDumper, $metadataProvider);
         $result = $objectDumper->dump($object, new Context());
 
-        $this->assertEquals(Helpers::makeStdClass([
+        $this->assertEquals((object)[
             'foo' => 7,
             'barSerializedOnly' => 'BAZ',
-        ]), $result);
+        ], $result);
     }
 
     public function test_returns_stdClass_unchanged()
@@ -55,7 +54,7 @@ class ObjectDumperTest extends TestCase
         $metadataProvider = $this->createMock(ClassMetadataProvider::class);
         $dumper = new ObjectDumper($innerDumper, $metadataProvider);
 
-        $value = Helpers::makeStdClass(['foo' => 42]);
+        $value = (object)['foo' => 42];
 
         $result = $dumper->dump($value, new Context());
         $this->assertEquals($value, $result);

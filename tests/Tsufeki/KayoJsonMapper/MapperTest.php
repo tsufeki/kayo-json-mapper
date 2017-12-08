@@ -32,10 +32,10 @@ class MapperTest extends TestCase
         return [
             [
                 TestClass::class,
-                Helpers::makeStdClass([
+                (object)[
                     'foo' => 42,
                     'bar' => 'baz',
-                ]),
+                ],
                 new TestClass(
                     42,
                     'baz'
@@ -45,24 +45,24 @@ class MapperTest extends TestCase
             [
                 TestCompoundClass::class,
 
-                Helpers::makeStdClass([
+                (object)[
                     'int_array' => [1, 2],
-                    'test_class' => Helpers::makeStdClass([
+                    'test_class' => (object)[
                         'foo' => 1,
                         'bar' => 'b1',
-                    ]),
+                    ],
                     'test_class_array' => [
-                        Helpers::makeStdClass([
+                        (object)[
                             'foo' => 2,
                             'bar' => 'b2',
-                        ]),
-                        Helpers::makeStdClass([
+                        ],
+                        (object)[
                             'foo' => 3,
                             'bar' => 'b3',
-                        ]),
+                        ],
                     ],
                     'test_private' => 'Foo',
-                ]),
+                ],
 
                 new TestCompoundClass(
                     [1, 2],
@@ -79,14 +79,14 @@ class MapperTest extends TestCase
                 TestClass::class . '[]',
 
                 [
-                    Helpers::makeStdClass([
+                    (object)[
                         'foo' => 1,
                         'bar' => 'baz',
-                    ]),
-                    Helpers::makeStdClass([
+                    ],
+                    (object)[
                         'foo' => 2,
                         'bar' => '',
-                    ]),
+                    ],
                 ],
 
                 [
@@ -100,13 +100,13 @@ class MapperTest extends TestCase
     public function test_load_arguments_assoc()
     {
         $function = function (int $foo, TestClass $bar) { };
-        $data = Helpers::makeStdClass([
-            'bar' => Helpers::makeStdClass([
+        $data = (object)[
+            'bar' => (object)[
                 'foo' => 1,
                 'bar' => 'baz',
-            ]),
+            ],
             'foo' => 42,
-        ]);
+        ];
 
         $mapper = MapperBuilder::create()->getMapper();
         $args = $mapper->loadArguments($data, $function);
@@ -119,10 +119,10 @@ class MapperTest extends TestCase
         $function = function (int $foo, TestClass $bar) { };
         $data = [
             42,
-            Helpers::makeStdClass([
+            (object)[
                 'foo' => 1,
                 'bar' => 'baz',
-            ]),
+            ],
         ];
 
         $mapper = MapperBuilder::create()->getMapper();
@@ -134,9 +134,9 @@ class MapperTest extends TestCase
     public function test_load_arguments_missing_optional()
     {
         $function = function (int $foo, string $bar = 'x') { };
-        $data = Helpers::makeStdClass([
+        $data = (object)[
             'foo' => 42,
-        ]);
+        ];
 
         $mapper = MapperBuilder::create()->getMapper();
         $args = $mapper->loadArguments($data, $function);
@@ -205,15 +205,15 @@ class MapperTest extends TestCase
             'Foo'
         );
 
-        $expected = Helpers::makeStdClass([
+        $expected = (object)[
             'int_array' => [null, null],
-            'test_class' => Helpers::makeStdClass([
+            'test_class' => (object)[
                 'foo' => null,
                 'bar' => null,
-            ]),
+            ],
             'test_class_array' => [null, null],
             'test_private' => 'Foo',
-        ]);
+        ];
 
         $this->assertEquals($expected, $mapper->dump($object));
     }
