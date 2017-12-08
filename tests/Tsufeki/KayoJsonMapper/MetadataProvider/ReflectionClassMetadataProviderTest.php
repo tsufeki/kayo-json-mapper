@@ -104,6 +104,20 @@ class ReflectionClassMetadataProviderTest extends TestCase
         ]);
     }
 
+    public function test_ignores_static_properties()
+    {
+        $object = new class() {
+            public $foo = 7;
+            public static $barBaz;
+        };
+
+        $metadata = $this->getProvider()->getClassMetadata(get_class($object));
+
+        $this->checkProperties($metadata, [
+            'foo' => 'mixed',
+        ]);
+    }
+
     public function test_throws_on_unknown_class()
     {
         $this->expectException(MetadataException::class);

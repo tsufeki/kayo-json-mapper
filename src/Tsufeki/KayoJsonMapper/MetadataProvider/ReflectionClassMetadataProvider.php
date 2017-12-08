@@ -47,8 +47,10 @@ class ReflectionClassMetadataProvider implements ClassMetadataProvider
             $context = (new ContextFactory())->createFromReflector($reflectionClass);
 
             foreach ($reflectionClass->getProperties() as $reflectionProperty) {
-                $propertyMetadata = $this->getPropertyMetadataFromReflection($reflectionProperty, $context);
-                $metadata->properties[] = $propertyMetadata;
+                if (!$reflectionProperty->isStatic()) {
+                    $propertyMetadata = $this->getPropertyMetadataFromReflection($reflectionProperty, $context);
+                    $metadata->properties[] = $propertyMetadata;
+                }
             }
 
             return $metadata;

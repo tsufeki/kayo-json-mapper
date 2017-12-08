@@ -12,6 +12,8 @@ class ClassMetadata
     public $name;
 
     /**
+     * Instance (not static) properties.
+     *
      * @var PropertyMetadata[]
      */
     public $properties = [];
