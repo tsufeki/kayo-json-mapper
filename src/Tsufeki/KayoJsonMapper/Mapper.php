@@ -90,44 +90,47 @@ class Mapper
      */
     public function loadArguments($data, callable $callable): array
     {
+        if (is_object($data) && $data instanceof \stdClass) {
+            $data = get_object_vars($data);
+        }
+
+        if (!is_array($data)) {
+            throw new Exception\InvalidDataException('Argument data must array or stdClass');
+        }
+
         $metadata = $this->callableMetadataProvider->getCallableMetadata($callable);
-        $paramCount = count($metadata->parameters);
-        $variadic = $paramCount !== 0 && $metadata->parameters[$paramCount - 1]->variadic;
-
-        if (is_object($data)) {
-            $dataArray = [];
-
-            foreach ($metadata->parameters as $param) {
-                if (!property_exists($data, $param->name)) {
-                    break;
-                }
-
-                $dataArray[] = $data->{$param->name};
-            }
-        } else {
-            $dataArray = array_values($data);
-
-            if (!$variadic) {
-                $dataArray = array_slice($dataArray, 0, $paramCount);
-            }
-        }
-
-        $argCount = count($dataArray);
-        if (isset($metadata->parameters[$argCount]) && !$metadata->parameters[$argCount]->optional) {
-            throw new Exception\InvalidDataException('Not enough arguments');
-        }
+        $context = $this->contextFactory->createLoadContext();
 
         $args = [];
-        $arg = null;
-        $i = 0;
-        foreach ($dataArray as $i => $arg) {
-            if ($variadic && $i >= $paramCount) {
-                $i = $paramCount - 1;
+        $paramPos = 0;
+        $argPos = 0;
+        while ($paramPos < count($metadata->parameters)) {
+            $param = $metadata->parameters[$paramPos];
+
+            if (array_key_exists($argPos, $data)) {
+                $key = $argPos;
+            } elseif (array_key_exists($param->name, $data)) {
+                $key = $param->name;
+            } else {
+                if (!$param->optional) {
+                    throw new Exception\InvalidDataException('Not enough arguments');
+                }
+                break;
             }
 
-            $type = $metadata->parameters[$i]->type;
-            $context = $this->contextFactory->createLoadContext();
-            $args[] = $this->loader->load($arg, $type, $context);
+            $args[] = $this->loader->load($data[$key], $param->type, $context);
+            unset($data[$key]);
+
+            $argPos++;
+            if (!$param->variadic) {
+                $paramPos++;
+            }
+        }
+
+        if (!empty($data)) {
+            throw new Exception\InvalidDataException(
+                'Some arguments could not be matched: ' . implode(', ', array_keys($data))
+            );
         }
 
         return $args;

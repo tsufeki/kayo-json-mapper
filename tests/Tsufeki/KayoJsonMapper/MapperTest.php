@@ -155,6 +155,17 @@ class MapperTest extends TestCase
         $args = $mapper->loadArguments($data, $function);
     }
 
+    public function test_load_arguments_unknown_argument()
+    {
+        $function = function () { };
+        $data = ['foo' => 42];
+
+        $mapper = MapperBuilder::create()->getMapper();
+
+        $this->expectException(InvalidDataException::class);
+        $args = $mapper->loadArguments($data, $function);
+    }
+
     public function test_load_arguments_variadic()
     {
         $function = function (string $foo, int ...$bar) { };
@@ -164,6 +175,18 @@ class MapperTest extends TestCase
         $args = $mapper->loadArguments($data, $function);
 
         $this->assertEquals($data, $args);
+    }
+
+    public function test_load_arguments_throws_on_bad_type()
+    {
+        $function = function () { };
+        /** @var mixed $data */
+        $data = 42;
+
+        $mapper = MapperBuilder::create()->getMapper();
+
+        $this->expectException(InvalidDataException::class);
+        $args = $mapper->loadArguments($data, $function);
     }
 
     public function test_dumps_up_to_max_depth()
