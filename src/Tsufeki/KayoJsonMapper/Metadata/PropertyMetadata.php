@@ -19,11 +19,6 @@ class PropertyMetadata
     /**
      * @var string|null
      */
-    public $variableName = null;
-
-    /**
-     * @var string|null
-     */
     public $getter = null;
 
     /**
@@ -37,7 +32,7 @@ class PropertyMetadata
             return $object->{$this->getter}();
         }
 
-        return $object->{$this->variableName};
+        return $object->{$this->name};
     }
 
     public function set($object, $value): self
@@ -45,7 +40,7 @@ class PropertyMetadata
         if ($this->setter) {
             $object->{$this->setter}($value);
         } else {
-            $object->{$this->variableName} = $value;
+            $object->{$this->name} = $value;
         }
 
         return $this;

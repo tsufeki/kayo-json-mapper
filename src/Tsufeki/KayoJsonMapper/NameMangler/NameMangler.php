@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Tsufeki\KayoJsonMapper\MetadataProvider\NameMangler;
+namespace Tsufeki\KayoJsonMapper\NameMangler;
 
 interface NameMangler
 {

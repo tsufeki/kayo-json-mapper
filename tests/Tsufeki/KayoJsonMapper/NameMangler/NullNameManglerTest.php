@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace Tests\Tsufeki\KayoJsonMapper\MetadataProvider\NameMangler;
+namespace Tests\Tsufeki\KayoJsonMapper\NameMangler;
 
 use PHPUnit\Framework\TestCase;
-use Tsufeki\KayoJsonMapper\MetadataProvider\NameMangler\NullNameMangler;
+use Tsufeki\KayoJsonMapper\NameMangler\NullNameMangler;
 
 /**
- * @covers \Tsufeki\KayoJsonMapper\MetadataProvider\NameMangler\NullNameMangler
+ * @covers \Tsufeki\KayoJsonMapper\NameMangler\NullNameMangler
  */
 class NullNameManglerTest extends TestCase
 {

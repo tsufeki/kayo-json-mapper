@@ -25,12 +25,11 @@ use Tsufeki\KayoJsonMapper\MetadataProvider\AccessorStrategy\StandardAccessorStr
 use Tsufeki\KayoJsonMapper\MetadataProvider\CachedClassMetadataProvider;
 use Tsufeki\KayoJsonMapper\MetadataProvider\CallableMetadataProvider;
 use Tsufeki\KayoJsonMapper\MetadataProvider\ClassMetadataProvider;
-use Tsufeki\KayoJsonMapper\MetadataProvider\ManglingClassMetadataProvider;
-use Tsufeki\KayoJsonMapper\MetadataProvider\NameMangler\CamelCaseToUnderscoreNameMangler;
-use Tsufeki\KayoJsonMapper\MetadataProvider\NameMangler\NameMangler;
 use Tsufeki\KayoJsonMapper\MetadataProvider\Phpdoc\PhpdocTypeExtractor;
 use Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionCallableMetadataProvider;
 use Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionClassMetadataProvider;
+use Tsufeki\KayoJsonMapper\NameMangler\CamelCaseToUnderscoreNameMangler;
+use Tsufeki\KayoJsonMapper\NameMangler\NameMangler;
 
 /**
  * Configure and build Mapper object.
@@ -377,13 +376,10 @@ class MapperBuilder
         $callableMetadataProvider = $this->callableMetadataProvider ?? new ReflectionCallableMetadataProvider($phpdocTypeExtractor);
 
         $classMetadataProvider = $this->classMetadataProvider ?? new CachedClassMetadataProvider(
-            new ManglingClassMetadataProvider(
-                new ReflectionClassMetadataProvider(
-                    $callableMetadataProvider,
-                    $accessorStrategy,
-                    $phpdocTypeExtractor
-                ),
-                $nameMangler
+            new ReflectionClassMetadataProvider(
+                $callableMetadataProvider,
+                $accessorStrategy,
+                $phpdocTypeExtractor
             )
         );
 
@@ -399,6 +395,7 @@ class MapperBuilder
                 $loader,
                 $classMetadataProvider,
                 $instantiator,
+                $nameMangler,
                 $this->throwOnUnknownProperty,
                 $this->throwOnMissingProperty
             ))
@@ -428,7 +425,11 @@ class MapperBuilder
         $dumper
             ->add(new ScalarDumper())
             ->add(new ArrayDumper($dumper))
-            ->add(new ObjectDumper($dumper, $classMetadataProvider))
+            ->add(new ObjectDumper(
+                $dumper,
+                $classMetadataProvider,
+                $nameMangler
+            ))
             ->add(new DateTimeDumper($this->dateTimeFormat));
 
         foreach ($this->dumpers as $userDumper) {

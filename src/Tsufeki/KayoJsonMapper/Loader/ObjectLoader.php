@@ -11,6 +11,7 @@ use Tsufeki\KayoJsonMapper\Exception\UnknownPropertyException;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 use Tsufeki\KayoJsonMapper\Loader\Instantiator\Instantiator;
 use Tsufeki\KayoJsonMapper\MetadataProvider\ClassMetadataProvider;
+use Tsufeki\KayoJsonMapper\NameMangler\NameMangler;
 
 class ObjectLoader implements Loader
 {
@@ -30,6 +31,11 @@ class ObjectLoader implements Loader
     private $instantiator;
 
     /**
+     * @var NameMangler
+     */
+    private $nameMangler;
+
+    /**
      * @var bool
      */
     private $throwOnUnknownProperty;
@@ -43,12 +49,14 @@ class ObjectLoader implements Loader
         Loader $dispatchingLoader,
         ClassMetadataProvider $metadataProvider,
         Instantiator $instantiator,
+        NameMangler $nameMangler,
         bool $throwOnUnknownProperty = true,
         bool $throwOnMissingProperty = true
     ) {
         $this->dispatchingLoader = $dispatchingLoader;
         $this->metadataProvider = $metadataProvider;
         $this->instantiator = $instantiator;
+        $this->nameMangler = $nameMangler;
         $this->throwOnUnknownProperty = $throwOnUnknownProperty;
         $this->throwOnMissingProperty = $throwOnMissingProperty;
     }
@@ -84,10 +92,11 @@ class ObjectLoader implements Loader
         $vars = get_object_vars($data);
 
         foreach ($metadata->properties as $property) {
-            if (isset($vars[$property->name])) {
-                $value = $this->dispatchingLoader->load($vars[$property->name], $property->type, $context);
+            $mangledName = $this->nameMangler->mangle($property->name);
+            if (isset($vars[$mangledName])) {
+                $value = $this->dispatchingLoader->load($vars[$mangledName], $property->type, $context);
                 $property->set($target, $value);
-                unset($vars[$property->name]);
+                unset($vars[$mangledName]);
             } elseif ($this->throwOnMissingProperty) {
                 throw new MissingPropertyException($property->name);
             }

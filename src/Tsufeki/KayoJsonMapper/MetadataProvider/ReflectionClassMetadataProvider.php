@@ -63,7 +63,6 @@ class ReflectionClassMetadataProvider implements ClassMetadataProvider
     {
         $metadata = new PropertyMetadata();
         $metadata->name = $property->getName();
-        $metadata->variableName = $property->isPublic() ? $metadata->name : null;
 
         $class = $property->getDeclaringClass();
 

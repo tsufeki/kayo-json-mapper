@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace Tests\Tsufeki\KayoJsonMapper\MetadataProvider\NameMangler;
+namespace Tests\Tsufeki\KayoJsonMapper\NameMangler;
 
 use PHPUnit\Framework\TestCase;
-use Tsufeki\KayoJsonMapper\MetadataProvider\NameMangler\CamelCaseToUnderscoreNameMangler;
+use Tsufeki\KayoJsonMapper\NameMangler\CamelCaseToUnderscoreNameMangler;
 
 /**
- * @covers \Tsufeki\KayoJsonMapper\MetadataProvider\NameMangler\CamelCaseToUnderscoreNameMangler
+ * @covers \Tsufeki\KayoJsonMapper\NameMangler\CamelCaseToUnderscoreNameMangler
  */
 class CamelCaseToUnderscoreNameManglerTest extends TestCase
 {
