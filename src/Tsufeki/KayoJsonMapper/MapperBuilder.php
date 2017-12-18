@@ -17,6 +17,7 @@ use Tsufeki\KayoJsonMapper\Loader\Instantiator\Instantiator;
 use Tsufeki\KayoJsonMapper\Loader\Loader;
 use Tsufeki\KayoJsonMapper\Loader\MixedLoader;
 use Tsufeki\KayoJsonMapper\Loader\ObjectLoader;
+use Tsufeki\KayoJsonMapper\Loader\ReplacingLoader;
 use Tsufeki\KayoJsonMapper\Loader\ScalarLoader;
 use Tsufeki\KayoJsonMapper\Loader\UnionLoader;
 use Tsufeki\KayoJsonMapper\MetadataProvider\AccessorStrategy\AccessorStrategy;
@@ -65,6 +66,16 @@ class MapperBuilder
      * @var array<string,string|callable>
      */
     private $classMappings = [];
+
+    /**
+     * @var array<string,string>
+     */
+    private $typeReplacements = [];
+
+    /**
+     * @var array<string,callable>
+     */
+    private $typeReplacementCallbacks = [];
 
     /**
      * @var Loader[]
@@ -226,6 +237,48 @@ class MapperBuilder
     public function addClassMappingCallback(string $class, callable $callback): self
     {
         $this->classMappings[$class] = $callback;
+
+        return $this;
+    }
+
+    /**
+     * Substitute loaded type with another.
+     *
+     * Useful when properties are typed with abstract class/interface, e.g.
+     * DateTimeInterface => DateTime.
+     *
+     * Accepts any phpdoc-style types, but doesn't any special normalization
+     * when matching. Works only during loading.
+     *
+     * @param string $replacedType
+     * @param string $replacingType
+     *
+     * @return $this
+     */
+    public function replaceType(string $replacedType, string $replacingType): self
+    {
+        $this->typeReplacements[$replacedType] = $replacingType;
+
+        return $this;
+    }
+
+    /**
+     * Substitute loaded type with another.
+     *
+     * Same as `replaceType()` but with callback which will receive loaded data
+     * and replaced type and should return replacing type as string.
+     *
+     * Accepts any phpdoc-style types, but doesn't any special normalization
+     * when matching. Works only during loading.
+     *
+     * @param string   $replacedType
+     * @param callable $replacingTypeCallback ($data, string $type) -> string $replacingType
+     *
+     * @return $this
+     */
+    public function replaceTypeCallback(string $replacedType, callable $replacingTypeCallback): self
+    {
+        $this->typeReplacementCallbacks[$replacedType] = $replacingTypeCallback;
 
         return $this;
     }
@@ -409,6 +462,19 @@ class MapperBuilder
 
         foreach ($this->loaders as $userLoader) {
             $loader->add($userLoader);
+        }
+
+        if (!empty($this->typeReplacements) || !empty($this->typeReplacementCallbacks)) {
+            $replacingLoader = new ReplacingLoader($loader);
+
+            foreach ($this->typeReplacements as $replacedType => $replacingType) {
+                $replacingLoader->replaceType($replacedType, $replacingType);
+            }
+            foreach ($this->typeReplacementCallbacks as $replacedType => $replacingTypeCallback) {
+                $replacingLoader->replaceTypeCallback($replacedType, $replacingTypeCallback);
+            }
+
+            $loader->add($replacingLoader);
         }
 
         $dumper = new DispatchingDumper(

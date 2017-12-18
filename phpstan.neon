@@ -8,3 +8,4 @@ parameters:
     ignoreErrors:
         # Fixed in TypeResolver master, just wait for a release:
         - '~Parameter #2 \$type of method Tsufeki\\KayoJsonMapper\\.*Loader::load\(\) expects phpDocumentor\\Reflection\\Type, phpDocumentor\\Reflection\\Type\|null given~'
+        - '~Array \(array<string, callable\|phpDocumentor\\Reflection\\Type>\) does not accept phpDocumentor\\Reflection\\Type\|null~'
