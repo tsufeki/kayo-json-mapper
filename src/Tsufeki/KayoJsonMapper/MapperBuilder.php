@@ -9,6 +9,7 @@ use Tsufeki\KayoJsonMapper\Dumper\DispatchingDumper;
 use Tsufeki\KayoJsonMapper\Dumper\Dumper;
 use Tsufeki\KayoJsonMapper\Dumper\ObjectDumper;
 use Tsufeki\KayoJsonMapper\Dumper\ScalarDumper;
+use Tsufeki\KayoJsonMapper\Loader\ArgumentLoader;
 use Tsufeki\KayoJsonMapper\Loader\ArrayLoader;
 use Tsufeki\KayoJsonMapper\Loader\DateTimeLoader;
 use Tsufeki\KayoJsonMapper\Loader\DispatchingLoader;
@@ -418,6 +419,8 @@ class MapperBuilder
             $loader->add($replacingLoader);
         }
 
+        $argumentLoader = new ArgumentLoader($loader, $callableMetadataProvider);
+
         $dumper = new DispatchingDumper(
             $this->throwOnMaxDepthExceeded,
             $this->throwOnInfiniteRecursion
@@ -438,6 +441,6 @@ class MapperBuilder
 
         $contextFactory = new ContextFactory($this->dumpMaxDepth);
 
-        return new Mapper($loader, $dumper, $contextFactory, $callableMetadataProvider);
+        return new Mapper($loader, $dumper, $argumentLoader, $contextFactory);
     }
 }

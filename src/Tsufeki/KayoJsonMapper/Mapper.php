@@ -5,8 +5,8 @@ namespace Tsufeki\KayoJsonMapper;
 use phpDocumentor\Reflection\TypeResolver;
 use Tsufeki\KayoJsonMapper\Context\ContextFactory;
 use Tsufeki\KayoJsonMapper\Dumper\Dumper;
+use Tsufeki\KayoJsonMapper\Loader\ArgumentLoader;
 use Tsufeki\KayoJsonMapper\Loader\Loader;
-use Tsufeki\KayoJsonMapper\MetadataProvider\CallableMetadataProvider;
 
 class Mapper
 {
@@ -21,14 +21,14 @@ class Mapper
     private $dumper;
 
     /**
+     * @var ArgumentLoader
+     */
+    private $argumentLoader;
+
+    /**
      * @var ContextFactory
      */
     private $contextFactory;
-
-    /**
-     * @var CallableMetadataProvider
-     */
-    private $callableMetadataProvider;
 
     /**
      * @var TypeResolver
@@ -41,13 +41,13 @@ class Mapper
     public function __construct(
         Loader $loader,
         Dumper $dumper,
-        ContextFactory $contextFactory,
-        CallableMetadataProvider $callableMetadataProvider
+        ArgumentLoader $argumentLoader,
+        ContextFactory $contextFactory
     ) {
         $this->loader = $loader;
         $this->dumper = $dumper;
+        $this->argumentLoader = $argumentLoader;
         $this->contextFactory = $contextFactory;
-        $this->callableMetadataProvider = $callableMetadataProvider;
         $this->typeResolver = new TypeResolver();
     }
 
@@ -90,50 +90,9 @@ class Mapper
      */
     public function loadArguments($data, callable $callable): array
     {
-        if (is_object($data) && $data instanceof \stdClass) {
-            $data = get_object_vars($data);
-        }
-
-        if (!is_array($data)) {
-            throw new Exception\InvalidDataException('Argument data must array or stdClass');
-        }
-
-        $metadata = $this->callableMetadataProvider->getCallableMetadata($callable);
         $context = $this->contextFactory->createLoadContext();
 
-        $args = [];
-        $paramPos = 0;
-        $argPos = 0;
-        while ($paramPos < count($metadata->parameters)) {
-            $param = $metadata->parameters[$paramPos];
-
-            if (array_key_exists($argPos, $data)) {
-                $key = $argPos;
-            } elseif (array_key_exists($param->name, $data)) {
-                $key = $param->name;
-            } else {
-                if (!$param->optional) {
-                    throw new Exception\InvalidDataException('Not enough arguments');
-                }
-                break;
-            }
-
-            $args[] = $this->loader->load($data[$key], $param->type, $context);
-            unset($data[$key]);
-
-            $argPos++;
-            if (!$param->variadic) {
-                $paramPos++;
-            }
-        }
-
-        if (!empty($data)) {
-            throw new Exception\InvalidDataException(
-                'Some arguments could not be matched: ' . implode(', ', array_keys($data))
-            );
-        }
-
-        return $args;
+        return $this->argumentLoader->loadArguments($data, $callable, $context);
     }
 
     /**
