@@ -419,7 +419,11 @@ class MapperBuilder
             $loader->add($replacingLoader);
         }
 
-        $argumentLoader = new ArgumentLoader($loader, $callableMetadataProvider);
+        $argumentLoader = new ArgumentLoader(
+            $loader,
+            $callableMetadataProvider,
+            $nameMangler
+        );
 
         $dumper = new DispatchingDumper(
             $this->throwOnMaxDepthExceeded,

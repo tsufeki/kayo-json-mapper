@@ -103,4 +103,17 @@ class ArgumentLoaderTest extends TestCase
         $this->expectException(InvalidDataException::class);
         $args = $mapper->loadArguments($data, $function);
     }
+
+    public function test_load_arguments_mangle()
+    {
+        $function = function (int $fooBar) { };
+        $data = [
+            'foo_bar' => 42,
+        ];
+
+        $mapper = MapperBuilder::create()->getMapper();
+        $args = $mapper->loadArguments($data, $function);
+
+        $this->assertEquals([42], $args);
+    }
 }

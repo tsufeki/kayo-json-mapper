@@ -5,6 +5,7 @@ namespace Tsufeki\KayoJsonMapper\Loader;
 use Tsufeki\KayoJsonMapper\Context\Context;
 use Tsufeki\KayoJsonMapper\Exception\InvalidDataException;
 use Tsufeki\KayoJsonMapper\MetadataProvider\CallableMetadataProvider;
+use Tsufeki\KayoJsonMapper\NameMangler\NameMangler;
 
 class ArgumentLoader
 {
@@ -18,10 +19,19 @@ class ArgumentLoader
      */
     private $callableMetadataProvider;
 
-    public function __construct(Loader $loader, CallableMetadataProvider $callableMetadataProvider)
-    {
+    /**
+     * @var NameMangler
+     */
+    private $nameMangler;
+
+    public function __construct(
+        Loader $loader,
+        CallableMetadataProvider $callableMetadataProvider,
+        NameMangler $nameMangler
+    ) {
         $this->loader = $loader;
         $this->callableMetadataProvider = $callableMetadataProvider;
+        $this->nameMangler = $nameMangler;
     }
 
     /**
@@ -50,14 +60,15 @@ class ArgumentLoader
         $argPos = 0;
         while ($paramPos < count($metadata->parameters)) {
             $param = $metadata->parameters[$paramPos];
+            $mangledName = $this->nameMangler->mangle($param->name);
 
             if (array_key_exists($argPos, $data)) {
                 $key = $argPos;
-            } elseif (array_key_exists($param->name, $data)) {
-                $key = $param->name;
+            } elseif (array_key_exists($mangledName, $data)) {
+                $key = $mangledName;
             } else {
                 if (!$param->optional) {
-                    throw new InvalidDataException('Not enough arguments');
+                    throw new InvalidDataException("Required argument $param->name missing");
                 }
                 break;
             }
