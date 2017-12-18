@@ -12,8 +12,8 @@ use Tsufeki\KayoJsonMapper\Dumper\ScalarDumper;
 use Tsufeki\KayoJsonMapper\Loader\ArrayLoader;
 use Tsufeki\KayoJsonMapper\Loader\DateTimeLoader;
 use Tsufeki\KayoJsonMapper\Loader\DispatchingLoader;
-use Tsufeki\KayoJsonMapper\Loader\Instantiator\ClassMappingInstantiator;
 use Tsufeki\KayoJsonMapper\Loader\Instantiator\Instantiator;
+use Tsufeki\KayoJsonMapper\Loader\Instantiator\NewInstantiator;
 use Tsufeki\KayoJsonMapper\Loader\Loader;
 use Tsufeki\KayoJsonMapper\Loader\MixedLoader;
 use Tsufeki\KayoJsonMapper\Loader\ObjectLoader;
@@ -61,11 +61,6 @@ class MapperBuilder
      * @var Instantiator|null
      */
     private $instantiator;
-
-    /**
-     * @var array<string,string|callable>
-     */
-    private $classMappings = [];
 
     /**
      * @var array<string,string>
@@ -197,46 +192,6 @@ class MapperBuilder
     public function setInstantiator(Instantiator $instantiator): self
     {
         $this->instantiator = $instantiator;
-
-        return $this;
-    }
-
-    /**
-     * Create instances of different class instead of given.
-     *
-     * Useful when properties are typed with abstract class/interface, i.e
-     * DateTimeInterface => DateTime.
-     *
-     * Ignored when not using default instantiator.
-     *
-     * @param string $class
-     * @param string $targetClass
-     *
-     * @return $this
-     */
-    public function addClassMapping(string $class, string $targetClass): self
-    {
-        $this->classMappings[$class] = $targetClass;
-
-        return $this;
-    }
-
-    /**
-     * Create instances of different class instead of given.
-     *
-     * Similar to `addClassMapping()`, but using a callback. The callback will
-     * receive unserialized data as an argument.
-     *
-     * Ignored when not using default instantiator.
-     *
-     * @param string   $class
-     * @param callable $callback (\stdClass $data) -> string class name
-     *
-     * @return $this
-     */
-    public function addClassMappingCallback(string $class, callable $callback): self
-    {
-        $this->classMappings[$class] = $callback;
 
         return $this;
     }
@@ -432,18 +387,7 @@ class MapperBuilder
             )
         );
 
-        $instantiator = $this->instantiator;
-        if ($instantiator === null) {
-            $instantiator = new ClassMappingInstantiator();
-
-            foreach ($this->classMappings as $class => $target) {
-                if (is_callable($target)) {
-                    $instantiator->addCallback($class, $target);
-                } else {
-                    $instantiator->addMapping($class, $target);
-                }
-            }
-        }
+        $instantiator = $this->instantiator ?? new NewInstantiator();
 
         $loader = new DispatchingLoader();
         $loader

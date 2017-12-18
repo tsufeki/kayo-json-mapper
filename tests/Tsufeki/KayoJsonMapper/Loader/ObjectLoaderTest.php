@@ -49,7 +49,7 @@ class ObjectLoaderTest extends TestCase
         $instantiator
             ->expects($this->once())
             ->method('instantiate')
-            ->with($this->identicalTo(TestClass::class), $this->equalTo((object)$data))
+            ->with($this->identicalTo(TestClass::class))
             ->willReturn(new TestClass());
 
         $objectLoader = new ObjectLoader($innerLoader, $metadataProvider, $instantiator);
@@ -104,7 +104,7 @@ class ObjectLoaderTest extends TestCase
         $instantiator
             ->expects($this->once())
             ->method('instantiate')
-            ->with($this->identicalTo(TestParentClass::class), $this->identicalTo($data))
+            ->with($this->identicalTo(TestParentClass::class))
             ->willReturn(new TestClass());
 
         $objectLoader = new ObjectLoader($innerLoader, $metadataProvider, $instantiator);
@@ -138,7 +138,7 @@ class ObjectLoaderTest extends TestCase
         $instantiator
             ->expects($this->once())
             ->method('instantiate')
-            ->with($this->identicalTo(TestClass::class), $this->identicalTo($data))
+            ->with($this->identicalTo(TestClass::class))
             ->willReturn(new TestClass());
 
         $objectLoader = new ObjectLoader($innerLoader, $metadataProvider, $instantiator);
@@ -173,7 +173,7 @@ class ObjectLoaderTest extends TestCase
         $instantiator
             ->expects($this->once())
             ->method('instantiate')
-            ->with($this->identicalTo(TestClass::class), $this->identicalTo($data))
+            ->with($this->identicalTo(TestClass::class))
             ->willReturn(new TestClass());
 
         $objectLoader = new ObjectLoader($innerLoader, $metadataProvider, $instantiator);

@@ -7,10 +7,9 @@ interface Instantiator
     /**
      * Instantiate new object of given class.
      *
-     * @param string    $class
-     * @param \stdClass $data  Data which will be loaded into return object, before serialization.
+     * @param string $class
      *
      * @return object
      */
-    public function instantiate(string $class, \stdClass $data);
+    public function instantiate(string $class);
 }
