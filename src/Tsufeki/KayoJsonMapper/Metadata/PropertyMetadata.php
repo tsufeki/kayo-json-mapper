@@ -25,4 +25,9 @@ class PropertyMetadata
      * @var string|null
      */
     public $setter = null;
+
+    /**
+     * @var bool
+     */
+    public $required = true;
 }

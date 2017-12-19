@@ -42,6 +42,7 @@ class ReflectionClassMetadataProviderTest extends TestCase
             $this->assertSame($data['type'], (string)$property->type, "Property $name");
             $this->assertSame($data['getter'] ?? null, $property->getter, "Property $name");
             $this->assertSame($data['setter'] ?? null, $property->setter, "Property $name");
+            $this->assertSame($data['required'] ?? false, $property->required, "Property $name");
         }
     }
 
@@ -72,7 +73,7 @@ class ReflectionClassMetadataProviderTest extends TestCase
         $metadata = $this->getProvider()->getClassMetadata(get_class($object));
 
         $this->checkProperties($metadata, [
-            'foo' => 'int',
+            'foo' => ['type' => 'int', 'required' => true],
             'barBaz' => 'string|null',
         ]);
     }
@@ -100,6 +101,7 @@ class ReflectionClassMetadataProviderTest extends TestCase
                 'type' => 'int',
                 'getter' => 'getFoo',
                 'setter' => 'setFoo',
+                'required' => true,
             ],
         ]);
     }

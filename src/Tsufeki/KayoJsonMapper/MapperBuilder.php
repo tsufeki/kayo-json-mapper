@@ -81,6 +81,11 @@ class MapperBuilder
     private $privatePropertyAccess = false;
 
     /**
+     * @var bool
+     */
+    private $guessRequiredProperties = true;
+
+    /**
      * @var Loader[]
      */
     private $loaders = [];
@@ -251,6 +256,8 @@ class MapperBuilder
      *
      * This also enables constructor-bypassing instantiator.
      *
+     * Defaults to false.
+     *
      * @param bool $privatePropertyAccess
      *
      * @return $this
@@ -258,6 +265,27 @@ class MapperBuilder
     public function setPrivatePropertyAccess(bool $privatePropertyAccess): self
     {
         $this->privatePropertyAccess = $privatePropertyAccess;
+
+        return $this;
+    }
+
+    /**
+     * Whether to guess if a property is required.
+     *
+     * Properties with null default value and non-nullable type are deemed
+     * required.
+     *
+     * Only matters during loading and with `throwOnMissingProperty` on.
+     *
+     * Defaults to true.
+     *
+     * @param bool $guessRequiredProperties
+     *
+     * @return $this
+     */
+    public function setGuessRequiredProperties(bool $guessRequiredProperties)
+    {
+        $this->guessRequiredProperties = $guessRequiredProperties;
 
         return $this;
     }
@@ -413,7 +441,8 @@ class MapperBuilder
             new ReflectionClassMetadataProvider(
                 $callableMetadataProvider,
                 $accessorStrategy,
-                $phpdocTypeExtractor
+                $phpdocTypeExtractor,
+                $this->guessRequiredProperties
             )
         );
 

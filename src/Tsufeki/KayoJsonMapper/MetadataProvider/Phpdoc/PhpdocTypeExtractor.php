@@ -10,12 +10,17 @@ use phpDocumentor\Reflection\DocBlock\Tags\Var_;
 use phpDocumentor\Reflection\DocBlockFactory;
 use phpDocumentor\Reflection\Fqsen;
 use phpDocumentor\Reflection\Type;
+use phpDocumentor\Reflection\Types\Compound;
 use phpDocumentor\Reflection\Types\ContextFactory;
+use phpDocumentor\Reflection\Types\Mixed_;
+use phpDocumentor\Reflection\Types\Null_;
+use phpDocumentor\Reflection\Types\Nullable;
 use phpDocumentor\Reflection\Types\Object_;
 use phpDocumentor\Reflection\Types\Parent_;
 use phpDocumentor\Reflection\Types\Self_;
 use phpDocumentor\Reflection\Types\Static_;
 use phpDocumentor\Reflection\Types\This;
+use phpDocumentor\Reflection\Types\Void_;
 
 class PhpdocTypeExtractor
 {
@@ -113,5 +118,27 @@ class PhpdocTypeExtractor
         }
 
         return $type;
+    }
+
+    public function isTypeNullable(Type $type): bool
+    {
+        if ($type instanceof Null_ ||
+            $type instanceof Nullable ||
+            $type instanceof Void_ ||
+            $type instanceof Mixed_
+        ) {
+            return true;
+        }
+
+        if ($type instanceof Compound) {
+            /** @var Type $subtype */
+            foreach ($type as $subtype) {
+                if ($this->isTypeNullable($subtype)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

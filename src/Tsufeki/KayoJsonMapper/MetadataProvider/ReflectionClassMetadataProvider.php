@@ -28,14 +28,21 @@ class ReflectionClassMetadataProvider implements ClassMetadataProvider
      */
     private $phpdocTypeExtractor;
 
+    /**
+     * @var bool
+     */
+    private $guessRequiredProperties;
+
     public function __construct(
         CallableMetadataProvider $callableMetadataProvider,
         AccessorStrategy $accessorStrategy,
-        PhpdocTypeExtractor $phpdocTypeExtractor
+        PhpdocTypeExtractor $phpdocTypeExtractor,
+        bool $guessRequiredProperties = true
     ) {
         $this->callableMetadataProvider = $callableMetadataProvider;
         $this->accessorStrategy = $accessorStrategy;
         $this->phpdocTypeExtractor = $phpdocTypeExtractor;
+        $this->guessRequiredProperties = $guessRequiredProperties;
     }
 
     public function getClassMetadata(string $class): ClassMetadata
@@ -51,6 +58,10 @@ class ReflectionClassMetadataProvider implements ClassMetadataProvider
                     $propertyMetadata = $this->getPropertyMetadataFromReflection($reflectionProperty, $context);
                     $metadata->properties[] = $propertyMetadata;
                 }
+            }
+
+            if ($this->guessRequiredProperties) {
+                $this->markRequiredProperties($reflectionClass, $metadata->properties);
             }
 
             return $metadata;
@@ -104,5 +115,18 @@ class ReflectionClassMetadataProvider implements ClassMetadataProvider
         }
 
         return null;
+    }
+
+    /**
+     * @param PropertyMetadata[] $properties
+     */
+    private function markRequiredProperties(\ReflectionClass $class, array $properties)
+    {
+        $defaults = $class->getDefaultProperties();
+
+        foreach ($properties as $property) {
+            $property->required = ($defaults[$property->name] ?? null) === null
+                && !$this->phpdocTypeExtractor->isTypeNullable($property->type);
+        }
     }
 }

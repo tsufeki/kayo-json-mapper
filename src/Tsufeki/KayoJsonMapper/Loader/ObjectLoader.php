@@ -105,7 +105,7 @@ class ObjectLoader implements Loader
                 $value = $this->dispatchingLoader->load($vars[$mangledName], $property->type, $context);
                 $this->propertyAccess->set($target, $property, $value);
                 unset($vars[$mangledName]);
-            } elseif ($this->throwOnMissingProperty) {
+            } elseif ($property->required && $this->throwOnMissingProperty) {
                 throw new MissingPropertyException($property->name);
             }
         }
