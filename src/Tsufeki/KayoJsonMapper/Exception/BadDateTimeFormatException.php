@@ -4,8 +4,8 @@ namespace Tsufeki\KayoJsonMapper\Exception;
 
 class BadDateTimeFormatException extends InvalidDataException
 {
-    public function __construct(string $format, array $errors)
+    public function __construct(string $format, array $errors, string $data)
     {
-        parent::__construct("Bad date format ($format): " . implode('; ', $errors));
+        parent::__construct("Bad date format: expected '$format', got '$data': " . implode('; ', $errors));
     }
 }

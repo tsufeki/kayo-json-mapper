@@ -4,8 +4,8 @@ namespace Tsufeki\KayoJsonMapper\Exception;
 
 class UnknownPropertyException extends InvalidDataException
 {
-    public function __construct(string $propertyName)
+    public function __construct(string $class, string $propertyName)
     {
-        parent::__construct("Unrecognized property $propertyName found");
+        parent::__construct("Unrecognized property {$class}::\${$propertyName} found");
     }
 }

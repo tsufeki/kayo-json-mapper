@@ -33,7 +33,7 @@ class DateTimeLoader implements Loader
 
         $result = \DateTime::createFromFormat($this->format, $data);
         if ($result === false) {
-            throw new BadDateTimeFormatException($this->format, \DateTime::getLastErrors()['errors']);
+            throw new BadDateTimeFormatException($this->format, \DateTime::getLastErrors()['errors'], $data);
         }
 
         return $result;

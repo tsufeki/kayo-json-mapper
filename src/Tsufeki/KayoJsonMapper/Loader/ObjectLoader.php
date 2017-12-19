@@ -106,12 +106,12 @@ class ObjectLoader implements Loader
                 $this->propertyAccess->set($target, $property, $value);
                 unset($vars[$mangledName]);
             } elseif ($property->required && $this->throwOnMissingProperty) {
-                throw new MissingPropertyException($property->name);
+                throw new MissingPropertyException($class, $property->name);
             }
         }
 
         if (!empty($vars) && $this->throwOnUnknownProperty) {
-            throw new UnknownPropertyException(array_keys($vars)[0]);
+            throw new UnknownPropertyException($class, array_keys($vars)[0]);
         }
 
         return $target;
