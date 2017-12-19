@@ -22,7 +22,7 @@ use Tsufeki\KayoJsonMapper\PropertyAccess\PublicPropertyAccess;
  */
 class ObjectLoaderTest extends TestCase
 {
-    private function getObjectLoader(Loader $innerLoader): ObjectLoader
+    private function getObjectLoader(Loader $innerLoader, bool ...$opts): ObjectLoader
     {
         $metadataProvider = $this->createMock(ClassMetadataProvider::class);
         $metadataProvider
@@ -48,7 +48,8 @@ class ObjectLoaderTest extends TestCase
             $metadataProvider,
             $instantiator,
             $nameMangler,
-            new PublicPropertyAccess()
+            new PublicPropertyAccess(),
+            ...$opts
         );
     }
 
@@ -128,6 +129,29 @@ class ObjectLoaderTest extends TestCase
 
         $this->expectException(MissingPropertyException::class);
         $result = $objectLoader->load($data, $resolver->resolve('\\' . TestClass::class), new Context());
+    }
+
+    public function test_sets_null_on_missing_property()
+    {
+        $data = (object)[
+            'barSerializedOnly' => 'baz',
+        ];
+
+        $resolver = new TypeResolver();
+
+        $innerLoader = $this->createMock(Loader::class);
+        $innerLoader
+            ->expects($this->exactly(1))
+            ->method('load')
+            ->with($this->identicalTo('baz'), $resolver->resolve('string'))
+            ->willReturn('BAZ');
+
+        $objectLoader = $this->getObjectLoader($innerLoader, false, false, true);
+        $result = $objectLoader->load($data, $resolver->resolve('\\' . TestClass::class), new Context());
+
+        $this->assertCount(2, get_object_vars($result));
+        $this->assertNull($result->foo);
+        $this->assertSame('BAZ', $result->bar);
     }
 
     public function test_returns_stdClass_unchanged()

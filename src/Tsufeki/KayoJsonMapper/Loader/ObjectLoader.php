@@ -51,6 +51,11 @@ class ObjectLoader implements Loader
      */
     private $throwOnMissingProperty;
 
+    /**
+     * @var bool
+     */
+    private $setToNullOnMissingProperty;
+
     public function __construct(
         Loader $dispatchingLoader,
         ClassMetadataProvider $metadataProvider,
@@ -58,7 +63,8 @@ class ObjectLoader implements Loader
         NameMangler $nameMangler,
         PropertyAccess $propertyAccess,
         bool $throwOnUnknownProperty = true,
-        bool $throwOnMissingProperty = true
+        bool $throwOnMissingProperty = true,
+        bool $setToNullOnMissingProperty = false
     ) {
         $this->dispatchingLoader = $dispatchingLoader;
         $this->metadataProvider = $metadataProvider;
@@ -67,6 +73,7 @@ class ObjectLoader implements Loader
         $this->propertyAccess = $propertyAccess;
         $this->throwOnUnknownProperty = $throwOnUnknownProperty;
         $this->throwOnMissingProperty = $throwOnMissingProperty;
+        $this->setToNullOnMissingProperty = $setToNullOnMissingProperty;
     }
 
     public function load($data, Type $type, Context $context)
@@ -105,8 +112,13 @@ class ObjectLoader implements Loader
                 $value = $this->dispatchingLoader->load($vars[$mangledName], $property->type, $context);
                 $this->propertyAccess->set($target, $property, $value);
                 unset($vars[$mangledName]);
-            } elseif ($property->required && $this->throwOnMissingProperty) {
-                throw new MissingPropertyException($class, $property->name);
+            } else {
+                if ($property->required && $this->throwOnMissingProperty) {
+                    throw new MissingPropertyException($class, $property->name);
+                }
+                if ($this->setToNullOnMissingProperty) {
+                    $this->propertyAccess->set($target, $property, null);
+                }
             }
         }
 

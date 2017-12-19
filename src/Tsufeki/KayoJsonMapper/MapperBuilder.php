@@ -124,7 +124,12 @@ class MapperBuilder
     /**
      * @var bool
      */
-    private $throwOnUnknownProperty = true;
+    private $throwOnUnknownProperty = false;
+
+    /**
+     * @var bool
+     */
+    private $setToNullOnMissingProperty = false;
 
     public static function create(): self
     {
@@ -406,7 +411,7 @@ class MapperBuilder
     /**
      * Whether to throw exception when unknown property is encountered in loaded data.
      *
-     * Default true.
+     * Default false.
      *
      * @param bool $throwOnUnknownProperty
      *
@@ -415,6 +420,22 @@ class MapperBuilder
     public function throwOnUnknownProperty(bool $throwOnUnknownProperty): self
     {
         $this->throwOnUnknownProperty = $throwOnUnknownProperty;
+
+        return $this;
+    }
+
+    /**
+     * If true, properties missing in JSON are always set to null.
+     *
+     * Default false.
+     *
+     * @param bool $setToNullOnMissingProperty
+     *
+     * @return $this
+     */
+    public function setToNullOnMissingProperty(bool $setToNullOnMissingProperty)
+    {
+        $this->setToNullOnMissingProperty = $setToNullOnMissingProperty;
 
         return $this;
     }
@@ -462,7 +483,8 @@ class MapperBuilder
                 $nameMangler,
                 $propertyAccess,
                 $this->throwOnUnknownProperty,
-                $this->throwOnMissingProperty
+                $this->throwOnMissingProperty,
+                $this->setToNullOnMissingProperty
             ))
             ->add(new DateTimeLoader($this->dateTimeFormat));
 
