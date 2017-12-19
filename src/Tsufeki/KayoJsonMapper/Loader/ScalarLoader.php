@@ -14,9 +14,8 @@ class ScalarLoader implements Loader
         Types\Boolean::class => ['boolean'],
         Types\Float_::class => ['double', 'integer'],
         Types\Integer::class => ['integer'],
-        Types\Null_::class => ['NULL'],
         Types\String_::class => ['string'],
-        Types\Scalar::class => ['boolean', 'double', 'integer', 'NULL', 'string'],
+        Types\Scalar::class => ['boolean', 'double', 'integer', 'string'],
     ];
 
     public function load($data, Type $type, Context $context)

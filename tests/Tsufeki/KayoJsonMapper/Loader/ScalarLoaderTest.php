@@ -57,6 +57,7 @@ class ScalarLoaderTest extends TestCase
             ['array'],
             ['int[]'],
             ['mixed'],
+            ['null'],
         ];
     }
 

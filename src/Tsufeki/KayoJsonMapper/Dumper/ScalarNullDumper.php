@@ -5,7 +5,7 @@ namespace Tsufeki\KayoJsonMapper\Dumper;
 use Tsufeki\KayoJsonMapper\Context\Context;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 
-class ScalarDumper implements Dumper
+class ScalarNullDumper implements Dumper
 {
     public function dump($value, Context $context)
     {

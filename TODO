@@ -1,6 +1,5 @@
 * Case insensitive properties
 * Getter/setter without property (virtual properties)
-* Non-strict nulls
 * Non-strict scalars
 * Dump extra (non-class) properties
 * Load extra properties

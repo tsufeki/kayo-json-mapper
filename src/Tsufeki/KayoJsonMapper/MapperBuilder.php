@@ -8,7 +8,7 @@ use Tsufeki\KayoJsonMapper\Dumper\DateTimeDumper;
 use Tsufeki\KayoJsonMapper\Dumper\DispatchingDumper;
 use Tsufeki\KayoJsonMapper\Dumper\Dumper;
 use Tsufeki\KayoJsonMapper\Dumper\ObjectDumper;
-use Tsufeki\KayoJsonMapper\Dumper\ScalarDumper;
+use Tsufeki\KayoJsonMapper\Dumper\ScalarNullDumper;
 use Tsufeki\KayoJsonMapper\Loader\ArgumentLoader;
 use Tsufeki\KayoJsonMapper\Loader\ArrayLoader;
 use Tsufeki\KayoJsonMapper\Loader\DateTimeLoader;
@@ -18,6 +18,7 @@ use Tsufeki\KayoJsonMapper\Loader\Instantiator\NewInstantiator;
 use Tsufeki\KayoJsonMapper\Loader\Instantiator\NoConstructorInstantiator;
 use Tsufeki\KayoJsonMapper\Loader\Loader;
 use Tsufeki\KayoJsonMapper\Loader\MixedLoader;
+use Tsufeki\KayoJsonMapper\Loader\NullLoader;
 use Tsufeki\KayoJsonMapper\Loader\ObjectLoader;
 use Tsufeki\KayoJsonMapper\Loader\ReplacingLoader;
 use Tsufeki\KayoJsonMapper\Loader\ScalarLoader;
@@ -130,6 +131,11 @@ class MapperBuilder
      * @var bool
      */
     private $setToNullOnMissingProperty = false;
+
+    /**
+     * @var bool
+     */
+    private $strictNulls = true;
 
     public static function create(): self
     {
@@ -441,6 +447,22 @@ class MapperBuilder
     }
 
     /**
+     * If false, allow loading null value into any type.
+     *
+     * Default true.
+     *
+     * @param bool $strictNulls
+     *
+     * @return $this
+     */
+    public function setStrictNulls(bool $strictNulls)
+    {
+        $this->strictNulls = $strictNulls;
+
+        return $this;
+    }
+
+    /**
      * Build Mapper.
      */
     public function getMapper(): Mapper
@@ -486,7 +508,8 @@ class MapperBuilder
                 $this->throwOnMissingProperty,
                 $this->setToNullOnMissingProperty
             ))
-            ->add(new DateTimeLoader($this->dateTimeFormat));
+            ->add(new DateTimeLoader($this->dateTimeFormat))
+            ->add(new NullLoader($this->strictNulls));
 
         foreach ($this->loaders as $userLoader) {
             $loader->add($userLoader);
@@ -516,7 +539,7 @@ class MapperBuilder
             $this->throwOnInfiniteRecursion
         );
         $dumper
-            ->add(new ScalarDumper())
+            ->add(new ScalarNullDumper())
             ->add(new ArrayDumper($dumper))
             ->add(new ObjectDumper(
                 $dumper,
