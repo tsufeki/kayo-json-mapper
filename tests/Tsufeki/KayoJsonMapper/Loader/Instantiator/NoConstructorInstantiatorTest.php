@@ -3,8 +3,8 @@
 namespace Tests\Tsufeki\KayoJsonMapper\Loader\Instantiator;
 
 use PHPUnit\Framework\TestCase;
-use Tsufeki\KayoJsonMapper\Loader\Instantiator\NoConstructorInstantiator;
 use Tests\Tsufeki\KayoJsonMapper\Fixtures\ThrowingConstructorClass;
+use Tsufeki\KayoJsonMapper\Loader\Instantiator\NoConstructorInstantiator;
 
 /**
  * @covers \Tsufeki\KayoJsonMapper\Loader\Instantiator\NoConstructorInstantiator

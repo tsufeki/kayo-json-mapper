@@ -10,6 +10,7 @@ use Tsufeki\KayoJsonMapper\Dumper\ObjectDumper;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 use Tsufeki\KayoJsonMapper\MetadataProvider\ClassMetadataProvider;
 use Tsufeki\KayoJsonMapper\NameMangler\NameMangler;
+use Tsufeki\KayoJsonMapper\PropertyAccess\PublicPropertyAccess;
 
 /**
  * @covers \Tsufeki\KayoJsonMapper\Dumper\ObjectDumper
@@ -34,7 +35,8 @@ class ObjectDumperTest extends TestCase
         return new ObjectDumper(
             $innerDumper,
             $metadataProvider,
-            $nameMangler
+            $nameMangler,
+            new PublicPropertyAccess()
         );
     }
 

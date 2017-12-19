@@ -15,6 +15,7 @@ use Tsufeki\KayoJsonMapper\Loader\DateTimeLoader;
 use Tsufeki\KayoJsonMapper\Loader\DispatchingLoader;
 use Tsufeki\KayoJsonMapper\Loader\Instantiator\Instantiator;
 use Tsufeki\KayoJsonMapper\Loader\Instantiator\NewInstantiator;
+use Tsufeki\KayoJsonMapper\Loader\Instantiator\NoConstructorInstantiator;
 use Tsufeki\KayoJsonMapper\Loader\Loader;
 use Tsufeki\KayoJsonMapper\Loader\MixedLoader;
 use Tsufeki\KayoJsonMapper\Loader\ObjectLoader;
@@ -31,6 +32,8 @@ use Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionCallableMetadataProvider;
 use Tsufeki\KayoJsonMapper\MetadataProvider\ReflectionClassMetadataProvider;
 use Tsufeki\KayoJsonMapper\NameMangler\CamelCaseToUnderscoreNameMangler;
 use Tsufeki\KayoJsonMapper\NameMangler\NameMangler;
+use Tsufeki\KayoJsonMapper\PropertyAccess\PrivatePropertyAccess;
+use Tsufeki\KayoJsonMapper\PropertyAccess\PublicPropertyAccess;
 
 /**
  * Configure and build Mapper object.
@@ -71,6 +74,11 @@ class MapperBuilder
      * @var array<string,callable>
      */
     private $typeReplacementCallbacks = [];
+
+    /**
+     * @var bool
+     */
+    private $privatePropertyAccess = false;
 
     /**
      * @var Loader[]
@@ -239,6 +247,22 @@ class MapperBuilder
     }
 
     /**
+     * Whether mapper should access private properties through reflection.
+     *
+     * This also enables constructor-bypassing instantiator.
+     *
+     * @param bool $privatePropertyAccess
+     *
+     * @return $this
+     */
+    public function setPrivatePropertyAccess(bool $privatePropertyAccess): self
+    {
+        $this->privatePropertyAccess = $privatePropertyAccess;
+
+        return $this;
+    }
+
+    /**
      * Add custom loader.
      *
      * Loader added last has the highest priority.
@@ -374,6 +398,15 @@ class MapperBuilder
         $phpdocTypeExtractor = new PhpdocTypeExtractor();
         $accessorStrategy = $this->accessorStrategy ?? new StandardAccessorStrategy();
         $nameMangler = $this->nameMangler ?? new CamelCaseToUnderscoreNameMangler();
+
+        if ($this->privatePropertyAccess) {
+            $propertyAccess = new PrivatePropertyAccess();
+            $instantiator = $this->instantiator ?? new NoConstructorInstantiator();
+        } else {
+            $propertyAccess = new PublicPropertyAccess();
+            $instantiator = $this->instantiator ?? new NewInstantiator();
+        }
+
         $callableMetadataProvider = $this->callableMetadataProvider ?? new ReflectionCallableMetadataProvider($phpdocTypeExtractor);
 
         $classMetadataProvider = $this->classMetadataProvider ?? new CachedClassMetadataProvider(
@@ -383,8 +416,6 @@ class MapperBuilder
                 $phpdocTypeExtractor
             )
         );
-
-        $instantiator = $this->instantiator ?? new NewInstantiator();
 
         $loader = new DispatchingLoader();
         $loader
@@ -397,6 +428,7 @@ class MapperBuilder
                 $classMetadataProvider,
                 $instantiator,
                 $nameMangler,
+                $propertyAccess,
                 $this->throwOnUnknownProperty,
                 $this->throwOnMissingProperty
             ))
@@ -435,7 +467,8 @@ class MapperBuilder
             ->add(new ObjectDumper(
                 $dumper,
                 $classMetadataProvider,
-                $nameMangler
+                $nameMangler,
+                $propertyAccess
             ))
             ->add(new DateTimeDumper($this->dateTimeFormat));
 

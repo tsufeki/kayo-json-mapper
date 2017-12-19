@@ -15,6 +15,7 @@ use Tsufeki\KayoJsonMapper\Loader\Loader;
 use Tsufeki\KayoJsonMapper\Loader\ObjectLoader;
 use Tsufeki\KayoJsonMapper\MetadataProvider\ClassMetadataProvider;
 use Tsufeki\KayoJsonMapper\NameMangler\NameMangler;
+use Tsufeki\KayoJsonMapper\PropertyAccess\PublicPropertyAccess;
 
 /**
  * @covers \Tsufeki\KayoJsonMapper\Loader\ObjectLoader
@@ -46,7 +47,8 @@ class ObjectLoaderTest extends TestCase
             $innerLoader,
             $metadataProvider,
             $instantiator,
-            $nameMangler
+            $nameMangler,
+            new PublicPropertyAccess()
         );
     }
 

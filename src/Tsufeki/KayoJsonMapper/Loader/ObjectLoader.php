@@ -12,6 +12,7 @@ use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 use Tsufeki\KayoJsonMapper\Loader\Instantiator\Instantiator;
 use Tsufeki\KayoJsonMapper\MetadataProvider\ClassMetadataProvider;
 use Tsufeki\KayoJsonMapper\NameMangler\NameMangler;
+use Tsufeki\KayoJsonMapper\PropertyAccess\PropertyAccess;
 
 class ObjectLoader implements Loader
 {
@@ -36,6 +37,11 @@ class ObjectLoader implements Loader
     private $nameMangler;
 
     /**
+     * @var PropertyAccess
+     */
+    private $propertyAccess;
+
+    /**
      * @var bool
      */
     private $throwOnUnknownProperty;
@@ -50,6 +56,7 @@ class ObjectLoader implements Loader
         ClassMetadataProvider $metadataProvider,
         Instantiator $instantiator,
         NameMangler $nameMangler,
+        PropertyAccess $propertyAccess,
         bool $throwOnUnknownProperty = true,
         bool $throwOnMissingProperty = true
     ) {
@@ -57,6 +64,7 @@ class ObjectLoader implements Loader
         $this->metadataProvider = $metadataProvider;
         $this->instantiator = $instantiator;
         $this->nameMangler = $nameMangler;
+        $this->propertyAccess = $propertyAccess;
         $this->throwOnUnknownProperty = $throwOnUnknownProperty;
         $this->throwOnMissingProperty = $throwOnMissingProperty;
     }
@@ -95,7 +103,7 @@ class ObjectLoader implements Loader
             $mangledName = $this->nameMangler->mangle($property->name);
             if (isset($vars[$mangledName])) {
                 $value = $this->dispatchingLoader->load($vars[$mangledName], $property->type, $context);
-                $property->set($target, $value);
+                $this->propertyAccess->set($target, $property, $value);
                 unset($vars[$mangledName]);
             } elseif ($this->throwOnMissingProperty) {
                 throw new MissingPropertyException($property->name);

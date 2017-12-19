@@ -25,24 +25,4 @@ class PropertyMetadata
      * @var string|null
      */
     public $setter = null;
-
-    public function get($object)
-    {
-        if ($this->getter) {
-            return $object->{$this->getter}();
-        }
-
-        return $object->{$this->name};
-    }
-
-    public function set($object, $value): self
-    {
-        if ($this->setter) {
-            $object->{$this->setter}($value);
-        } else {
-            $object->{$this->name} = $value;
-        }
-
-        return $this;
-    }
 }

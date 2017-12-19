@@ -6,6 +6,7 @@ use Tsufeki\KayoJsonMapper\Context\Context;
 use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 use Tsufeki\KayoJsonMapper\MetadataProvider\ClassMetadataProvider;
 use Tsufeki\KayoJsonMapper\NameMangler\NameMangler;
+use Tsufeki\KayoJsonMapper\PropertyAccess\PropertyAccess;
 
 class ObjectDumper implements Dumper
 {
@@ -24,14 +25,21 @@ class ObjectDumper implements Dumper
      */
     private $nameMangler;
 
+    /**
+     * @var PropertyAccess
+     */
+    private $propertyAccess;
+
     public function __construct(
         Dumper $dispatchingDumper,
         ClassMetadataProvider $metadataProvider,
-        NameMangler $nameMangler
+        NameMangler $nameMangler,
+        PropertyAccess $propertyAccess
     ) {
         $this->dispatchingDumper = $dispatchingDumper;
         $this->metadataProvider = $metadataProvider;
         $this->nameMangler = $nameMangler;
+        $this->propertyAccess = $propertyAccess;
     }
 
     public function dump($value, Context $context)
@@ -56,7 +64,8 @@ class ObjectDumper implements Dumper
 
         foreach ($metadata->properties as $property) {
             $mangledName = $this->nameMangler->mangle($property->name);
-            $result->{$mangledName} = $this->dispatchingDumper->dump($property->get($value), $context);
+            $propertyValue = $this->propertyAccess->get($value, $property);
+            $result->{$mangledName} = $this->dispatchingDumper->dump($propertyValue, $context);
         }
 
         return $result;
