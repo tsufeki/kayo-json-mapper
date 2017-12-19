@@ -82,7 +82,8 @@ class ObjectLoader implements Loader
             throw new UnsupportedTypeException();
         }
 
-        if (is_array($data)) {
+        // If its an array, it's probably useful if it contains some string keys
+        if (is_array($data) && !empty($data) && !array_product(array_map('is_numeric', array_keys($data)))) {
             $data = (object)$data;
         }
 

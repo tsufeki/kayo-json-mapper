@@ -93,6 +93,37 @@ class MapperTest extends TestCase
                     new TestClass(2, ''),
                 ],
             ],
+
+            [
+                TestClass::class . '|' . TestClass::class . '[]',
+
+                (object)[
+                    'foo' => 1,
+                    'bar' => 'baz',
+                ],
+
+                new TestClass(1, 'baz'),
+            ],
+
+            [
+                TestClass::class . '|' . TestClass::class . '[]',
+
+                [
+                    (object)[
+                        'foo' => 1,
+                        'bar' => 'baz',
+                    ],
+                    (object)[
+                        'foo' => 2,
+                        'bar' => '',
+                    ],
+                ],
+
+                [
+                    new TestClass(1, 'baz'),
+                    new TestClass(2, ''),
+                ],
+            ],
         ];
     }
 
