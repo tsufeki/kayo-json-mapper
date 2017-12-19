@@ -24,6 +24,7 @@ use Tsufeki\KayoJsonMapper\Loader\ScalarLoader;
 use Tsufeki\KayoJsonMapper\Loader\UnionLoader;
 use Tsufeki\KayoJsonMapper\MetadataProvider\AccessorStrategy\AccessorStrategy;
 use Tsufeki\KayoJsonMapper\MetadataProvider\AccessorStrategy\StandardAccessorStrategy;
+use Tsufeki\KayoJsonMapper\MetadataProvider\CachedCallableMetadataProvider;
 use Tsufeki\KayoJsonMapper\MetadataProvider\CachedClassMetadataProvider;
 use Tsufeki\KayoJsonMapper\MetadataProvider\CallableMetadataProvider;
 use Tsufeki\KayoJsonMapper\MetadataProvider\ClassMetadataProvider;
@@ -435,7 +436,9 @@ class MapperBuilder
             $instantiator = $this->instantiator ?? new NewInstantiator();
         }
 
-        $callableMetadataProvider = $this->callableMetadataProvider ?? new ReflectionCallableMetadataProvider($phpdocTypeExtractor);
+        $callableMetadataProvider = $this->callableMetadataProvider ?? new CachedCallableMetadataProvider(
+            new ReflectionCallableMetadataProvider($phpdocTypeExtractor)
+        );
 
         $classMetadataProvider = $this->classMetadataProvider ?? new CachedClassMetadataProvider(
             new ReflectionClassMetadataProvider(

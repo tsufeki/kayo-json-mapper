@@ -1,8 +1,9 @@
-Just a list of ideas:
-
 * Case insensitive properties
 * Getter/setter without property (virtual properties)
-* "Leave property unchanged" option when required property is missing in json
+* Force set to null when property is missing
 * Non-strict nulls
 * Non-strict scalars
-* Logger
+* Dump extra (non-class) properties
+* Load extra properties
+* Ignore private properties when not using reflection access
+* __sleep/__wakeup integration? haha
