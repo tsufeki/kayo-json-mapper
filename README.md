@@ -2,6 +2,10 @@
 Kayo JSON mapper
 ================
 
+[![Build Status](https://travis-ci.org/tsufeki/kayo-json-mapper.svg?branch=master)](https://travis-ci.org/tsufeki/kayo-json-mapper)
+
+Map JSON data to PHP objects and back. No custom annotations needed.
+
 Installation
 ------------
 
