@@ -56,6 +56,11 @@ class ObjectLoader implements Loader
      */
     private $setToNullOnMissingProperty;
 
+    /**
+     * @var bool
+     */
+    private $acceptArrays;
+
     public function __construct(
         Loader $dispatchingLoader,
         ClassMetadataProvider $metadataProvider,
@@ -64,7 +69,8 @@ class ObjectLoader implements Loader
         PropertyAccess $propertyAccess,
         bool $throwOnUnknownProperty = true,
         bool $throwOnMissingProperty = true,
-        bool $setToNullOnMissingProperty = false
+        bool $setToNullOnMissingProperty = false,
+        bool $acceptArrays = false
     ) {
         $this->dispatchingLoader = $dispatchingLoader;
         $this->metadataProvider = $metadataProvider;
@@ -74,6 +80,7 @@ class ObjectLoader implements Loader
         $this->throwOnUnknownProperty = $throwOnUnknownProperty;
         $this->throwOnMissingProperty = $throwOnMissingProperty;
         $this->setToNullOnMissingProperty = $setToNullOnMissingProperty;
+        $this->acceptArrays = $acceptArrays;
     }
 
     public function load($data, Type $type, Context $context)
@@ -83,7 +90,7 @@ class ObjectLoader implements Loader
         }
 
         // If its an array, it's probably useful if it contains some string keys
-        if (is_array($data) && !empty($data) && !array_product(array_map('is_numeric', array_keys($data)))) {
+        if ($this->acceptArrays && is_array($data) && !empty($data) && !array_product(array_map('is_numeric', array_keys($data)))) {
             $data = (object)$data;
         }
 

@@ -56,7 +56,7 @@ class ObjectLoaderTest extends TestCase
     /**
      * @dataProvider load_object_data
      */
-    public function test_loads_object($data)
+    public function test_loads_object($data, bool $acceptArray = false)
     {
         $resolver = new TypeResolver();
 
@@ -70,7 +70,7 @@ class ObjectLoaderTest extends TestCase
             )
             ->willReturnOnConsecutiveCalls(7, 'BAZ');
 
-        $objectLoader = $this->getObjectLoader($innerLoader);
+        $objectLoader = $this->getObjectLoader($innerLoader, true, true, false, $acceptArray);
         $result = $objectLoader->load($data, $resolver->resolve('\\' . TestClass::class), new Context());
 
         $this->assertCount(2, get_object_vars($result));
@@ -88,7 +88,7 @@ class ObjectLoaderTest extends TestCase
             [[
                 'foo' => 42,
                 'barSerializedOnly' => 'baz',
-            ]],
+            ], true],
         ];
     }
 

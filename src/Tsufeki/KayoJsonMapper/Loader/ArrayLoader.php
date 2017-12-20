@@ -15,9 +15,15 @@ class ArrayLoader implements Loader
      */
     private $dispatchingLoader;
 
-    public function __construct(Loader $dispatchingLoader)
+    /**
+     * @var bool
+     */
+    private $acceptStdClass;
+
+    public function __construct(Loader $dispatchingLoader, bool $acceptStdClass = false)
     {
         $this->dispatchingLoader = $dispatchingLoader;
+        $this->acceptStdClass = $acceptStdClass;
     }
 
     public function load($data, Type $type, Context $context)
@@ -26,7 +32,7 @@ class ArrayLoader implements Loader
             throw new UnsupportedTypeException();
         }
 
-        if (is_object($data) && $data instanceof \stdClass) {
+        if ($this->acceptStdClass && is_object($data) && $data instanceof \stdClass) {
             $data = get_object_vars($data);
         }
 

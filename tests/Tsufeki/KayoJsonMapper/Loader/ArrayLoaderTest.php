@@ -19,7 +19,7 @@ class ArrayLoaderTest extends TestCase
     /**
      * @dataProvider load_array_data
      */
-    public function test_loads_array($input)
+    public function test_loads_array($input, bool $acceptStdClass = false)
     {
         $type = new Types\Array_(new Types\Integer());
         $output = [4, 8, 12];
@@ -33,7 +33,7 @@ class ArrayLoaderTest extends TestCase
             }, (array)$input))
             ->willReturnOnConsecutiveCalls(...$output);
 
-        $arrayLoader = new ArrayLoader($innerLoader);
+        $arrayLoader = new ArrayLoader($innerLoader, $acceptStdClass);
 
         $this->assertSame($output, $arrayLoader->load($input, $type, new Context()));
     }
@@ -42,7 +42,7 @@ class ArrayLoaderTest extends TestCase
     {
         return [
             [[1, 2, 3]],
-            [(object)[1, 2, 3]],
+            [(object)[1, 2, 3], true],
         ];
     }
 

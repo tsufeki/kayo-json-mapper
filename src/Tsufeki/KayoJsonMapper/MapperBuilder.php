@@ -137,6 +137,16 @@ class MapperBuilder
      */
     private $strictNulls = true;
 
+    /**
+     * @var bool
+     */
+    private $acceptArrayAsObject = false;
+
+    /**
+     * @var bool
+     */
+    private $acceptStdClassAsArray = false;
+
     public static function create(): self
     {
         return new static();
@@ -463,6 +473,43 @@ class MapperBuilder
     }
 
     /**
+     * Accept string-keyed array when loading an object.
+     *
+     * Useful when using `json_decode()` with true as second parameter.
+     *
+     * Default false.
+     *
+     * @param bool $acceptArrayAsObject
+     *
+     * @return $this
+     */
+    public function acceptArrayAsObject(bool $acceptArrayAsObject)
+    {
+        $this->acceptArrayAsObject = $acceptArrayAsObject;
+
+        return $this;
+    }
+
+    /**
+     * Accept stdClass when loading an array.
+     *
+     * Useful when using `json_decode()` with false as second parameter and
+     * loading arrays with string keys.
+     *
+     * Default false.
+     *
+     * @param bool $acceptStdClassAsArray
+     *
+     * @return $this
+     */
+    public function acceptStdClassAsArray(bool $acceptStdClassAsArray)
+    {
+        $this->acceptStdClassAsArray = $acceptStdClassAsArray;
+
+        return $this;
+    }
+
+    /**
      * Build Mapper.
      */
     public function getMapper(): Mapper
@@ -497,7 +544,10 @@ class MapperBuilder
             ->add(new UnionLoader($loader))
             ->add(new MixedLoader())
             ->add(new ScalarLoader())
-            ->add(new ArrayLoader($loader))
+            ->add(new ArrayLoader(
+                $loader,
+                $this->acceptStdClassAsArray
+            ))
             ->add(new ObjectLoader(
                 $loader,
                 $classMetadataProvider,
@@ -506,7 +556,8 @@ class MapperBuilder
                 $propertyAccess,
                 $this->throwOnUnknownProperty,
                 $this->throwOnMissingProperty,
-                $this->setToNullOnMissingProperty
+                $this->setToNullOnMissingProperty,
+                $this->acceptArrayAsObject
             ))
             ->add(new DateTimeLoader($this->dateTimeFormat))
             ->add(new NullLoader($this->strictNulls));
