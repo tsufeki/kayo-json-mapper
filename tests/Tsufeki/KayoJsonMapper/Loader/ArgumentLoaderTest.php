@@ -56,7 +56,7 @@ class ArgumentLoaderTest extends TestCase
         $mapper = MapperBuilder::create()->getMapper();
         $args = $mapper->loadArguments($data, $function);
 
-        $this->assertEquals([42], $args);
+        $this->assertEquals([42, 'x'], $args);
     }
 
     public function test_load_arguments_missing_required()

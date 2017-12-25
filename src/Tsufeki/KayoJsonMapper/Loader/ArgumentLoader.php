@@ -62,19 +62,24 @@ class ArgumentLoader
             $param = $metadata->parameters[$paramPos];
             $mangledName = $this->nameMangler->mangle($param->name);
 
+            $key = null;
             if (array_key_exists($argPos, $data)) {
                 $key = $argPos;
             } elseif (array_key_exists($mangledName, $data)) {
                 $key = $mangledName;
-            } else {
-                if (!$param->optional) {
-                    throw new InvalidDataException("Required argument $param->name missing");
-                }
-                break;
             }
 
-            $args[] = $this->loader->load($data[$key], $param->type, $context);
-            unset($data[$key]);
+            if ($key !== null) {
+                $args[] = $this->loader->load($data[$key], $param->type, $context);
+                unset($data[$key]);
+            } elseif ($param->optional) {
+                if ($param->variadic) {
+                    break;
+                }
+                $args[] = $param->defaultValue;
+            } else {
+                throw new InvalidDataException("Required argument $param->name missing");
+            }
 
             $argPos++;
             if (!$param->variadic) {

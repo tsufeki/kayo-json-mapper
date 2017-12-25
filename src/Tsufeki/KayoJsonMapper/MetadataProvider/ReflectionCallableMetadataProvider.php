@@ -95,6 +95,10 @@ class ReflectionCallableMetadataProvider implements CallableMetadataProvider
         $type = $parameter->hasType() ? $typeResolver->resolve((string)$parameter->getType()) : null;
         $metadata->type = $type ?? $phpdocType ?? new Mixed_();
 
+        if ($metadata->optional && !$metadata->variadic) {
+            $metadata->defaultValue = $parameter->getDefaultValue();
+        }
+
         return $metadata;
     }
 }

@@ -25,4 +25,9 @@ class ParameterMetadata
      * @var bool
      */
     public $variadic = false;
+
+    /**
+     * @var mixed
+     */
+    public $defaultValue;
 }
