@@ -3,7 +3,6 @@
 namespace Tsufeki\KayoJsonMapper\Loader;
 
 use phpDocumentor\Reflection\Type;
-use phpDocumentor\Reflection\Types;
 use Tsufeki\KayoJsonMapper\Context\Context;
 use Tsufeki\KayoJsonMapper\Exception\BadDateTimeFormatException;
 use Tsufeki\KayoJsonMapper\Exception\TypeMismatchException;
@@ -21,9 +20,14 @@ class DateTimeLoader implements Loader
         $this->format = $format;
     }
 
+    public function getSupportedTypes(): array
+    {
+        return ['\\DateTime'];
+    }
+
     public function load($data, Type $type, Context $context)
     {
-        if (!($type instanceof Types\Object_) || (string)$type !== '\\DateTime') {
+        if ((string)$type !== '\\DateTime') {
             throw new UnsupportedTypeException();
         }
 

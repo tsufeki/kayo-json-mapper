@@ -20,6 +20,11 @@ class NullLoader implements Loader
         $this->strict = $strict;
     }
 
+    public function getSupportedTypes(): array
+    {
+        return [$this->strict ? 'null' : 'any'];
+    }
+
     public function load($data, Type $type, Context $context)
     {
         if ($data !== null) {

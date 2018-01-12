@@ -21,4 +21,19 @@ interface Loader
      * @throws TypeMismatchException
      */
     public function load($data, Type $type, Context $context);
+
+    /**
+     * List of supported types.
+     *
+     * Type object is considered matching if its string representation is the
+     * list, or 'any' is in the list. In addition, array, object and compound
+     * (i.e. union) types are matching if 'array', 'object' or 'union',
+     * respectively, is present.
+     *
+     * See Type::__toString() in its implementors. Class names should be fully
+     * qualified and begin with a backslash '\\'.
+     *
+     * @return string[]
+     */
+    public function getSupportedTypes(): array;
 }

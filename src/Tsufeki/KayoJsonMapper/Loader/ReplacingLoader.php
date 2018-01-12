@@ -46,6 +46,11 @@ class ReplacingLoader implements Loader
         return $this;
     }
 
+    public function getSupportedTypes(): array
+    {
+        return array_keys($this->typeMap);
+    }
+
     public function load($data, Type $type, Context $context)
     {
         $typeKey = strtolower((string)$type);

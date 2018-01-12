@@ -18,6 +18,11 @@ class ScalarLoader implements Loader
         Types\Scalar::class => ['boolean', 'double', 'integer', 'string'],
     ];
 
+    public function getSupportedTypes(): array
+    {
+        return ['bool', 'float', 'int', 'string', 'scalar'];
+    }
+
     public function load($data, Type $type, Context $context)
     {
         $expectedTypes = self::TYPE_MAP[get_class($type)] ?? null;

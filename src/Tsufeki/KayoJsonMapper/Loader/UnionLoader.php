@@ -21,6 +21,11 @@ class UnionLoader implements Loader
         $this->dispatchingLoader = $dispatchingLoader;
     }
 
+    public function getSupportedTypes(): array
+    {
+        return ['union'];
+    }
+
     public function load($data, Type $type, Context $context)
     {
         $types = [];

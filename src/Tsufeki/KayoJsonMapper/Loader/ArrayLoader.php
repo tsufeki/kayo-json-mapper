@@ -26,18 +26,23 @@ class ArrayLoader implements Loader
         $this->acceptStdClass = $acceptStdClass;
     }
 
+    public function getSupportedTypes(): array
+    {
+        return ['array'];
+    }
+
     public function load($data, Type $type, Context $context)
     {
         if (!($type instanceof Types\Array_)) {
             throw new UnsupportedTypeException();
         }
 
-        if ($this->acceptStdClass && is_object($data) && $data instanceof \stdClass) {
+        if ($this->acceptStdClass && $data instanceof \stdClass) {
             $data = get_object_vars($data);
         }
 
         if (!is_array($data)) {
-            throw new TypeMismatchException('array|stdClass', $data);
+            throw new TypeMismatchException('array' . ($this->acceptStdClass ? '|stdClass' : ''), $data);
         }
 
         $result = [];

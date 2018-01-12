@@ -83,6 +83,11 @@ class ObjectLoader implements Loader
         $this->acceptArrays = $acceptArrays;
     }
 
+    public function getSupportedTypes(): array
+    {
+        return ['object'];
+    }
+
     public function load($data, Type $type, Context $context)
     {
         if (!($type instanceof Types\Object_)) {

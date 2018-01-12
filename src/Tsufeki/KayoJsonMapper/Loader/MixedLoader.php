@@ -9,6 +9,11 @@ use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 
 class MixedLoader implements Loader
 {
+    public function getSupportedTypes(): array
+    {
+        return ['mixed'];
+    }
+
     public function load($data, Type $type, Context $context)
     {
         if (!($type instanceof Types\Mixed_)) {
