@@ -9,8 +9,18 @@ use Tsufeki\KayoJsonMapper\Exception\UnsupportedTypeException;
 
 class DispatchingDumper implements Dumper
 {
+    const TYPE_MAP = [
+        'array' => 'array',
+        'boolean' => 'bool',
+        'double' => 'float',
+        'integer' => 'int',
+        'NULL' => 'null',
+        'object' => 'object',
+        'string' => 'string',
+    ];
+
     /**
-     * @var Dumper[]
+     * @var Dumper[][]
      */
     private $dumpers = [];
 
@@ -34,9 +44,20 @@ class DispatchingDumper implements Dumper
 
     public function add(Dumper $dumper): self
     {
-        array_unshift($this->dumpers, $dumper);
+        foreach ($dumper->getSupportedTypes() as $key) {
+            $key = strtolower($key);
+            if (!isset($this->dumpers[$key])) {
+                $this->dumpers[$key] = [];
+            }
+            array_unshift($this->dumpers[$key], $dumper);
+        }
 
         return $this;
+    }
+
+    public function getSupportedTypes(): array
+    {
+        return ['any'];
     }
 
     public function dump($value, Context $context)
@@ -58,7 +79,7 @@ class DispatchingDumper implements Dumper
         }
 
         try {
-            foreach ($this->dumpers as $dumper) {
+            foreach ($this->getDumpersForValue($value) as $dumper) {
                 try {
                     return $dumper->dump($value, $context);
                 } catch (UnsupportedTypeException $e) {
@@ -69,5 +90,33 @@ class DispatchingDumper implements Dumper
         }
 
         throw new UnsupportedTypeException(null, $value);
+    }
+
+    /**
+     * @return Dumper[]
+     */
+    private function getDumpersForValue($value): array
+    {
+        $keys = [];
+        $type = self::TYPE_MAP[gettype($value)] ?? null;
+
+        if ($type === 'object') {
+            $keys[] = '\\' . strtolower(get_class($value));
+        }
+
+        if ($type !== null) {
+            $keys[] = $type;
+        }
+
+        $keys[] = 'any';
+
+        $dumpers = [];
+        foreach ($keys as $key) {
+            foreach ($this->dumpers[$key] ?? [] as $dumper) {
+                $dumpers[] = $dumper;
+            }
+        }
+
+        return $dumpers;
     }
 }

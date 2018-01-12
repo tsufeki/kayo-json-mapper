@@ -17,6 +17,11 @@ class DateTimeDumper implements Dumper
         $this->format = $format;
     }
 
+    public function getSupportedTypes(): array
+    {
+        return ['\\DateTime'];
+    }
+
     public function dump($value, Context $context)
     {
         if (!($value instanceof \DateTime)) {

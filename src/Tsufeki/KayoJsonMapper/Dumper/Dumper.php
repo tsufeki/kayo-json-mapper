@@ -16,4 +16,14 @@ interface Dumper
      * @throws UnsupportedTypeException If this dumper doesn't support given value.
      */
     public function dump($value, Context $context);
+
+    /**
+     * List of supported types.
+     *
+     * Possible values: 'any', 'array', 'bool', 'float', 'int', 'null',
+     * 'object', 'string' or fully-qualified class name with a backslash '\\'.
+     *
+     * @return string[]
+     */
+    public function getSupportedTypes(): array;
 }

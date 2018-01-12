@@ -24,6 +24,10 @@ class DispatchingDumperTest extends TestCase
         $dumper1
             ->expects($this->never())
             ->method('dump');
+        $dumper1
+            ->expects($this->once())
+            ->method('getSupportedTypes')
+            ->willReturn(['int']);
 
         $dumper2 = $this->createMock(Dumper::class);
         $dumper2
@@ -31,6 +35,10 @@ class DispatchingDumperTest extends TestCase
             ->method('dump')
             ->with($this->identicalTo($value))
             ->willReturn($result);
+        $dumper2
+            ->expects($this->once())
+            ->method('getSupportedTypes')
+            ->willReturn(['int']);
 
         $dumper3 = $this->createMock(Dumper::class);
         $dumper3
@@ -38,12 +46,38 @@ class DispatchingDumperTest extends TestCase
             ->method('dump')
             ->with($this->identicalTo($value))
             ->willThrowException(new UnsupportedTypeException());
+        $dumper3
+            ->expects($this->once())
+            ->method('getSupportedTypes')
+            ->willReturn(['int']);
 
         $dispatchingDumper = new DispatchingDumper();
         $dispatchingDumper
             ->add($dumper1)
             ->add($dumper2)
             ->add($dumper3);
+
+        $this->assertSame($result, $dispatchingDumper->dump($value, new Context()));
+    }
+
+    public function test_calls_object_dumper()
+    {
+        $value = new \stdClass();
+        $result = 7;
+
+        $dumper = $this->createMock(Dumper::class);
+        $dumper
+            ->expects($this->once())
+            ->method('dump')
+            ->with($this->identicalTo($value))
+            ->willReturn($result);
+        $dumper
+            ->expects($this->once())
+            ->method('getSupportedTypes')
+            ->willReturn(['\\stdClass']);
+
+        $dispatchingDumper = new DispatchingDumper();
+        $dispatchingDumper->add($dumper);
 
         $this->assertSame($result, $dispatchingDumper->dump($value, new Context()));
     }

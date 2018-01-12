@@ -42,6 +42,11 @@ class ObjectDumper implements Dumper
         $this->propertyAccess = $propertyAccess;
     }
 
+    public function getSupportedTypes(): array
+    {
+        return ['object'];
+    }
+
     public function dump($value, Context $context)
     {
         if (!is_object($value)) {

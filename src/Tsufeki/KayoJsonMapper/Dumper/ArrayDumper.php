@@ -17,6 +17,11 @@ class ArrayDumper implements Dumper
         $this->dispatchingDumper = $dispatchingDumper;
     }
 
+    public function getSupportedTypes(): array
+    {
+        return ['array'];
+    }
+
     public function dump($value, Context $context)
     {
         if (!is_array($value)) {
