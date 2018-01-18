@@ -147,6 +147,11 @@ class MapperBuilder
      */
     private $acceptStdClassAsArray = false;
 
+    /**
+     * @var bool
+     */
+    private $dumpNullProperties = true;
+
     public static function create(): self
     {
         return new static();
@@ -449,7 +454,7 @@ class MapperBuilder
      *
      * @return $this
      */
-    public function setToNullOnMissingProperty(bool $setToNullOnMissingProperty)
+    public function setToNullOnMissingProperty(bool $setToNullOnMissingProperty): self
     {
         $this->setToNullOnMissingProperty = $setToNullOnMissingProperty;
 
@@ -465,7 +470,7 @@ class MapperBuilder
      *
      * @return $this
      */
-    public function setStrictNulls(bool $strictNulls)
+    public function setStrictNulls(bool $strictNulls): self
     {
         $this->strictNulls = $strictNulls;
 
@@ -483,7 +488,7 @@ class MapperBuilder
      *
      * @return $this
      */
-    public function acceptArrayAsObject(bool $acceptArrayAsObject)
+    public function acceptArrayAsObject(bool $acceptArrayAsObject): self
     {
         $this->acceptArrayAsObject = $acceptArrayAsObject;
 
@@ -502,9 +507,25 @@ class MapperBuilder
      *
      * @return $this
      */
-    public function acceptStdClassAsArray(bool $acceptStdClassAsArray)
+    public function acceptStdClassAsArray(bool $acceptStdClassAsArray): self
     {
         $this->acceptStdClassAsArray = $acceptStdClassAsArray;
+
+        return $this;
+    }
+
+    /**
+     * If false, optional null properties are not dumped to JSON.
+     *
+     * Default true.
+     *
+     * @param bool $dumpNullProperties
+     *
+     * @return $this
+     */
+    public function setDumpNullProperties(bool $dumpNullProperties): self
+    {
+        $this->dumpNullProperties = $dumpNullProperties;
 
         return $this;
     }
@@ -596,7 +617,8 @@ class MapperBuilder
                 $dumper,
                 $classMetadataProvider,
                 $nameMangler,
-                $propertyAccess
+                $propertyAccess,
+                $this->dumpNullProperties
             ))
             ->add(new DateTimeDumper($this->dateTimeFormat));
 

@@ -30,16 +30,23 @@ class ObjectDumper implements Dumper
      */
     private $propertyAccess;
 
+    /**
+     * @var bool
+     */
+    private $dumpNullProperties;
+
     public function __construct(
         Dumper $dispatchingDumper,
         ClassMetadataProvider $metadataProvider,
         NameMangler $nameMangler,
-        PropertyAccess $propertyAccess
+        PropertyAccess $propertyAccess,
+        bool $dumpNullProperties = true
     ) {
         $this->dispatchingDumper = $dispatchingDumper;
         $this->metadataProvider = $metadataProvider;
         $this->nameMangler = $nameMangler;
         $this->propertyAccess = $propertyAccess;
+        $this->dumpNullProperties = $dumpNullProperties;
     }
 
     public function getSupportedTypes(): array
@@ -70,7 +77,9 @@ class ObjectDumper implements Dumper
         foreach ($metadata->properties as $property) {
             $mangledName = $this->nameMangler->mangle($property->name);
             $propertyValue = $this->propertyAccess->get($value, $property);
-            $result->{$mangledName} = $this->dispatchingDumper->dump($propertyValue, $context);
+            if ($propertyValue !== null || $this->dumpNullProperties || $property->required) {
+                $result->{$mangledName} = $this->dispatchingDumper->dump($propertyValue, $context);
+            }
         }
 
         return $result;
