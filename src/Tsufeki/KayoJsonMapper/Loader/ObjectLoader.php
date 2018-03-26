@@ -121,7 +121,7 @@ class ObjectLoader implements Loader
 
         foreach ($metadata->properties as $property) {
             $mangledName = $this->nameMangler->mangle($property->name);
-            if (isset($vars[$mangledName])) {
+            if (array_key_exists($mangledName, $vars)) {
                 $value = $this->dispatchingLoader->load($vars[$mangledName], $property->type, $context);
                 $this->propertyAccess->set($target, $property, $value);
                 unset($vars[$mangledName]);
