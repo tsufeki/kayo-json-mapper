@@ -10,7 +10,7 @@
     ],
     "require": {
         "phpdocumentor/type-resolver": "^0.5 || ^0.4",
-        "phpdocumentor/reflection-docblock": "^4.2"
+        "phpdocumentor/reflection-docblock": "^4.3"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.4",
