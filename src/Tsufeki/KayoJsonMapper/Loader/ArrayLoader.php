@@ -42,13 +42,18 @@ class ArrayLoader implements Loader
         }
 
         if (!is_array($data)) {
-            throw new TypeMismatchException('array' . ($this->acceptStdClass ? '|stdClass' : ''), $data);
+            throw new TypeMismatchException('array' . ($this->acceptStdClass ? '|stdClass' : ''), $data, $context);
         }
 
         $result = [];
         $elementType = $type->getValueType();
         foreach ($data as $key => $element) {
-            $result[$key] = $this->dispatchingLoader->load($element, $elementType, $context);
+            $context->pushPath("[$key]");
+            try {
+                $result[$key] = $this->dispatchingLoader->load($element, $elementType, $context);
+            } finally {
+                $context->popPath();
+            }
         }
 
         return $result;

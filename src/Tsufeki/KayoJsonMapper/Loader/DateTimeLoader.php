@@ -32,12 +32,12 @@ class DateTimeLoader implements Loader
         }
 
         if (!is_string($data)) {
-            throw new TypeMismatchException('string', $data);
+            throw new TypeMismatchException('string', $data, $context);
         }
 
         $result = \DateTime::createFromFormat($this->format, $data);
         if ($result === false) {
-            throw new BadDateTimeFormatException($this->format, \DateTime::getLastErrors()['errors'], $data);
+            throw new BadDateTimeFormatException($this->format, \DateTime::getLastErrors()['errors'], $data, $context);
         }
 
         return $result;
