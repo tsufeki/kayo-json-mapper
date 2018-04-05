@@ -88,6 +88,11 @@ class MapperBuilder
     private $guessRequiredProperties = true;
 
     /**
+     * @var bool
+     */
+    private $useRequiredPhpdocTag = true;
+
+    /**
      * @var Loader[]
      */
     private $loaders = [];
@@ -313,6 +318,24 @@ class MapperBuilder
     public function setGuessRequiredProperties(bool $guessRequiredProperties)
     {
         $this->guessRequiredProperties = $guessRequiredProperties;
+
+        return $this;
+    }
+
+    /**
+     * Whether to respect `@required` and `@optional` tags in phpdoc.
+     *
+     * Only matters during loading and with `throwOnMissingProperty` on.
+     *
+     * Defaults to true.
+     *
+     * @param bool $useRequiredPhpdocTag
+     *
+     * @return $this
+     */
+    public function setUseRequiredPhpdocTag(bool $useRequiredPhpdocTag)
+    {
+        $this->useRequiredPhpdocTag = $useRequiredPhpdocTag;
 
         return $this;
     }
@@ -556,7 +579,8 @@ class MapperBuilder
                 $callableMetadataProvider,
                 $accessorStrategy,
                 $phpdocTypeExtractor,
-                $this->guessRequiredProperties
+                $this->guessRequiredProperties,
+                $this->useRequiredPhpdocTag
             )
         );
 

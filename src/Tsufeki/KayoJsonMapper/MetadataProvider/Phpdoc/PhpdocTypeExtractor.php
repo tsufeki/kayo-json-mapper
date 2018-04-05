@@ -74,6 +74,17 @@ class PhpdocTypeExtractor
      * @param mixed  $reflection
      * @param string $tagName
      *
+     * @return bool
+     */
+    public function hasPhpdocTag($reflection, string $tagName): bool
+    {
+        return !empty($this->getTags($reflection, $tagName));
+    }
+
+    /**
+     * @param mixed  $reflection
+     * @param string $tagName
+     *
      * @return Tag[]
      */
     private function getTags($reflection, string $tagName): array

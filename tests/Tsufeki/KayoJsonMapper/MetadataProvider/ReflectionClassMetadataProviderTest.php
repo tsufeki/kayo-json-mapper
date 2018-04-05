@@ -125,4 +125,38 @@ class ReflectionClassMetadataProviderTest extends TestCase
         $this->expectException(MetadataException::class);
         $this->getProvider()->getClassMetadata('DoesntExist');
     }
+
+    public function test_recognizes_required_tag()
+    {
+        $object = new class() {
+            /**
+             * @var int|null
+             * @required
+             */
+            public $foo;
+        };
+
+        $metadata = $this->getProvider()->getClassMetadata(get_class($object));
+
+        $this->checkProperties($metadata, [
+            'foo' => ['type' => 'int|null', 'required' => true],
+        ]);
+    }
+
+    public function test_recognizes_optional_tag()
+    {
+        $object = new class() {
+            /**
+             * @var int
+             * @optional
+             */
+            public $foo;
+        };
+
+        $metadata = $this->getProvider()->getClassMetadata(get_class($object));
+
+        $this->checkProperties($metadata, [
+            'foo' => ['type' => 'int', 'required' => false],
+        ]);
+    }
 }
