@@ -23,11 +23,6 @@ class Context
     private $objectIds;
 
     /**
-     * @var string[]
-     */
-    private $path;
-
-    /**
      * @param int|float $maxDepth
      */
     public function __construct($maxDepth = INF)
@@ -35,7 +30,6 @@ class Context
         $this->maxDepth = $maxDepth;
         $this->depth = 0;
         $this->objectIds = [];
-        $this->path = [];
     }
 
     /**
@@ -76,20 +70,5 @@ class Context
     {
         array_pop($this->objectIds);
         $this->depth--;
-    }
-
-    public function pushPath(string $path)
-    {
-        $this->path[] = $path;
-    }
-
-    public function popPath()
-    {
-        array_pop($this->path);
-    }
-
-    public function getPath(): string
-    {
-        return implode('', $this->path);
     }
 }

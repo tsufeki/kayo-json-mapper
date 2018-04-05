@@ -2,15 +2,10 @@
 
 namespace Tsufeki\KayoJsonMapper\Exception;
 
-use Tsufeki\KayoJsonMapper\Context\Context;
-
 class MissingPropertyException extends InvalidDataException
 {
-    public function __construct(string $class, string $propertyName, Context $context)
+    public function __construct(string $class, string $propertyName)
     {
-        parent::__construct(
-            "Required property {$class}::\${$propertyName} missing"
-            . ' at ' . ($context->getPath() ?: '?')
-        );
+        parent::__construct("Required property {$class}::\${$propertyName} missing");
     }
 }

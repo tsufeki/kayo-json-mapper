@@ -32,7 +32,7 @@ class NullLoader implements Loader
         }
 
         if ($this->strict && !($type instanceof Types\Null_)) {
-            throw new TypeMismatchException((string)$type, $data, $context);
+            throw new TypeMismatchException((string)$type, $data);
         }
 
         return $data;

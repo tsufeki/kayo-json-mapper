@@ -32,7 +32,7 @@ class ScalarLoader implements Loader
         }
 
         if (!in_array(gettype($data), $expectedTypes, true)) {
-            throw new TypeMismatchException((string)$type, $data, $context);
+            throw new TypeMismatchException((string)$type, $data);
         }
 
         return $data;

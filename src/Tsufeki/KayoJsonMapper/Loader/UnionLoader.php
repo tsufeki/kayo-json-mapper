@@ -50,6 +50,6 @@ class UnionLoader implements Loader
             }
         }
 
-        throw new TypeMismatchException((string)$type, $data, $context);
+        throw new TypeMismatchException((string)$type, $data);
     }
 }
