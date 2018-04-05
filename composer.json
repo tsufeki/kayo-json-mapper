@@ -13,7 +13,7 @@
         "phpdocumentor/reflection-docblock": "^4.3"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.4",
+        "phpunit/phpunit": "^7.0",
         "phpstan/phpstan": "^0.9",
         "php-coveralls/php-coveralls": "^2.0",
         "phpstan/phpstan-phpunit": "^0.9"
