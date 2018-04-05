@@ -14,7 +14,7 @@ return PhpCsFixer\Config::create()
         ],
         'blank_line_after_opening_tag' => false,
         'blank_line_before_statement' => [
-            'statements' => ['return', 'throw', 'try'],
+            'statements' => ['return', 'throw'],
         ],
         'braces' => [
             'allow_single_line_closure' => true,

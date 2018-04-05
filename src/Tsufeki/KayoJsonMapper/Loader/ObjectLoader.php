@@ -100,7 +100,7 @@ class ObjectLoader implements Loader
         }
 
         if (!is_object($data) || !($data instanceof \stdClass)) {
-            throw new TypeMismatchException('stdClass|array', $data);
+            throw new TypeMismatchException('stdClass|array', $data, $context);
         }
 
         if (in_array((string)$type, ['object', '\\stdClass'], true)) {
@@ -122,12 +122,17 @@ class ObjectLoader implements Loader
         foreach ($metadata->properties as $property) {
             $mangledName = $this->nameMangler->mangle($property->name);
             if (array_key_exists($mangledName, $vars)) {
-                $value = $this->dispatchingLoader->load($vars[$mangledName], $property->type, $context);
-                $this->propertyAccess->set($target, $property, $value);
-                unset($vars[$mangledName]);
+                $context->pushPath("->$property->name");
+                try {
+                    $value = $this->dispatchingLoader->load($vars[$mangledName], $property->type, $context);
+                    $this->propertyAccess->set($target, $property, $value);
+                } finally {
+                    $context->popPath();
+                    unset($vars[$mangledName]);
+                }
             } else {
                 if ($property->required && $this->throwOnMissingProperty) {
-                    throw new MissingPropertyException($class, $property->name);
+                    throw new MissingPropertyException($class, $property->name, $context);
                 }
                 if ($this->setToNullOnMissingProperty) {
                     $this->propertyAccess->set($target, $property, null);
@@ -136,7 +141,7 @@ class ObjectLoader implements Loader
         }
 
         if (!empty($vars) && $this->throwOnUnknownProperty) {
-            throw new UnknownPropertyException($class, array_keys($vars)[0]);
+            throw new UnknownPropertyException($class, array_keys($vars)[0], $context);
         }
 
         return $target;

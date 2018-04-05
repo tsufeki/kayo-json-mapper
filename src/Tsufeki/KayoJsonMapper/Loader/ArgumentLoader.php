@@ -70,8 +70,13 @@ class ArgumentLoader
             }
 
             if ($key !== null) {
-                $args[] = $this->loader->load($data[$key], $param->type, $context);
-                unset($data[$key]);
+                $context->pushPath('$' . $key);
+                try {
+                    $args[] = $this->loader->load($data[$key], $param->type, $context);
+                } finally {
+                    unset($data[$key]);
+                    $context->popPath();
+                }
             } elseif ($param->optional) {
                 if ($param->variadic) {
                     break;
