@@ -220,7 +220,7 @@ class MapperBuilder
      *
      * @return $this
      */
-    public function setNameMangler(NameMangler $nameMangler)
+    public function setNameMangler(NameMangler $nameMangler): self
     {
         $this->nameMangler = $nameMangler;
 
@@ -315,7 +315,7 @@ class MapperBuilder
      *
      * @return $this
      */
-    public function setGuessRequiredProperties(bool $guessRequiredProperties)
+    public function setGuessRequiredProperties(bool $guessRequiredProperties): self
     {
         $this->guessRequiredProperties = $guessRequiredProperties;
 
@@ -333,7 +333,7 @@ class MapperBuilder
      *
      * @return $this
      */
-    public function setUseRequiredPhpdocTag(bool $useRequiredPhpdocTag)
+    public function setUseRequiredPhpdocTag(bool $useRequiredPhpdocTag): self
     {
         $this->useRequiredPhpdocTag = $useRequiredPhpdocTag;
 
