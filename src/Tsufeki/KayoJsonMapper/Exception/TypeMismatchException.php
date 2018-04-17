@@ -15,8 +15,13 @@ class TypeMismatchException extends InvalidDataException
             $actualType = get_class($actualData);
         }
 
+        $actualDataString = '';
+        if (is_scalar($actualData) && !is_string($actualData) && $actualData !== null) {
+            $actualDataString = ' (' . var_export($actualData, true) . ')';
+        }
+
         parent::__construct(
-            "Expected value of type $expectedType, got $actualType"
+            "Expected value of type $expectedType, got $actualType$actualDataString"
             . ' at ' . ($context->getPath() ?: '?')
         );
     }
