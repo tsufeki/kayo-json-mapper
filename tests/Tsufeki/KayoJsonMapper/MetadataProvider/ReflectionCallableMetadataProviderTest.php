@@ -116,6 +116,21 @@ class ReflectionCallableMetadataProviderTest extends TestCase
         ];
     }
 
+    /**
+     * @requires PHP 7.1
+     */
+    public function test_callable_nullable_typehint_php71()
+    {
+        $callable = eval('return function (?int $foo): ?string {};');
+        $this->test_callable(
+            $callable,
+            [
+                'foo' => 'int|null',
+                'return' => 'string|null',
+            ]
+        );
+    }
+
     public function test_throws_on_unknown_function()
     {
         $this->expectException(MetadataException::class);

@@ -52,11 +52,7 @@ class ReflectionCallableMetadataProvider implements CallableMetadataProvider
         }
 
         $typeResolver = new TypeResolver();
-        $returnType = null;
-        if ($reflectionCallable->hasReturnType()) {
-            $returnType = $typeResolver->resolve((string)$reflectionCallable->getReturnType());
-        }
-
+        $returnType = $this->resolveReflectionType($reflectionCallable->getReturnType());
         $phpdocReturnType = $this->phpdocTypeExtractor->getPhpdocType($reflectionCallable, 'return');
         $metadata->returnType = $returnType ?? $phpdocReturnType ?? new Mixed_();
 
@@ -92,7 +88,7 @@ class ReflectionCallableMetadataProvider implements CallableMetadataProvider
         $metadata->variadic = $parameter->isVariadic();
 
         $typeResolver = new TypeResolver();
-        $type = $parameter->hasType() ? $typeResolver->resolve((string)$parameter->getType()) : null;
+        $type = $this->resolveReflectionType($parameter->getType());
         $metadata->type = $type ?? $phpdocType ?? new Mixed_();
 
         if ($metadata->optional && !$metadata->variadic) {
@@ -100,5 +96,21 @@ class ReflectionCallableMetadataProvider implements CallableMetadataProvider
         }
 
         return $metadata;
+    }
+
+    /**
+     * @return Type|null
+     */
+    private function resolveReflectionType(\ReflectionType $reflectionType = null)
+    {
+        if ($reflectionType === null) {
+            return null;
+        }
+
+        $typeResolver = new TypeResolver();
+        $nullable = $reflectionType->allowsNull() ? '|null' : '';
+        $type = $typeResolver->resolve((string)$reflectionType . $nullable);
+
+        return $type;
     }
 }
