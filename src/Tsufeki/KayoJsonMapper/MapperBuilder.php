@@ -570,6 +570,8 @@ class MapperBuilder
     public function setConvertFloatToInt(bool $convertFloatToInt): self
     {
         $this->convertFloatToInt = $convertFloatToInt;
+
+        return $this;
     }
 
     /**
