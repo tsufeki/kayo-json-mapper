@@ -86,4 +86,29 @@ class ScalarLoaderTest extends TestCase
             ['scalar', new \stdClass()],
         ];
     }
+
+    /**
+     * @dataProvider load_convert_float_data
+     */
+    public function test_converts_float_to_int($data, $expected)
+    {
+        $resolver = new TypeResolver();
+        $loader = new ScalarLoader(true);
+
+        $this->assertSame($expected, $loader->load($data, $resolver->resolve('int'), new Context()));
+    }
+
+    public function load_convert_float_data(): array
+    {
+        return [
+            [7, 7],
+            [7.0, 7],
+            [7.3, 7],
+            [-7.3, -7],
+            [1e20, PHP_INT_MAX],
+            [-1e20, PHP_INT_MIN],
+            [INF, PHP_INT_MAX],
+            [-INF, PHP_INT_MIN],
+        ];
+    }
 }

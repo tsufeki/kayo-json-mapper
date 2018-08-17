@@ -18,6 +18,16 @@ class ScalarLoader implements Loader
         Types\Scalar::class => ['boolean', 'double', 'integer', 'string'],
     ];
 
+    /**
+     * @var bool
+     */
+    private $convertFloatToInt;
+
+    public function __construct(bool $convertFloatToInt = false)
+    {
+        $this->convertFloatToInt = $convertFloatToInt;
+    }
+
     public function getSupportedTypes(): array
     {
         return ['bool', 'float', 'int', 'string', 'scalar'];
@@ -32,9 +42,26 @@ class ScalarLoader implements Loader
         }
 
         if (!in_array(gettype($data), $expectedTypes, true)) {
+            if ($this->convertFloatToInt && gettype($data) === 'double' && get_class($type) === Types\Integer::class) {
+                return $this->convertFloatToInt($data);
+            }
+
             throw new TypeMismatchException((string)$type, $data, $context);
         }
 
         return $data;
+    }
+
+    private function convertFloatToInt(float $value): int
+    {
+        if ($value >= PHP_INT_MAX) {
+            return PHP_INT_MAX;
+        }
+
+        if ($value <= PHP_INT_MIN) {
+            return PHP_INT_MIN;
+        }
+
+        return (int)$value;
     }
 }

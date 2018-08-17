@@ -157,6 +157,11 @@ class MapperBuilder
      */
     private $dumpNullProperties = true;
 
+    /**
+     * @var bool
+     */
+    private $convertFloatToInt = false;
+
     public static function create(): self
     {
         return new static();
@@ -554,6 +559,20 @@ class MapperBuilder
     }
 
     /**
+     * If true, float values will be converted to integers if int is expected.
+     *
+     * Default false.
+     *
+     * @param bool $convertFloatToInt
+     *
+     * @return $this
+     */
+    public function setConvertFloatToInt(bool $convertFloatToInt): self
+    {
+        $this->convertFloatToInt = $convertFloatToInt;
+    }
+
+    /**
      * Build Mapper.
      */
     public function getMapper(): Mapper
@@ -588,7 +607,7 @@ class MapperBuilder
         $loader
             ->add(new UnionLoader($loader))
             ->add(new MixedLoader())
-            ->add(new ScalarLoader())
+            ->add(new ScalarLoader($this->convertFloatToInt))
             ->add(new ArrayLoader(
                 $loader,
                 $this->acceptStdClassAsArray
