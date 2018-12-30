@@ -23,6 +23,8 @@ class DateTimeDumperTest extends TestCase
 
     public function dump_data(): array
     {
+        date_default_timezone_set('UTC');
+
         return [
             [new \DateTime('2017-11-26 23:57:00'), '2017-11-26T23:57:00+00:00'],
             [new \DateTime('2017-11-26 23:57:00+07:00'), '2017-11-26T23:57:00+07:00'],

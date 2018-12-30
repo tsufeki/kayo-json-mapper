@@ -24,14 +24,21 @@ class ArgumentLoader
      */
     private $nameMangler;
 
+    /**
+     * @var bool
+     */
+    private $throwOnUnknownArgument;
+
     public function __construct(
         Loader $loader,
         CallableMetadataProvider $callableMetadataProvider,
-        NameMangler $nameMangler
+        NameMangler $nameMangler,
+        bool $throwOnUnknownArgument = true
     ) {
         $this->loader = $loader;
         $this->callableMetadataProvider = $callableMetadataProvider;
         $this->nameMangler = $nameMangler;
+        $this->throwOnUnknownArgument = $throwOnUnknownArgument;
     }
 
     /**
@@ -92,7 +99,7 @@ class ArgumentLoader
             }
         }
 
-        if (!empty($data)) {
+        if (!empty($data) && $this->throwOnUnknownArgument) {
             throw new InvalidDataException(
                 'Some arguments could not be matched: ' . implode(', ', array_keys($data))
             );

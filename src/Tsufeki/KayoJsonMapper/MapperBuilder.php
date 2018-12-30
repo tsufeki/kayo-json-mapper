@@ -135,6 +135,11 @@ class MapperBuilder
     /**
      * @var bool
      */
+    private $throwOnUnknownArgument = true;
+
+    /**
+     * @var bool
+     */
     private $setToNullOnMissingProperty = false;
 
     /**
@@ -474,6 +479,22 @@ class MapperBuilder
     }
 
     /**
+     * Whether to throw exception when unknown argument is encountered in loaded data in loadArguments.
+     *
+     * Default true.
+     *
+     * @param bool $throwOnUnknownArgument
+     *
+     * @return $this
+     */
+    public function throwOnUnknownArgument(bool $throwOnUnknownArgument): self
+    {
+        $this->throwOnUnknownArgument = $throwOnUnknownArgument;
+
+        return $this;
+    }
+
+    /**
      * If true, properties missing in JSON are always set to null.
      *
      * Default false.
@@ -648,7 +669,8 @@ class MapperBuilder
         $argumentLoader = new ArgumentLoader(
             $loader,
             $callableMetadataProvider,
-            $nameMangler
+            $nameMangler,
+            $this->throwOnUnknownArgument
         );
 
         $dumper = new DispatchingDumper(

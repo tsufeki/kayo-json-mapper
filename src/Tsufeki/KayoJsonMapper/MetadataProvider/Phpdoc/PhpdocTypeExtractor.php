@@ -44,7 +44,8 @@ class PhpdocTypeExtractor
     {
         /** @var Return_[]|Throws[] $tags */
         $tags = $this->getTags($reflection, $tagName);
-        $type = $tags ? array_pop($tags)->getType() : null;
+        $tag = array_pop($tags);
+        $type = $tag ? $tag->getType() : null;
 
         return $this->resolve($reflection, $type);
     }

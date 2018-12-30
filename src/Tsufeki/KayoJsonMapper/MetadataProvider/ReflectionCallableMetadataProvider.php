@@ -2,7 +2,6 @@
 
 namespace Tsufeki\KayoJsonMapper\MetadataProvider;
 
-use phpDocumentor\Reflection\DocBlock\Tags\Param;
 use phpDocumentor\Reflection\Type;
 use phpDocumentor\Reflection\TypeResolver;
 use phpDocumentor\Reflection\Types\Mixed_;

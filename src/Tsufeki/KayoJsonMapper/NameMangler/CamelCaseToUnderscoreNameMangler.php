@@ -6,6 +6,6 @@ class CamelCaseToUnderscoreNameMangler implements NameMangler
 {
     public function mangle(string $name): string
     {
-        return strtolower(preg_replace('/[A-Z]/', '_$0', lcfirst($name)));
+        return strtolower(preg_replace('/[A-Z]/', '_$0', lcfirst($name)) ?? '');
     }
 }

@@ -141,7 +141,7 @@ class ObjectLoader implements Loader
         }
 
         if (!empty($vars) && $this->throwOnUnknownProperty) {
-            throw new UnknownPropertyException($class, array_keys($vars)[0], $context);
+            throw new UnknownPropertyException($class, (string)array_keys($vars)[0], $context);
         }
 
         return $target;

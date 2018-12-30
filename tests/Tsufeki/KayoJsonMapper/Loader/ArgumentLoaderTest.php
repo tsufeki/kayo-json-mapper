@@ -81,6 +81,19 @@ class ArgumentLoaderTest extends TestCase
         $args = $mapper->loadArguments($data, $function);
     }
 
+    public function test_load_arguments_unknown_argument_ignored()
+    {
+        $function = function () { };
+        $data = ['foo' => 42];
+
+        $mapper = MapperBuilder::create()
+            ->throwOnUnknownArgument(false)
+            ->getMapper();
+        $args = $mapper->loadArguments($data, $function);
+
+        $this->assertEquals([], $args);
+    }
+
     public function test_load_arguments_variadic()
     {
         $function = function (string $foo, int ...$bar) { };
