@@ -5,3 +5,8 @@ includes:
 parameters:
     excludes_analyse:
         - %rootDir%/../../../tests/Tsufeki/KayoJsonMapper/Fixtures/*
+    ignoreErrors:
+        -
+            message: '#Parameter .1 .callable of method Tsufeki\\KayoJsonMapper\\MetadataProvider\\.*CallableMetadataProvider::getCallableMetadata\(\) expects \(callable\(\): mixed\)\|ReflectionFunctionAbstract, .* given#'
+            paths:
+                - %rootDir%/../../../tests/Tsufeki/KayoJsonMapper/MetadataProvider/*
