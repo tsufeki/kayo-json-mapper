@@ -100,7 +100,7 @@ class ReflectionCallableMetadataProvider implements CallableMetadataProvider
     /**
      * @return Type|null
      */
-    private function resolveReflectionType(\ReflectionType $reflectionType = null)
+    private function resolveReflectionType(\ReflectionNamedType $reflectionType = null)
     {
         if ($reflectionType === null) {
             return null;
