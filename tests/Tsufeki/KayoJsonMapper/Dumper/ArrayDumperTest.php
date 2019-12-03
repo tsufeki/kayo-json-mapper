@@ -22,7 +22,7 @@ class ArrayDumperTest extends TestCase
         $innerDumper
             ->expects($this->exactly(3))
             ->method('dump')
-            ->withConsecutive(...array_map(function ($i) { return $this->identicalTo($i); }, $input))
+            ->withConsecutive(...array_map(function ($i) { return [$this->identicalTo($i)]; }, $input))
             ->willReturnOnConsecutiveCalls(...$output);
 
         $arrayDumper = new ArrayDumper($innerDumper);
