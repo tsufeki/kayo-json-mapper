@@ -108,7 +108,7 @@ class ReflectionCallableMetadataProvider implements CallableMetadataProvider
 
         $typeResolver = new TypeResolver();
         $nullable = $reflectionType->allowsNull() ? '|null' : '';
-        $type = $typeResolver->resolve((string)$reflectionType . $nullable);
+        $type = $typeResolver->resolve($reflectionType->getName() . $nullable);
 
         return $type;
     }
